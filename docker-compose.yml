@@ -1,0 +1,86 @@
+name: smart-operator
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smart_operator}
+      POSTGRES_USER: ${POSTGRES_USER:-smart_operator}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smart_operator_demo}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "${MQTT_PORT:-1883}:1883"
+      - "${MQTT_WS_PORT:-9001}:9001"
+    volumes:
+      - ./infra/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./infra/mosquitto/data:/mosquitto/data
+      - ./infra/mosquitto/log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -p 1883 -t '$$SYS/broker/version' -C 1 -W 3 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  mock-devices:
+    image: python:3.12-alpine
+    working_dir: /app
+    command: ["python", "/app/server.py"]
+    environment:
+      PORT: 9002
+    ports:
+      - "${MOCK_GATEWAY_PORT:-9002}:9002"
+    volumes:
+      - ./infra/mock-gateway/server.py:/app/server.py:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:9002/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://smart_operator:smart_operator_demo@postgres:5432/smart_operator}
+      EVIDENCE_DIR: ${EVIDENCE_DIR:-/data/evidence}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8082,http://127.0.0.1:8082}
+      VERIFICATION_PROVIDER: ${VERIFICATION_PROVIDER:-auto}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+    ports:
+      - "${API_PORT:-8083}:8000"
+    volumes:
+      - evidence-data:/data/evidence
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mock-devices:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-8082}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  evidence-data:
