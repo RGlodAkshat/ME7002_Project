@@ -1,4 +1,4 @@
-import type { Catalog, ConfigurationRecord, Machine, Order, Review, Session, Specification, Task, User, Validation } from './types';
+import type { Catalog, ConfigurationRecord, KnowledgeGraph, Machine, Order, QualificationOption, Review, Session, SkillOption, Specification, Task, User, Validation } from './types';
 
 const base = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || '/api';
 let csrf = '';
@@ -25,10 +25,13 @@ export const api = {
   setup: (name: string, email: string, password: string) => request<Session>('/auth/setup', json('POST', { name, email, password })),
   logout: () => request('/auth/logout', json('POST', {})),
   users: async () => list(await request<User[] | { items: User[] }>('/users')),
+  skills: () => request<SkillOption[]>('/skills'),
+  qualifications: () => request<QualificationOption[]>('/qualifications'),
   createUser: (body: object) => request<User>('/users', json('POST', body)),
   updateUser: (id: string, body: object) => request<User>(`/users/${encodeURIComponent(id)}`, json('PATCH', body)),
   configuration: () => request<ConfigurationRecord>('/configuration'),
   validateSpecification: (specification: Specification) => request<Validation>('/configuration/validate', json('POST', { specification })),
+  importTurtle: (turtle: string) => request<Validation & { specification: Specification }>('/configuration/import-turtle', json('POST', { turtle })),
   saveSpecification: (specification: Specification, expected_revision: number) => request<ConfigurationRecord>('/configuration', json('PUT', { specification, expected_revision })),
   exportSpecification: () => request<Specification>('/configuration/export'),
   catalog: () => request<Catalog>('/shop/catalog'),
@@ -37,7 +40,12 @@ export const api = {
   order: (product_id: string, selections: Record<string, string>, customer_name: string) => request<Order>('/shop/orders', json('POST', { product_id, selections, customer_name, confirmed: true })),
   orders: async () => list(await request<Order[] | { items: Order[] }>('/orders')),
   getOrder: (id: string) => request<Order>(`/orders/${encodeURIComponent(id)}`),
+  cancelOrder: (id: string, reason: string) => request<Order>(`/orders/${encodeURIComponent(id)}/cancel`, json('POST', { reason })),
+  orderGraph: (id: string) => request<KnowledgeGraph>(`/orders/${encodeURIComponent(id)}/graph`),
   machines: async () => list(await request<Machine[] | { items: Machine[] }>('/machines')),
+  telemetryStatus: () => request<{ source?: { host?: string; port?: number; database?: string }; enabled?: boolean; configured?: boolean; connected?: boolean; host?: string; port?: number; database?: string; message?: string; error?: string; latest?: unknown; machines?: unknown }>('/telemetry/status'),
+  syncTelemetry: () => request('/telemetry/sync', json('POST', {})),
+  confirmStopped: (id: string) => request(`/tasks/${encodeURIComponent(id)}/confirm-stopped`, json('POST', { physical_stop_confirmed: true })),
   machineStatus: (id: string, status: string) => request<Machine>(`/machines/${encodeURIComponent(id)}`, json('PATCH', { status })),
   testGateway: () => request<{ connected?: boolean; ok?: boolean; message?: string; detail?: string }>('/gateway/test', json('POST', {})),
   tasks: async () => list(await request<Task[] | { items: Task[] }>('/operator/tasks')),

@@ -1,0 +1,87 @@
+/** Read-only browser audit of the real imported ontology. Credentials come only from the environment. */
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { chromium } from 'playwright-core';
+
+const base = process.env.APP_URL || 'http://127.0.0.1:8182';
+assert.ok(process.env.QA_ADMIN_EMAIL && process.env.QA_ADMIN_PASSWORD, 'Provide an isolated QA administrator through environment variables');
+const output = path.resolve('../.run/ontology-graph-audit');
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
+const page = await browser.newPage({ reducedMotion: 'reduce' });
+const report = { completed: false, browserErrors: [], screenshots: [], checks: [] };
+page.on('pageerror', error => report.browserErrors.push(error.message));
+try {
+  await page.goto(`${base}/#/login`);
+  await page.getByLabel('Email', { exact: true }).fill(process.env.QA_ADMIN_EMAIL);
+  await page.getByLabel(/^Password/).fill(process.env.QA_ADMIN_PASSWORD);
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await page.getByRole('button', { name: 'Ontology view', exact: true }).click();
+  const graph = page.locator('.graph-explorer');
+  assert.equal(await graph.count(), 1, 'Ontology must use a single graph canvas');
+  const saved = await (await page.request.get(`${base}/api/configuration`)).json();
+  const expectedNodes = saved.specification.entities.length + saved.specification.ontology.entity_types.length + saved.specification.constraints.length;
+  assert.equal(await graph.locator('svg g[transform]').count(), expectedNodes, 'Overview must render the entire model, not a subset');
+  assert.equal(await graph.getByRole('checkbox', { name: 'Selected context only', exact: true }).isChecked(), false);
+  for (const [width, height] of [[1440,900],[1280,800],[1024,768],[834,1112],[390,844],[360,800]]) {
+    await page.setViewportSize({ width, height });
+    await page.waitForTimeout(150);
+    await graph.getByRole('button', { name: 'Fit entire model', exact: true }).click();
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), `Overflow at ${width}px`);
+    const filename = `ontology-${width}.png`;
+    await page.screenshot({ path: path.join(output, filename), fullPage: true });
+    report.screenshots.push(filename);
+  }
+  report.checks.push(`Single overview contains all ${expectedNodes} definitions including ontology types, with every declared relationship`);
+  const viewBox = async () => (await graph.locator('svg').getAttribute('viewBox')).split(' ').map(Number);
+  const fitted = await viewBox();
+  await graph.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  assert.ok((await viewBox())[2] < fitted[2]);
+  await graph.locator('svg').scrollIntoViewIfNeeded();
+  const bounds = await graph.locator('svg').boundingBox();
+  const beforePan = await viewBox();
+  await page.mouse.move(bounds.x + bounds.width/2, bounds.y + 20); await page.mouse.down();
+  await page.mouse.move(bounds.x + bounds.width/2 + 45, bounds.y + 45, { steps: 8 }); await page.mouse.up();
+  assert.notEqual((await viewBox())[0], beforePan[0]);
+  await graph.getByRole('button', { name: 'Fit entire model', exact: true }).click();
+  await graph.getByLabel('Find a definition', { exact: true }).fill('ontology-type:machine');
+  await graph.getByRole('listitem').first().click();
+  await graph.getByRole('button', { name: 'Locate selected', exact: true }).click();
+  await graph.getByRole('button', { name: 'Edit selected definition', exact: true }).click();
+  await page.getByRole('heading', { name: 'Edit ontology entity type', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  await graph.locator('summary').filter({ hasText: /^Connections \(/ }).click();
+  await graph.locator('.graph-connections button').filter({ hasText: 'located at' }).first().click();
+  await graph.getByRole('button', { name: 'Edit selected connection', exact: true }).click();
+  await page.getByRole('heading', { name: 'Edit relationship type', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  await graph.getByLabel('Find a definition', { exact: true }).fill('MC1');
+  await graph.getByRole('listitem').filter({ hasText: saved.specification.entities.find(entity => entity.id === 'MC1').name }).first().click();
+  await graph.getByRole('button', { name: 'Edit selected definition', exact: true }).click();
+  await page.getByRole('heading', { name: 'Edit machine', exact: true }).waitFor();
+  await page.getByRole('dialog').getByRole('button', { name: 'Add connection', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  await graph.getByRole('checkbox', { name: 'Selected context only', exact: true }).check();
+  assert.ok(await graph.locator('svg g[transform]').count() < expectedNodes);
+  await graph.getByRole('button', { name: 'Fit entire model', exact: true }).click();
+  assert.equal(await graph.locator('svg g[transform]').count(), expectedNodes);
+  await page.locator('.ontology-create-controls select').selectOption('stage');
+  await page.getByRole('heading', { name: 'Add stage', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  await page.locator('.ontology-create-controls').getByRole('button', { name: 'Add connection', exact: true }).click();
+  await page.getByRole('heading', { name: 'Edit manufacturing connection', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  await page.locator('.ontology-create-controls').getByRole('button', { name: 'Add compatibility rule', exact: true }).click();
+  await page.getByRole('heading', { name: 'Edit compatibility rule', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  const after = await (await page.request.get(`${base}/api/configuration`)).json();
+  assert.deepEqual(after, saved, 'Read-only graph audit must not alter configuration');
+  report.checks.push('Zoom, pointer pan, Fit, Locate, optional context and real entity/schema node/edge editors plus definition/connection/rule creation work without changing saved configuration');
+  assert.deepEqual(report.browserErrors, []);
+  report.completed = true;
+  console.log(`Actual ontology graph audit passed: ${expectedNodes} nodes in one overview, six viewport screenshots, functional pan/zoom and editable entity/type/relationship selections.`);
+} finally {
+  await writeFile(path.join(output, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
+  await browser.close();
+}

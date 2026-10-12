@@ -53,6 +53,9 @@ services:
       MACHINE_CALLBACK_URL: ${MACHINE_CALLBACK_URL:-http://backend:8000/api/machine/events}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      TELEMETRY_DATABASE_URL: ${TELEMETRY_DATABASE_URL:-}
+      TELEMETRY_TIMEZONE: ${TELEMETRY_TIMEZONE:-Asia/Kolkata}
+      TELEMETRY_POLL_SECONDS: ${TELEMETRY_POLL_SECONDS:-2}
     ports:
       - "${API_PORT:-8083}:8000"
     volumes:

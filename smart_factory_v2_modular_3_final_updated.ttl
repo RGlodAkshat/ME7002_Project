@@ -1,0 +1,3994 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sf: <http://smartfactory.lab/ontology#> .
+@prefix sfe: <http://smartfactory.lab/ontology/entities#> .
+@prefix sfei: <http://smartfactory.lab/instance/entities#> .
+@prefix sfmach: <http://smartfactory.lab/ontology/machines#> .
+@prefix sfmachi: <http://smartfactory.lab/instance/machines#> .
+@prefix sfmatl: <http://smartfactory.lab/ontology/materials#> .
+@prefix sfmatli: <http://smartfactory.lab/instance/materials#> .
+@prefix sfmeth: <http://smartfactory.lab/ontology/methods#> .
+@prefix sfmethi: <http://smartfactory.lab/instance/methods#> .
+@prefix sfproc: <http://smartfactory.lab/ontology/processes#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+sfei:Event_OrderCompleted a sfe:OrderCompleted,
+        owl:NamedIndividual ;
+    rdfs:label "Event_OrderCompleted" ;
+    sfe:hasEventTypeName "order_completed"^^xsd:string ;
+    sfe:hasMetadataSchema "{order_id, total_duration_seconds}"^^xsd:string .
+
+sfei:Event_OrderCreated a sfe:OrderCreated,
+        owl:NamedIndividual ;
+    rdfs:label "Event_OrderCreated" ;
+    sfe:hasEventTypeName "order_created"^^xsd:string ;
+    sfe:hasMetadataSchema "{order_id, product_id}"^^xsd:string .
+
+sfei:Event_StepAdvanced a sfe:StepAdvanced,
+        owl:NamedIndividual ;
+    rdfs:label "Event_StepAdvanced" ;
+    sfe:hasEventTypeName "step_advanced"^^xsd:string ;
+    sfe:hasMetadataSchema "{order_id, from_step, to_step}"^^xsd:string .
+
+sfei:Event_TagScanned a sfe:TagScanned,
+        owl:NamedIndividual ;
+    rdfs:label "Event_TagScanned" ;
+    sfe:hasEventTypeName "tag_scanned"^^xsd:string ;
+    sfe:hasMetadataSchema "{reader_id, tag_uid, role}"^^xsd:string .
+
+sfei:Event_UnknownTag a sfe:UnknownTag,
+        owl:NamedIndividual ;
+    rdfs:label "Event_UnknownTag" ;
+    sfe:hasEventTypeName "unknown_tag"^^xsd:string ;
+    sfe:hasMetadataSchema "{tag_uid, reader_id}"^^xsd:string .
+
+sfmachi:GET_health a sfmach:APIEndpoint,
+        owl:NamedIndividual ;
+    rdfs:label "GET_health" ;
+    sfmach:exposedBy sfmachi:Gateway ;
+    sfmach:hasHTTPMethod "GET"^^xsd:string ;
+    sfmach:hasPath "/health"^^xsd:string .
+
+sfmachi:GET_live a sfmach:APIEndpoint,
+        owl:NamedIndividual ;
+    rdfs:label "GET_live" ;
+    sfmach:exposedBy sfmachi:Gateway ;
+    sfmach:hasHTTPMethod "GET"^^xsd:string ;
+    sfmach:hasPath "/live"^^xsd:string .
+
+sfmachi:GET_orders a sfmach:APIEndpoint,
+        owl:NamedIndividual ;
+    rdfs:label "GET_orders" ;
+    sfmach:exposedBy sfmachi:OrderService ;
+    sfmach:hasHTTPMethod "GET"^^xsd:string ;
+    sfmach:hasPath "/orders"^^xsd:string .
+
+sfmachi:GET_orders_summary a sfmach:APIEndpoint,
+        owl:NamedIndividual ;
+    rdfs:label "GET_orders_summary" ;
+    sfmach:exposedBy sfmachi:OrderService ;
+    sfmach:hasHTTPMethod "GET"^^xsd:string ;
+    sfmach:hasPath "/orders/{order_id}/summary"^^xsd:string .
+
+sfmachi:GET_progress a sfmach:APIEndpoint,
+        owl:NamedIndividual ;
+    rdfs:label "GET_progress" ;
+    sfmach:exposedBy sfmachi:TelemetryService ;
+    sfmach:hasHTTPMethod "GET"^^xsd:string ;
+    sfmach:hasPath "/progress/{order_id}"^^xsd:string .
+
+sfmachi:Orchestrator a sfmach:Orchestrator,
+        owl:NamedIndividual ;
+    rdfs:label "Orchestrator" ;
+    sfmach:hasFilename "reads.py"^^xsd:string ;
+    sfmach:hasResponsibility "Rule-based RFID supervisor (in-process)"^^xsd:string ;
+    sfmach:reads sfmachi:block,
+        sfmachi:orders,
+        sfmachi:rfid_tag,
+        sfmachi:route_step ;
+    sfmach:writes sfmachi:orders,
+        sfmachi:read_event .
+
+sfmachi:POST_orders a sfmach:APIEndpoint,
+        owl:NamedIndividual ;
+    rdfs:label "POST_orders" ;
+    sfmach:exposedBy sfmachi:OrderService ;
+    sfmach:hasHTTPMethod "POST"^^xsd:string ;
+    sfmach:hasPath "/orders"^^xsd:string .
+
+sfmachi:PS-MC1-G1 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC1-G1" ;
+    sfmach:executionOrder 1 ;
+    sfmach:hasProgramCode "S_G1"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-2,
+        sfmethi:RS-PR3-2 .
+
+sfmachi:PS-MC1-G2 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC1-G2" ;
+    sfmach:executionOrder 2 ;
+    sfmach:hasProgramCode "S_G2"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-2,
+        sfmethi:RS-PR3-2 .
+
+sfmachi:PS-MC1-G3 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC1-G3" ;
+    sfmach:executionOrder 3 ;
+    sfmach:hasProgramCode "S_G3"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-2,
+        sfmethi:RS-PR3-2 .
+
+sfmachi:PS-MC1-G4 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC1-G4" ;
+    sfmach:executionOrder 4 ;
+    sfmach:hasProgramCode "S_G4"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-2,
+        sfmethi:RS-PR3-2 .
+
+sfmachi:PS-MC1-G5 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC1-G5" ;
+    sfmach:executionOrder 5 ;
+    sfmach:hasProgramCode "S_G5"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-2,
+        sfmethi:RS-PR3-2 .
+
+sfmachi:PS-MC1-MAIN a sfmach:MainProgram,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC1-MAIN" ;
+    sfmach:executionOrder 999 ;
+    sfmach:hasProgramCode "MILLMAIN"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-2,
+        sfmethi:RS-PR3-2 .
+
+sfmachi:PS-MC2-G1 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC2-G1" ;
+    sfmach:executionOrder 1 ;
+    sfmach:hasProgramCode "S_G1"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-3,
+        sfmethi:RS-PR3-3 .
+
+sfmachi:PS-MC2-G2 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC2-G2" ;
+    sfmach:executionOrder 2 ;
+    sfmach:hasProgramCode "S_G2"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-3,
+        sfmethi:RS-PR3-3 .
+
+sfmachi:PS-MC2-G3 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC2-G3" ;
+    sfmach:executionOrder 3 ;
+    sfmach:hasProgramCode "S_G3"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-3,
+        sfmethi:RS-PR3-3 .
+
+sfmachi:PS-MC2-G4 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC2-G4" ;
+    sfmach:executionOrder 4 ;
+    sfmach:hasProgramCode "S_G4"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-3,
+        sfmethi:RS-PR3-3 .
+
+sfmachi:PS-MC2-G5 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC2-G5" ;
+    sfmach:executionOrder 5 ;
+    sfmach:hasProgramCode "S_G5"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-3,
+        sfmethi:RS-PR3-3 .
+
+sfmachi:PS-MC2-MAIN a sfmach:MainProgram,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC2-MAIN" ;
+    sfmach:executionOrder 999 ;
+    sfmach:hasProgramCode "MILLMAIN"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR1-3,
+        sfmethi:RS-PR3-3 .
+
+sfmachi:PS-MC3-MAIN a sfmach:MainProgram,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC3-MAIN" ;
+    sfmach:executionOrder 999 ;
+    sfmach:hasProgramCode "02001"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-2,
+        sfmethi:RS-PR4-2 .
+
+sfmachi:PS-MC3-O2001 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC3-O2001" ;
+    sfmach:executionOrder 1 ;
+    sfmach:hasProgramCode "O2001"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-2,
+        sfmethi:RS-PR4-2 .
+
+sfmachi:PS-MC3-O2002 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC3-O2002" ;
+    sfmach:executionOrder 2 ;
+    sfmach:hasProgramCode "O2002"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-2,
+        sfmethi:RS-PR4-2 .
+
+sfmachi:PS-MC3-O2003 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC3-O2003" ;
+    sfmach:executionOrder 3 ;
+    sfmach:hasProgramCode "O2003"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-2,
+        sfmethi:RS-PR4-2 .
+
+sfmachi:PS-MC3-O2004 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC3-O2004" ;
+    sfmach:executionOrder 4 ;
+    sfmach:hasProgramCode "O2004"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-2,
+        sfmethi:RS-PR4-2 .
+
+sfmachi:PS-MC3-O2005 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC3-O2005" ;
+    sfmach:executionOrder 5 ;
+    sfmach:hasProgramCode "O2005"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-2,
+        sfmethi:RS-PR4-2 .
+
+sfmachi:PS-MC4-MAIN a sfmach:MainProgram,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC4-MAIN" ;
+    sfmach:executionOrder 999 ;
+    sfmach:hasProgramCode "05001"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-3,
+        sfmethi:RS-PR4-3 .
+
+sfmachi:PS-MC4-O5001 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC4-O5001" ;
+    sfmach:executionOrder 1 ;
+    sfmach:hasProgramCode "O5001"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-3,
+        sfmethi:RS-PR4-3 .
+
+sfmachi:PS-MC4-O5002 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC4-O5002" ;
+    sfmach:executionOrder 2 ;
+    sfmach:hasProgramCode "O5002"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-3,
+        sfmethi:RS-PR4-3 .
+
+sfmachi:PS-MC4-O5003 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC4-O5003" ;
+    sfmach:executionOrder 3 ;
+    sfmach:hasProgramCode "O5003"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-3,
+        sfmethi:RS-PR4-3 .
+
+sfmachi:PS-MC4-O5004 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC4-O5004" ;
+    sfmach:executionOrder 4 ;
+    sfmach:hasProgramCode "O5004"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-3,
+        sfmethi:RS-PR4-3 .
+
+sfmachi:PS-MC4-O5005 a sfmach:SubCode,
+        owl:NamedIndividual ;
+    rdfs:label "PS-MC4-O5005" ;
+    sfmach:executionOrder 5 ;
+    sfmach:hasProgramCode "O5005"^^xsd:string ;
+    sfmach:requiredAtStep sfmethi:RS-PR2-3,
+        sfmethi:RS-PR4-3 .
+
+sfmachi:bom a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "bom" ;
+    sfmach:hasColumnList "product_id,component_id,name,quantity,colour"^^xsd:string ;
+    sfmach:hasPrimaryKey "(product_id,component_id)"^^xsd:string ;
+    sfmach:hasTableName "bom"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:machine a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "machine" ;
+    sfmach:hasColumnList "machine_id,workstation_id,machine_type"^^xsd:string ;
+    sfmach:hasPrimaryKey "machine_id"^^xsd:string ;
+    sfmach:hasTableName "machine"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:operator a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "operator" ;
+    sfmach:hasColumnList "operator_id,name,role"^^xsd:string ;
+    sfmach:hasPrimaryKey "operator_id"^^xsd:string ;
+    sfmach:hasTableName "operator"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:tray a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "tray" ;
+    sfmach:hasColumnList "detection_entity,reader_id"^^xsd:string ;
+    sfmach:hasPrimaryKey "detection_entity"^^xsd:string ;
+    sfmach:hasTableName "tray"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:workstation a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "workstation" ;
+    sfmach:hasColumnList "workstation_id,description,station_type,operation_type,operation_id"^^xsd:string ;
+    sfmach:hasPrimaryKey "workstation_id"^^xsd:string ;
+    sfmach:hasTableName "workstation"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmatli:BOMLine-PR1-BlR a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-BlR" ;
+    sfmatl:forComponent sfmatli:BlR ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-ClR a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-ClR" ;
+    sfmatl:forComponent sfmatli:ClR ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-CuR a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-CuR" ;
+    sfmatl:forComponent sfmatli:CuR ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-G1 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-G1" ;
+    sfmatl:forComponent sfmatli:G1 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-G2 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-G2" ;
+    sfmatl:forComponent sfmatli:G2 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-G3 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-G3" ;
+    sfmatl:forComponent sfmatli:G3 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-G4 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-G4" ;
+    sfmatl:forComponent sfmatli:G4 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-G5 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-G5" ;
+    sfmatl:forComponent sfmatli:G5 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-HR a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-HR" ;
+    sfmatl:forComponent sfmatli:HR ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-P1R a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-P1R" ;
+    sfmatl:forComponent sfmatli:P1R ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR1-P2R a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR1-P2R" ;
+    sfmatl:forComponent sfmatli:P2R ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR1 .
+
+sfmatli:BOMLine-PR2-BlB a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-BlB" ;
+    sfmatl:forComponent sfmatli:BlB ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-ClB a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-ClB" ;
+    sfmatl:forComponent sfmatli:ClB ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-CuB a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-CuB" ;
+    sfmatl:forComponent sfmatli:CuB ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-G1 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-G1" ;
+    sfmatl:forComponent sfmatli:G1 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-G2 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-G2" ;
+    sfmatl:forComponent sfmatli:G2 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-G3 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-G3" ;
+    sfmatl:forComponent sfmatli:G3 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-G4 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-G4" ;
+    sfmatl:forComponent sfmatli:G4 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-G5 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-G5" ;
+    sfmatl:forComponent sfmatli:G5 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-HB a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-HB" ;
+    sfmatl:forComponent sfmatli:HB ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-P1B a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-P1B" ;
+    sfmatl:forComponent sfmatli:P1B ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR2-P2B a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR2-P2B" ;
+    sfmatl:forComponent sfmatli:P2B ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR2 .
+
+sfmatli:BOMLine-PR3-BlG a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-BlG" ;
+    sfmatl:forComponent sfmatli:BlG ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-ClG a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-ClG" ;
+    sfmatl:forComponent sfmatli:ClG ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-CuG a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-CuG" ;
+    sfmatl:forComponent sfmatli:CuG ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-G1 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-G1" ;
+    sfmatl:forComponent sfmatli:G1 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-G2 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-G2" ;
+    sfmatl:forComponent sfmatli:G2 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-G3 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-G3" ;
+    sfmatl:forComponent sfmatli:G3 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-G4 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-G4" ;
+    sfmatl:forComponent sfmatli:G4 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-G5 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-G5" ;
+    sfmatl:forComponent sfmatli:G5 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-HG a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-HG" ;
+    sfmatl:forComponent sfmatli:HG ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-P1G a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-P1G" ;
+    sfmatl:forComponent sfmatli:P1G ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR3-P2G a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR3-P2G" ;
+    sfmatl:forComponent sfmatli:P2G ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR3 .
+
+sfmatli:BOMLine-PR4-BlW a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-BlW" ;
+    sfmatl:forComponent sfmatli:BlW ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-ClW a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-ClW" ;
+    sfmatl:forComponent sfmatli:ClW ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-CuW a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-CuW" ;
+    sfmatl:forComponent sfmatli:CuW ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-G1 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-G1" ;
+    sfmatl:forComponent sfmatli:G1 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-G2 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-G2" ;
+    sfmatl:forComponent sfmatli:G2 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-G3 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-G3" ;
+    sfmatl:forComponent sfmatli:G3 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-G4 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-G4" ;
+    sfmatl:forComponent sfmatli:G4 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-G5 a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-G5" ;
+    sfmatl:forComponent sfmatli:G5 ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-HW a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-HW" ;
+    sfmatl:forComponent sfmatli:HW ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-P1W a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-P1W" ;
+    sfmatl:forComponent sfmatli:P1W ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:BOMLine-PR4-P2W a sfmatl:BOMLine,
+        owl:NamedIndividual ;
+    rdfs:label "BOMLine-PR4-P2W" ;
+    sfmatl:forComponent sfmatli:P2W ;
+    sfmatl:hasQuantity 1.0 ;
+    sfmatl:partOfBOM sfmatli:BOM-PR4 .
+
+sfmatli:TR1 a sfmatl:Tray,
+        owl:NamedIndividual ;
+    rdfs:label "TR1" ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmatl:hasMobileReader sfmachi:RDR-96F92407 ;
+    sfmatl:hasTrayID "TR1"^^xsd:string .
+
+sfmatli:Tag_AssemblyStage2IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_AssemblyStage2IN" ;
+    sfmatl:hasTagDescription "ENTERED INTO ASSEMBLY STAGE 2"^^xsd:string ;
+    sfmatl:hasTagID "04C82714C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS9 .
+
+sfmatli:Tag_AssemblyStage2OUT a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_AssemblyStage2OUT" ;
+    sfmatl:hasTagDescription "PRODUCT READY"^^xsd:string ;
+    sfmatl:hasTagID "04AE3314C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "out"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS9 .
+
+sfmatli:Tag_KittingOUT a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_KittingOUT" ;
+    sfmatl:hasTagDescription "COMPLETED KITTING"^^xsd:string ;
+    sfmatl:hasTagID "04214514C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "out"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS1 .
+
+sfmatli:Tag_MC1IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_MC1IN" ;
+    sfmatl:hasTagDescription "TRAY ENTERED INTO MC1"^^xsd:string ;
+    sfmatl:hasTagID "04F24414C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS2 .
+
+sfmatli:Tag_MC2IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_MC2IN" ;
+    sfmatl:hasTagDescription "TRAY ENTERED INTO MC2"^^xsd:string ;
+    sfmatl:hasTagID "04FF3314C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS3 .
+
+sfmatli:Tag_MC3IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_MC3IN" ;
+    sfmatl:hasTagDescription "TRAY ENTERED INTO MC3"^^xsd:string ;
+    sfmatl:hasTagID "046A2714C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS2 .
+
+sfmatli:Tag_MC4IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_MC4IN" ;
+    sfmatl:hasTagDescription "TRAY ENTERED INTO MC4"^^xsd:string ;
+    sfmatl:hasTagID "04851514C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS3 .
+
+sfmatli:Tag_MC5IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_MC5IN" ;
+    sfmatl:hasTagDescription "ENTERED INTO SMC STATION 1 (FMS entry)"^^xsd:string ;
+    sfmatl:hasTagID "043C3914C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS5 .
+
+sfmethi:Rule_R1_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R1.1: Siemens CNC Job Complete" ;
+    sfmeth:hasAntecedent "machine in {MC1,MC2} AND status=Running AND all sub-codes seen AND MILLMAIN appears after sub-codes"^^xsd:string ;
+    sfmeth:hasConsequent "Assert CompletionDetectionNode; trigger Route Step transition"^^xsd:string ;
+    sfmeth:implementedIn "telemetry_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "CNC Completion"^^xsd:string ;
+    sfmeth:ruleID "R1.1"^^xsd:string ;
+    sfmeth:ruleName "Siemens CNC Job Complete"^^xsd:string .
+
+sfmethi:Rule_R1_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R1.2: Fanuc CNC Job Complete" ;
+    sfmeth:hasAntecedent "machine in {MC3,MC4} AND status=Running AND all sub-codes seen AND main program (02001/05001) appears after sub-codes"^^xsd:string ;
+    sfmeth:hasConsequent "Assert CompletionDetectionNode; trigger Route Step transition"^^xsd:string ;
+    sfmeth:implementedIn "telemetry_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "CNC Completion"^^xsd:string ;
+    sfmeth:ruleID "R1.2"^^xsd:string ;
+    sfmeth:ruleName "Fanuc CNC Job Complete"^^xsd:string .
+
+sfmethi:Rule_R1_3 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R1.3: Program Code Normalization" ;
+    sfmeth:hasAntecedent "Raw telemetry.prog contains path/extension/symbols"^^xsd:string ;
+    sfmeth:hasConsequent "Strip /N_, O prefix, .MPF extension; produce canonical form"^^xsd:string ;
+    sfmeth:implementedIn "telemetry_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "CNC Completion"^^xsd:string ;
+    sfmeth:ruleID "R1.3"^^xsd:string ;
+    sfmeth:ruleName "Program Code Normalization"^^xsd:string .
+
+sfmethi:Rule_R2_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R2.1: Terminal Station (MC10) Complete" ;
+    sfmeth:hasAntecedent "Consecutive telemetry_MC10 rows with Conveyor1_ON: True -> False"^^xsd:string ;
+    sfmeth:hasConsequent "Assert CompletionDetectionNode at MC10; trigger Order Completed if final step"^^xsd:string ;
+    sfmeth:implementedIn "telemetry_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "SMC Completion"^^xsd:string ;
+    sfmeth:ruleID "R2.1"^^xsd:string ;
+    sfmeth:ruleName "Terminal Station (MC10) Complete"^^xsd:string .
+
+sfmethi:Rule_R2_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R2.2: Intermediate Station Complete (inferred)" ;
+    sfmeth:hasAntecedent "Block tag scan at downstream SMC reader AND InProgress order has currentStep at upstream MC"^^xsd:string ;
+    sfmeth:hasConsequent "Infer upstream completion; trigger step transitions for both"^^xsd:string ;
+    sfmeth:implementedIn "reads.py + telemetry_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "SMC Completion"^^xsd:string ;
+    sfmeth:ruleID "R2.2"^^xsd:string ;
+    sfmeth:ruleName "Intermediate Station Complete (inferred)"^^xsd:string .
+
+sfmethi:Rule_R3_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R3.1: OUT Tag Step Advance" ;
+    sfmeth:hasAntecedent "TagScanned at OUT-role stationary tag AND rfid_tag.machine_id = order.expected_next_machine_id (GUARD)"^^xsd:string ;
+    sfmeth:hasConsequent "Update orders.expected_next_op_seq, expected_next_machine_id; insert StepAdvanced"^^xsd:string ;
+    sfmeth:implementedIn "reads.py"^^xsd:string ;
+    sfmeth:ruleCategory "Step Advancement"^^xsd:string ;
+    sfmeth:ruleID "R3.1"^^xsd:string ;
+    sfmeth:ruleName "OUT Tag Step Advance"^^xsd:string .
+
+sfmethi:Rule_R3_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R3.2: Telemetry Auto-Advance" ;
+    sfmeth:hasAntecedent "CompletionDetectionNode fires AND no OUT tag scan within debounce"^^xsd:string ;
+    sfmeth:hasConsequent "Same as R3.1; subsequent OUT scan no-ops via guard"^^xsd:string ;
+    sfmeth:implementedIn "telemetry_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "Step Advancement"^^xsd:string ;
+    sfmeth:ruleID "R3.2"^^xsd:string ;
+    sfmeth:ruleName "Telemetry Auto-Advance"^^xsd:string .
+
+sfmethi:Rule_R4_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R4.1: Product Location at Timestamp T" ;
+    sfmeth:hasAntecedent "For (order_id, T): find latest read_event with metadata.order_id=order_id AND ts <= T"^^xsd:string ;
+    sfmeth:hasConsequent "Classify by tag role: IN->AtMachine, OUT->InTransit, block->AtMachine"^^xsd:string ;
+    sfmeth:implementedIn "Query helper"^^xsd:string ;
+    sfmeth:ruleCategory "Location Resolution"^^xsd:string ;
+    sfmeth:ruleID "R4.1"^^xsd:string ;
+    sfmeth:ruleName "Product Location at Timestamp T"^^xsd:string .
+
+sfmethi:Rule_R4_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R4.2: Factory-Wide Snapshot at T" ;
+    sfmeth:hasAntecedent "For T: every order with status=InProgress at T"^^xsd:string ;
+    sfmeth:hasConsequent "Apply R4.1 per order; return map"^^xsd:string ;
+    sfmeth:implementedIn "Query helper"^^xsd:string ;
+    sfmeth:ruleCategory "Location Resolution"^^xsd:string ;
+    sfmeth:ruleID "R4.2"^^xsd:string ;
+    sfmeth:ruleName "Factory-Wide Snapshot at T"^^xsd:string .
+
+sfmethi:Rule_R5_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R5.1: Step Duration" ;
+    sfmeth:hasAntecedent "IN-scan E1 at step S AND CompletionDetectionNode CN1 at S.machine_id"^^xsd:string ;
+    sfmeth:hasConsequent "StepDuration = CN1.ts - E1.ts"^^xsd:string ;
+    sfmeth:implementedIn "Query helper"^^xsd:string ;
+    sfmeth:ruleCategory "Duration Computation"^^xsd:string ;
+    sfmeth:ruleID "R5.1"^^xsd:string ;
+    sfmeth:ruleName "Step Duration"^^xsd:string .
+
+sfmethi:Rule_R5_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R5.2: Transit Duration" ;
+    sfmeth:hasAntecedent "CN_prev at S_prev AND IN-scan E_next at S_next"^^xsd:string ;
+    sfmeth:hasConsequent "TransitDuration = E_next.ts - CN_prev.ts"^^xsd:string ;
+    sfmeth:implementedIn "Query helper"^^xsd:string ;
+    sfmeth:ruleCategory "Duration Computation"^^xsd:string ;
+    sfmeth:ruleID "R5.2"^^xsd:string ;
+    sfmeth:ruleName "Transit Duration"^^xsd:string .
+
+sfmethi:Rule_R5_3 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R5.3: Total Order Lead Time" ;
+    sfmeth:hasAntecedent "orders.status=Completed"^^xsd:string ;
+    sfmeth:hasConsequent "OrderDuration = orders.completed_at - orders.created_at"^^xsd:string ;
+    sfmeth:implementedIn "OrderService.summary"^^xsd:string ;
+    sfmeth:ruleCategory "Duration Computation"^^xsd:string ;
+    sfmeth:ruleID "R5.3"^^xsd:string ;
+    sfmeth:ruleName "Total Order Lead Time"^^xsd:string .
+
+sfmethi:Rule_R6_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R6.1: Classify Tag Role" ;
+    sfmeth:hasAntecedent "RFID scan: lookup rfid_tag.hardware_uid"^^xsd:string ;
+    sfmeth:hasConsequent "role IN/OUT -> StationaryTagScan; role=block -> BlockScan; miss -> UnknownTag"^^xsd:string ;
+    sfmeth:implementedIn "reads.py"^^xsd:string ;
+    sfmeth:ruleCategory "Event Classification"^^xsd:string ;
+    sfmeth:ruleID "R6.1"^^xsd:string ;
+    sfmeth:ruleName "Classify Tag Role"^^xsd:string .
+
+sfmethi:Rule_R6_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R6.2: Resolve Order from Block Scan" ;
+    sfmeth:hasAntecedent "BlockScan with block_id: lookup block.product_id; find InProgress order"^^xsd:string ;
+    sfmeth:hasConsequent "Bind scan to order_id; insert RFIDEventNode"^^xsd:string ;
+    sfmeth:implementedIn "reads.py"^^xsd:string ;
+    sfmeth:ruleCategory "Event Classification"^^xsd:string ;
+    sfmeth:ruleID "R6.2"^^xsd:string ;
+    sfmeth:ruleName "Resolve Order from Block Scan"^^xsd:string .
+
+sfmethi:Rule_R7_1 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R7.1: Thread Creation" ;
+    sfmeth:hasAntecedent "OrderCreated event fires"^^xsd:string ;
+    sfmeth:hasConsequent "Instantiate DigitalThread; first node = StateTransitionNode(Created)"^^xsd:string ;
+    sfmeth:implementedIn "order_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "Digital Thread"^^xsd:string ;
+    sfmeth:ruleID "R7.1"^^xsd:string ;
+    sfmeth:ruleName "Thread Creation"^^xsd:string .
+
+sfmethi:Rule_R7_2 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R7.2: Thread Node Linking" ;
+    sfmeth:hasAntecedent "New DigitalThreadNode at T_new"^^xsd:string ;
+    sfmeth:hasConsequent "Set precededBy to latest existing node for thread"^^xsd:string ;
+    sfmeth:implementedIn "All services"^^xsd:string ;
+    sfmeth:ruleCategory "Digital Thread"^^xsd:string ;
+    sfmeth:ruleID "R7.2"^^xsd:string ;
+    sfmeth:ruleName "Thread Node Linking"^^xsd:string .
+
+sfmethi:Rule_R7_3 a sfmeth:InferenceRule,
+        owl:NamedIndividual ;
+    rdfs:label "R7.3: Thread Finalization" ;
+    sfmeth:hasAntecedent "Order -> Completed"^^xsd:string ;
+    sfmeth:hasConsequent "Final node = StateTransitionNode(Completed); compute OrderDuration"^^xsd:string ;
+    sfmeth:implementedIn "order_service.py"^^xsd:string ;
+    sfmeth:ruleCategory "Digital Thread"^^xsd:string ;
+    sfmeth:ruleID "R7.3"^^xsd:string ;
+    sfmeth:ruleName "Thread Finalization"^^xsd:string .
+
+sfmethi:Trans_SM2_1 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM2.1: Route Step: NotYet -> AtStep" ;
+    sfmeth:fromState "NotYet"^^xsd:string ;
+    sfmeth:guardDescription "rfid_tag.workstation = step.workstation AND op_seq match"^^xsd:string ;
+    sfmeth:smID "SM2.1"^^xsd:string ;
+    sfmeth:smName "Route Step"^^xsd:string ;
+    sfmeth:toState "AtStep"^^xsd:string ;
+    sfmeth:transitionAction "Mark step start"^^xsd:string ;
+    sfmeth:triggerEvent "TagScanned at IN"^^xsd:string .
+
+sfmethi:Trans_SM2_2 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM2.2: Route Step: AtStep -> Processing" ;
+    sfmeth:fromState "AtStep"^^xsd:string ;
+    sfmeth:guardDescription "Order at this step"^^xsd:string ;
+    sfmeth:smID "SM2.2"^^xsd:string ;
+    sfmeth:smName "Route Step"^^xsd:string ;
+    sfmeth:toState "Processing"^^xsd:string ;
+    sfmeth:transitionAction "Mark processing start"^^xsd:string ;
+    sfmeth:triggerEvent "CNC start OR block arrives at SMC reader"^^xsd:string .
+
+sfmethi:Trans_SM2_3 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM2.3: Route Step: Processing -> Completed" ;
+    sfmeth:fromState "Processing"^^xsd:string ;
+    sfmeth:guardDescription "Telemetry condition met"^^xsd:string ;
+    sfmeth:smID "SM2.3"^^xsd:string ;
+    sfmeth:smName "Route Step"^^xsd:string ;
+    sfmeth:toState "Completed"^^xsd:string ;
+    sfmeth:transitionAction "Mark end; compute StepDuration; insert CompletionDetectionNode"^^xsd:string ;
+    sfmeth:triggerEvent "Completion rule fires"^^xsd:string .
+
+sfmethi:Trans_SM2_4 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM2.4: Route Step: Completed -> AdvancedPast" ;
+    sfmeth:fromState "Completed"^^xsd:string ;
+    sfmeth:guardDescription "route_step.expected_next_machine_id matches (GUARD)"^^xsd:string ;
+    sfmeth:smID "SM2.4"^^xsd:string ;
+    sfmeth:smName "Route Step"^^xsd:string ;
+    sfmeth:toState "AdvancedPast"^^xsd:string ;
+    sfmeth:transitionAction "Advance op_seq; insert StepAdvanced"^^xsd:string ;
+    sfmeth:triggerEvent "OUT tag scan OR auto-advance"^^xsd:string .
+
+sfmethi:Trans_SM3_1 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM3.1: FMS Tray: AtFeeder -> OnConveyor" ;
+    sfmeth:fromState "AtFeeder"^^xsd:string ;
+    sfmeth:guardDescription "Block tag scan resolves order"^^xsd:string ;
+    sfmeth:smID "SM3.1"^^xsd:string ;
+    sfmeth:smName "FMS Tray"^^xsd:string ;
+    sfmeth:toState "OnConveyor"^^xsd:string ;
+    sfmeth:transitionAction "Record tray location"^^xsd:string ;
+    sfmeth:triggerEvent "Tray departs MC5"^^xsd:string .
+
+sfmethi:Trans_SM3_2 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM3.2: FMS Tray: OnConveyor -> AtStation" ;
+    sfmeth:fromState "OnConveyor"^^xsd:string ;
+    sfmeth:guardDescription "Block.product_id matches InProgress order"^^xsd:string ;
+    sfmeth:smID "SM3.2"^^xsd:string ;
+    sfmeth:smName "FMS Tray"^^xsd:string ;
+    sfmeth:toState "AtStation"^^xsd:string ;
+    sfmeth:transitionAction "Update tray location"^^xsd:string ;
+    sfmeth:triggerEvent "Block tag scan at SMC reader"^^xsd:string .
+
+sfmethi:Trans_SM3_3 a sfmeth:StateMachineTransition,
+        owl:NamedIndividual ;
+    rdfs:label "SM3.3: FMS Tray: AtStation -> OnConveyor" ;
+    sfmeth:fromState "AtStation"^^xsd:string ;
+    sfmeth:guardDescription "SMC completion rule fires"^^xsd:string ;
+    sfmeth:smID "SM3.3"^^xsd:string ;
+    sfmeth:smName "FMS Tray"^^xsd:string ;
+    sfmeth:toState "OnConveyor"^^xsd:string ;
+    sfmeth:transitionAction "Tray moves to next station"^^xsd:string ;
+    sfmeth:triggerEvent "Completion at current station"^^xsd:string .
+
+<http://smartfactory.lab/ontology> a owl:Ontology ;
+    rdfs:label "Smart Factory Testbed Ontology v2" ;
+    dcterms:description "Ontology for a lab-scale smart factory testbed. Models CNC machines, SMC FMS-200 automated stations, dual-mode RFID tracking (mobile tray reader + stationary SMC readers), product routing, and the digital thread." ;
+    dcterms:title "Smart Factory Testbed Ontology" ;
+    owl:imports <http://purl.obolibrary.org/obo/bfo/2020/bfo-core.ttl> ;
+    owl:versionInfo "2.1" .
+
+sf:SmartFactoryTestbedOntologyV2 rdfs:comment "The ontology includes a local BFO 2020 bridge hierarchy for the BFO classes used by the Smart Factory ontology; the authoritative BFO ontology remains imported." .
+
+sf:atSite a owl:ObjectProperty ;
+    rdfs:label "atSite" ;
+    rdfs:range sfe:SiteContext .
+
+sf:isAbstract a owl:AnnotationProperty .
+
+sfe:Approved a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:Completed a owl:Class ;
+    rdfs:label "Completed" ;
+    rdfs:comment "Material/order has completed the intended production route; retained as a compatibility bridge for legacy OrderStatus." ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:Created a owl:Class ;
+    rdfs:label "Created" ;
+    rdfs:comment "Material/order exists but production has not begun; retained as a compatibility bridge for legacy OrderStatus." ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:Faulted a owl:Class ;
+    rdfs:subClassOf sfe:OperationalState .
+
+sfe:Idle a owl:Class ;
+    rdfs:subClassOf sfe:ActivityState .
+
+sfe:InProcess a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:InTransit a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:InspectionCompleted a owl:Class ;
+    rdfs:subClassOf sfe:InspectionEvent .
+
+sfe:InspectionStarted a owl:Class ;
+    rdfs:subClassOf sfe:InspectionEvent .
+
+sfe:LocatedAtWorkstation a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:LocationFact a owl:Class ;
+    rdfs:label "LocationFact" ;
+    rdfs:comment "A subject was located at an object during [validFrom, validUntil)." ;
+    rdfs:subClassOf sfe:TemporalAssertion .
+
+sfe:MachineFaultCleared a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineFaultOccurred a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineProcessingCompleted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineProcessingStarted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineSetupCompleted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineSetupStarted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineStarted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MachineStopped a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:Maintenance a owl:Class ;
+    rdfs:subClassOf sfe:OperationalState .
+
+sfe:MaintenanceCompleted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MaintenanceStarted a owl:Class ;
+    rdfs:subClassOf sfe:MachineEvent .
+
+sfe:MaterialArrivedAtWorkstation a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialCompleted a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialCreated a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialDepartedFromWorkstation a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialPositioned a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialRemovedFromWorkstation a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialTransportCompleted a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MaterialTransportStarted a owl:Class ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:MeasurementCompleted a owl:Class ;
+    rdfs:subClassOf sfe:MeasurementState .
+
+sfe:MeasurementInProgress a owl:Class ;
+    rdfs:subClassOf sfe:MeasurementState .
+
+sfe:MeasurementPending a owl:Class ;
+    rdfs:subClassOf sfe:MeasurementState .
+
+sfe:Off a owl:Class ;
+    rdfs:subClassOf sfe:OperationalState .
+
+sfe:OperationCompleted a owl:Class ;
+    rdfs:subClassOf sfe:ProcessEvent .
+
+sfe:OperationInProgress a owl:Class ;
+    rdfs:subClassOf sfe:MethodState .
+
+sfe:OperationInterrupted a owl:Class ;
+    rdfs:subClassOf sfe:ProcessEvent .
+
+sfe:OperationOnHold a owl:Class ;
+    rdfs:subClassOf sfe:MethodState .
+
+sfe:OperationResumed a owl:Class ;
+    rdfs:subClassOf sfe:ProcessEvent .
+
+sfe:OperationStarted a owl:Class ;
+    rdfs:subClassOf sfe:ProcessEvent .
+
+sfe:OperatorAvailable a owl:Class ;
+    rdfs:subClassOf sfe:ManState .
+
+sfe:OperatorEngaged a owl:Class ;
+    rdfs:subClassOf sfe:ManState .
+
+sfe:OperatorPerformingOperation a owl:Class ;
+    rdfs:subClassOf sfe:ManState .
+
+sfe:OperatorRequired a owl:Class ;
+    rdfs:subClassOf sfe:ManState .
+
+sfe:OperatorUnavailable a owl:Class ;
+    rdfs:subClassOf sfe:ManState .
+
+sfe:Processing a owl:Class ;
+    rdfs:subClassOf sfe:ActivityState .
+
+sfe:QualityCheckFailed a owl:Class ;
+    rdfs:subClassOf sfe:MeasurementState .
+
+sfe:QualityCheckOnHold a owl:Class ;
+    rdfs:subClassOf sfe:MeasurementState .
+
+sfe:QualityCheckPassed a owl:Class ;
+    rdfs:subClassOf sfe:MeasurementState .
+
+sfe:Rejected a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:Running a owl:Class ;
+    rdfs:subClassOf sfe:OperationalState .
+
+sfe:Setup a owl:Class ;
+    rdfs:subClassOf sfe:ActivityState .
+
+sfe:WaitingForInspection a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:WaitingForOperation a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:WaitingForTransport a owl:Class ;
+    rdfs:subClassOf sfe:MaterialState .
+
+sfe:atMachine a owl:ObjectProperty ;
+    rdfs:label "atMachine" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range sfmach:Machine .
+
+sfe:atRouteStep a owl:ObjectProperty ;
+    rdfs:label "atRouteStep" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range sfmeth:RouteStep .
+
+sfe:atTimestamp a owl:DatatypeProperty ;
+    rdfs:label "atTimestamp" ;
+    rdfs:domain sfe:ProductLocation ;
+    rdfs:range xsd:dateTime .
+
+sfe:consumesComponent a owl:ObjectProperty ;
+    rdfs:label "consumesComponent" ;
+    rdfs:domain sfe:InventoryNode ;
+    rdfs:range sfmatl:Component .
+
+sfe:derivedFromEventID a owl:DatatypeProperty ;
+    rdfs:label "derivedFromEventID" ;
+    rdfs:domain sfe:ProductLocation ;
+    rdfs:range xsd:string .
+
+sfe:derivedFromRule a owl:ObjectProperty ;
+    rdfs:label "derivedFromRule" ;
+    rdfs:range sfmeth:InferenceRule .
+
+sfe:detectedBy a owl:ObjectProperty ;
+    rdfs:label "detectedBy" ;
+    rdfs:domain sfe:CompletionDetectionNode ;
+    rdfs:range sfmach:CompletionRule .
+
+sfe:establishesState a owl:ObjectProperty ;
+    rdfs:label "establishesState" ;
+    rdfs:comment "An event establishes or initiates a state assertion in the derived semantic model." ;
+    rdfs:domain sfe:Event ;
+    rdfs:range sfe:StateFact .
+
+sfe:expectedNextMachineID a owl:DatatypeProperty ;
+    rdfs:label "expectedNextMachineID" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range xsd:string .
+
+sfe:expectedNextOpSeq a owl:DatatypeProperty ;
+    rdfs:label "expectedNextOpSeq" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range xsd:integer .
+
+sfe:generatedByService a owl:ObjectProperty ;
+    rdfs:label "generatedByService" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range sfmach:Microservice .
+
+sfe:hasConsumedQuantity a owl:DatatypeProperty ;
+    rdfs:label "hasConsumedQuantity" ;
+    rdfs:domain sfe:InventoryNode ;
+    rdfs:range xsd:decimal .
+
+sfe:hasCycleTime a owl:ObjectProperty ;
+    rdfs:label "hasCycleTime" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range sfe:CycleTime .
+
+sfe:hasDefectCode a owl:DatatypeProperty ;
+    rdfs:label "hasDefectCode" ;
+    rdfs:domain sfe:QualityNode ;
+    rdfs:range xsd:string .
+
+sfe:hasDurationSeconds a owl:DatatypeProperty ;
+    rdfs:label "hasDurationSeconds" ;
+    rdfs:domain sfe:Duration ;
+    rdfs:range xsd:decimal .
+
+sfe:hasEndTime a owl:DatatypeProperty ;
+    rdfs:label "hasEndTime" ;
+    rdfs:domain sfe:Duration ;
+    rdfs:range xsd:dateTime .
+
+sfe:hasEventTypeName a owl:DatatypeProperty ;
+    rdfs:label "hasEventTypeName" ;
+    rdfs:range xsd:string .
+
+sfe:hasFailureDescription a owl:DatatypeProperty ;
+    rdfs:label "hasFailureDescription" ;
+    rdfs:domain sfe:FailureNode ;
+    rdfs:range xsd:string .
+
+sfe:hasFailureType a owl:DatatypeProperty ;
+    rdfs:label "hasFailureType" ;
+    rdfs:domain sfe:FailureNode ;
+    rdfs:range xsd:string .
+
+sfe:hasMetadataSchema a owl:DatatypeProperty ;
+    rdfs:label "hasMetadataSchema" ;
+    rdfs:range xsd:string .
+
+sfe:hasOrderDuration a owl:ObjectProperty ;
+    rdfs:label "hasOrderDuration" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range sfe:OrderDuration .
+
+sfe:hasOrderID a owl:DatatypeProperty ;
+    rdfs:label "hasOrderID" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range xsd:string .
+
+sfe:hasPayload a owl:DatatypeProperty ;
+    rdfs:label "hasPayload" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range xsd:string .
+
+sfe:hasQualityResult a owl:DatatypeProperty ;
+    rdfs:label "hasQualityResult" ;
+    rdfs:domain sfe:QualityNode ;
+    rdfs:range xsd:string .
+
+sfe:hasStartTime a owl:DatatypeProperty ;
+    rdfs:label "hasStartTime" ;
+    rdfs:domain sfe:Duration ;
+    rdfs:range xsd:dateTime .
+
+sfe:hasStateType a owl:ObjectProperty ;
+    rdfs:label "hasStateType" ;
+    rdfs:domain sfe:StateFact ;
+    rdfs:range sfe:State .
+
+sfe:hasTimestamp a owl:DatatypeProperty ;
+    rdfs:label "hasTimestamp" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range xsd:dateTime .
+
+sfe:hasTransitDuration a owl:ObjectProperty ;
+    rdfs:label "hasTransitDuration" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range sfe:TransitDuration .
+
+sfe:locatedAtMachine a owl:ObjectProperty ;
+    rdfs:label "locatedAtMachine" ;
+    rdfs:domain sfe:ProductLocation ;
+    rdfs:range sfmach:Machine .
+
+sfe:locatedAtWS a owl:ObjectProperty ;
+    rdfs:label "locatedAtWS" ;
+    rdfs:domain sfe:ProductLocation ;
+    rdfs:range sfmach:Workstation .
+
+sfe:occurredAt a owl:DatatypeProperty ;
+    rdfs:label "occurredAt" ;
+    rdfs:domain sfe:Event ;
+    rdfs:range xsd:dateTime .
+
+sfe:occursDuring a owl:ObjectProperty ;
+    rdfs:label "occursDuring" ;
+    rdfs:domain sfe:Event ;
+    rdfs:range sfproc:Process .
+
+sfe:orderCompletedTS a owl:DatatypeProperty ;
+    rdfs:label "orderCompletedTS" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range xsd:dateTime .
+
+sfe:orderCreatedTS a owl:DatatypeProperty ;
+    rdfs:label "orderCreatedTS" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range xsd:dateTime .
+
+sfe:recordsDuration a owl:ObjectProperty ;
+    rdfs:label "recordsDuration" ;
+    rdfs:domain sfe:ProcessingTimeNode ;
+    rdfs:range sfe:StepDuration .
+
+sfe:scannedTag a owl:ObjectProperty ;
+    rdfs:label "scannedTag" ;
+    rdfs:comment "Which physical StationaryTag triggered this scan event. Not atMachine, since every real tag mounts on a Workstation, not a Machine." ;
+    rdfs:domain sfe:RFIDEventNode ;
+    rdfs:range sfmatl:StationaryTag .
+
+sfe:siteID a owl:DatatypeProperty ;
+    rdfs:label "siteID" ;
+    rdfs:domain sfe:SiteContext ;
+    rdfs:range xsd:string .
+
+sfe:snapshotBOMRef a owl:DatatypeProperty ;
+    rdfs:label "snapshotBOMRef" ;
+    rdfs:domain sfe:ProductInfoNode ;
+    rdfs:range xsd:string .
+
+sfe:snapshotProductColour a owl:DatatypeProperty ;
+    rdfs:label "snapshotProductColour" ;
+    rdfs:domain sfe:ProductInfoNode ;
+    rdfs:range xsd:string .
+
+sfe:snapshotProductID a owl:DatatypeProperty ;
+    rdfs:label "snapshotProductID" ;
+    rdfs:domain sfe:ProductInfoNode ;
+    rdfs:range xsd:string .
+
+sfe:sourcedFromReader a owl:ObjectProperty ;
+    rdfs:label "sourcedFromReader" ;
+    rdfs:domain sfe:RFIDEventNode ;
+    rdfs:range sfmach:RFIDReader .
+
+sfe:sourcedFromTable a owl:ObjectProperty ;
+    rdfs:label "sourcedFromTable" ;
+    rdfs:domain sfe:TelemetrySnapshotNode ;
+    rdfs:range sfmach:Hypertable .
+
+sfe:stateDuring a owl:ObjectProperty ;
+    rdfs:label "stateDuring" ;
+    rdfs:comment "Associates a state fact with the process occurring during its validity interval, when such context is known." ;
+    rdfs:domain sfe:StateFact ;
+    rdfs:range sfproc:Process .
+
+sfe:supportsInferenceOf a owl:ObjectProperty ;
+    rdfs:label "supportsInferenceOf" ;
+    rdfs:comment "An observation provides evidence supporting inference of an event." ;
+    rdfs:domain sfe:Observation ;
+    rdfs:range sfe:Event .
+
+sfe:validFrom a owl:DatatypeProperty ;
+    rdfs:label "validFrom" ;
+    rdfs:domain sfe:TemporalAssertion ;
+    rdfs:range xsd:dateTime .
+
+sfe:validUntil a owl:DatatypeProperty ;
+    rdfs:label "validUntil" ;
+    rdfs:domain sfe:TemporalAssertion ;
+    rdfs:range xsd:dateTime .
+
+sfmach:executionOrder a owl:DatatypeProperty ;
+    rdfs:label "executionOrder" ;
+    rdfs:domain sfmach:ProgramSequence ;
+    rdfs:range xsd:integer .
+
+sfmach:exposesWebSocket a owl:ObjectProperty ;
+    rdfs:label "exposesWebSocket" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range sfmach:WebSocketChannel .
+
+sfmach:hasAxisCount a owl:DatatypeProperty ;
+    rdfs:label "hasAxisCount" ;
+    rdfs:domain sfmach:CNCMachine ;
+    rdfs:range xsd:integer .
+
+sfmach:hasColumnList a owl:DatatypeProperty ;
+    rdfs:label "hasColumnList" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range xsd:string .
+
+sfmach:hasConsumableComponent a owl:ObjectProperty ;
+    rdfs:label "hasConsumableComponent" ;
+    rdfs:comment "Station-level capability: this workstation draws from this component type. Distinct from InventoryNode.consumesComponent, which records a specific consumption event." ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range sfmatl:Component .
+
+sfmach:hasFilename a owl:DatatypeProperty ;
+    rdfs:label "hasFilename" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range xsd:string .
+
+sfmach:hasHTTPMethod a owl:DatatypeProperty ;
+    rdfs:label "hasHTTPMethod" ;
+    rdfs:domain sfmach:APIEndpoint ;
+    rdfs:range xsd:string .
+
+sfmach:hasHardwareUID a owl:DatatypeProperty ;
+    rdfs:label "hasHardwareUID" ;
+    rdfs:domain sfmach:RFIDReader ;
+    rdfs:range xsd:string .
+
+sfmach:hasMachineID a owl:DatatypeProperty ;
+    rdfs:label "hasMachineID" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range xsd:string .
+
+sfmach:hasMachineType a owl:DatatypeProperty ;
+    rdfs:label "hasMachineType" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range xsd:string .
+
+sfmach:hasNominalKittingTimeSeconds a owl:DatatypeProperty ;
+    rdfs:label "hasNominalKittingTimeSeconds" ;
+    rdfs:comment "Schema only — no instance value yet. Anchored to Workstation (WS1), not Machine, since kitting is manual with no assigned machine. Real value should be derived from orderCreatedTS -> Tag_KittingOUT scan, since WS1 has no IN tag (see machining_schema_extension_spec.md discussion)." ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range xsd:decimal .
+
+sfmach:hasNominalMachiningTimeSeconds a owl:DatatypeProperty ;
+    rdfs:label "hasNominalMachiningTimeSeconds" ;
+    rdfs:domain sfmach:CNCMachine ;
+    rdfs:range xsd:decimal .
+
+sfmach:hasOperationID a owl:DatatypeProperty ;
+    rdfs:label "hasOperationID" ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range xsd:string .
+
+sfmach:hasPath a owl:DatatypeProperty ;
+    rdfs:label "hasPath" ;
+    rdfs:domain sfmach:APIEndpoint ;
+    rdfs:range xsd:string .
+
+sfmach:hasPayloadSchemaJSON a owl:DatatypeProperty ;
+    rdfs:label "hasPayloadSchemaJSON" ;
+    rdfs:domain sfmach:MQTTTopic ;
+    rdfs:range xsd:string .
+
+sfmach:hasPort a owl:DatatypeProperty ;
+    rdfs:label "hasPort" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range xsd:integer .
+
+sfmach:hasPrimaryKey a owl:DatatypeProperty ;
+    rdfs:label "hasPrimaryKey" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range xsd:string .
+
+sfmach:hasProgramCode a owl:DatatypeProperty ;
+    rdfs:label "hasProgramCode" ;
+    rdfs:domain sfmach:ProgramSequence ;
+    rdfs:range xsd:string .
+
+sfmach:hasResponsibility a owl:DatatypeProperty ;
+    rdfs:label "hasResponsibility" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range xsd:string .
+
+sfmach:hasSampleRateSeconds a owl:DatatypeProperty ;
+    rdfs:label "hasSampleRateSeconds" ;
+    rdfs:domain sfmach:TelemetryStream ;
+    rdfs:range xsd:decimal .
+
+sfmach:hasSignalList a owl:DatatypeProperty ;
+    rdfs:label "hasSignalList" ;
+    rdfs:domain sfmach:TelemetryStream ;
+    rdfs:range xsd:string .
+
+sfmach:hasStationType a owl:DatatypeProperty ;
+    rdfs:label "hasStationType" ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range xsd:string .
+
+sfmach:hasTableName a owl:DatatypeProperty ;
+    rdfs:label "hasTableName" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range xsd:string .
+
+sfmach:hasTopicPattern a owl:DatatypeProperty ;
+    rdfs:label "hasTopicPattern" ;
+    rdfs:domain sfmach:MQTTTopic ;
+    rdfs:range xsd:string .
+
+sfmach:hasWebSocketURL a owl:DatatypeProperty ;
+    rdfs:label "hasWebSocketURL" ;
+    rdfs:domain sfmach:WebSocketChannel ;
+    rdfs:range xsd:string .
+
+sfmach:hasWorkstationDescription a owl:DatatypeProperty ;
+    rdfs:label "hasWorkstationDescription" ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range xsd:string .
+
+sfmach:hasWorkstationID a owl:DatatypeProperty ;
+    rdfs:label "hasWorkstationID" ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range xsd:string .
+
+sfmach:hostsOperation a owl:ObjectProperty ;
+    rdfs:label "hostsOperation" ;
+    rdfs:comment "Named hostsOperation, not performsOperation, to avoid a real name collision found live: sf:performsOperation already existed (Order->Operation, schema-only, unused) as the inverse of operationFor. Reusing the name for this unrelated Workstation->Operation relationship silently merged both domains via RDF triple accumulation, forcing any Workstation asserted here to also be inferred as an Order -- a real BFO-disjoint contradiction (Independent Continuant vs Generically Dependent Continuant) that made the whole ontology inconsistent under a real DL reasoner." ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range sfmeth:Operation .
+
+sfmach:humanLabel a owl:DatatypeProperty ;
+    rdfs:label "humanLabel" ;
+    rdfs:domain sfmach:Equipment ;
+    rdfs:range xsd:string .
+
+sfmach:isHypertable a owl:DatatypeProperty ;
+    rdfs:label "isHypertable" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range xsd:boolean .
+
+sfmach:mainProgramPattern a owl:DatatypeProperty ;
+    rdfs:label "mainProgramPattern" ;
+    rdfs:domain sfmach:CNCMachine ;
+    rdfs:range xsd:string .
+
+sfmach:proxiesTo a owl:ObjectProperty ;
+    rdfs:label "proxiesTo" ;
+    rdfs:domain sfmach:Gateway ;
+    rdfs:range sfmach:Microservice .
+
+sfmatl:attachedAt a owl:ObjectProperty ;
+    rdfs:label "attachedAt" ;
+    rdfs:domain sfmatl:Block ;
+    rdfs:range sfmach:Workstation .
+
+sfmatl:detachedAt a owl:ObjectProperty ;
+    rdfs:label "detachedAt" ;
+    rdfs:domain sfmatl:Block ;
+    rdfs:range sfmach:Machine .
+
+sfmatl:forComponent a owl:ObjectProperty ;
+    rdfs:label "forComponent" ;
+    rdfs:domain sfmatl:BOMLine ;
+    rdfs:range sfmatl:Component .
+
+sfmatl:hasBlockID a owl:DatatypeProperty ;
+    rdfs:label "hasBlockID" ;
+    rdfs:domain sfmatl:Block ;
+    rdfs:range xsd:integer .
+
+sfmatl:hasCADFile a owl:DatatypeProperty ;
+    rdfs:label "hasCADFile" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasComponentColour a owl:DatatypeProperty ;
+    rdfs:label "hasComponentColour" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasComponentID a owl:DatatypeProperty ;
+    rdfs:label "hasComponentID" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasComponentMaterial a owl:DatatypeProperty ;
+    rdfs:label "hasComponentMaterial" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasComponentName a owl:DatatypeProperty ;
+    rdfs:label "hasComponentName" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasDrawingFile a owl:DatatypeProperty ;
+    rdfs:label "hasDrawingFile" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasImageFile a owl:DatatypeProperty ;
+    rdfs:label "hasImageFile" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasInitialStockLevel a owl:DatatypeProperty ;
+    rdfs:label "hasInitialStockLevel" ;
+    rdfs:comment "Schema only — no instance values yet, pending real stock-count data (bom.csv did not contain this; a separate inventory/stock export is needed)." ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:decimal .
+
+sfmatl:hasProductColour a owl:DatatypeProperty ;
+    rdfs:label "hasProductColour" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range xsd:string .
+
+sfmatl:hasProductID a owl:DatatypeProperty ;
+    rdfs:label "hasProductID" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range xsd:string .
+
+sfmatl:hasProductName a owl:DatatypeProperty ;
+    rdfs:label "hasProductName" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range xsd:string .
+
+sfmatl:hasQuantity a owl:DatatypeProperty ;
+    rdfs:label "hasQuantity" ;
+    rdfs:domain sfmatl:BOMLine ;
+    rdfs:range xsd:decimal .
+
+sfmatl:hasRoleTag a owl:ObjectProperty ;
+    rdfs:label "hasRoleTag" ;
+    rdfs:domain sfmatl:StationaryTag ;
+    rdfs:range sfmeth:OperationType .
+
+sfmatl:hasSTLFile a owl:DatatypeProperty ;
+    rdfs:label "hasSTLFile" ;
+    rdfs:domain sfmatl:Component ;
+    rdfs:range xsd:string .
+
+sfmatl:hasTagDescription a owl:DatatypeProperty ;
+    rdfs:label "hasTagDescription" ;
+    rdfs:domain sfmatl:TrackingTag ;
+    rdfs:range xsd:string .
+
+sfmatl:hasTagID a owl:DatatypeProperty ;
+    rdfs:label "hasTagID" ;
+    rdfs:domain sfmatl:TrackingTag ;
+    rdfs:range xsd:string .
+
+sfmatl:hasTagRole a owl:DatatypeProperty ;
+    rdfs:label "hasTagRole" ;
+    rdfs:domain sfmatl:StationaryTag ;
+    rdfs:range xsd:string .
+
+sfmatl:hasTrayID a owl:DatatypeProperty ;
+    rdfs:label "hasTrayID" ;
+    rdfs:domain sfmatl:Tray ;
+    rdfs:range xsd:string .
+
+sfmatl:partOfBOM a owl:ObjectProperty ;
+    rdfs:label "partOfBOM" ;
+    rdfs:domain sfmatl:BOMLine ;
+    rdfs:range sfmatl:BOM .
+
+sfmatl:readByReader a owl:ObjectProperty ;
+    rdfs:label "readByReader" ;
+    rdfs:domain sfmatl:Block ;
+    rdfs:range sfmach:StationaryRFIDReader .
+
+sfmatl:requiresComponent a owl:ObjectProperty ;
+    rdfs:label "requiresComponent" ;
+    rdfs:domain sfmatl:BOM ;
+    rdfs:range sfmatl:Component .
+
+sfmatl:servesAtMachine a owl:ObjectProperty ;
+    rdfs:label "servesAtMachine" ;
+    rdfs:domain sfmatl:Block ;
+    rdfs:range sfmach:Machine .
+
+sfmeth:assignedToWorkstation a owl:ObjectProperty ;
+    rdfs:label "assignedToWorkstation" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmach:Workstation .
+
+sfmeth:atStep a owl:ObjectProperty ;
+    rdfs:label "atStep" ;
+    rdfs:domain sfmeth:Operation ;
+    rdfs:range sfmeth:RouteStep .
+
+sfmeth:detectedByTag a owl:ObjectProperty ;
+    rdfs:label "detectedByTag" ;
+    rdfs:comment "Links a multi-checkpoint RouteStep (e.g. WS4, WS7) to the real StationaryTag instance(s) whose scans define its sub-checkpoints." ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmatl:StationaryTag .
+
+sfmeth:fromState a owl:DatatypeProperty ;
+    rdfs:label "fromState" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfmeth:guardDescription a owl:DatatypeProperty ;
+    rdfs:label "guardDescription" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfmeth:hasAntecedent a owl:DatatypeProperty ;
+    rdfs:label "hasAntecedent" ;
+    rdfs:domain sfmeth:InferenceRule ;
+    rdfs:range xsd:string .
+
+sfmeth:hasConsequent a owl:DatatypeProperty ;
+    rdfs:label "hasConsequent" ;
+    rdfs:domain sfmeth:InferenceRule ;
+    rdfs:range xsd:string .
+
+sfmeth:hasOpSeq a owl:DatatypeProperty ;
+    rdfs:label "hasOpSeq" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range xsd:integer .
+
+sfmeth:hasOperationType a owl:ObjectProperty ;
+    rdfs:label "hasOperationType" ;
+    rdfs:domain sfmeth:Operation ;
+    rdfs:range sfmeth:OperationType .
+
+sfmeth:hasOperationTypeForStep a owl:ObjectProperty ;
+    rdfs:label "hasOperationTypeForStep" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmeth:OperationType .
+
+sfmeth:hasProcessingTimeSeconds a owl:DatatypeProperty ;
+    rdfs:label "hasProcessingTimeSeconds" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range xsd:decimal .
+
+sfmeth:implementedIn a owl:DatatypeProperty ;
+    rdfs:label "implementedIn" ;
+    rdfs:domain sfmeth:InferenceRule ;
+    rdfs:range xsd:string .
+
+sfmeth:isOperational a owl:DatatypeProperty ;
+    rdfs:label "isOperational" ;
+    rdfs:comment "No domain restriction — applies to Workstation and Machine. Absence of this property implies operational (true); only explicitly set where false." ;
+    rdfs:range xsd:boolean .
+
+sfmeth:ruleCategory a owl:DatatypeProperty ;
+    rdfs:label "ruleCategory" ;
+    rdfs:domain sfmeth:InferenceRule ;
+    rdfs:range xsd:string .
+
+sfmeth:ruleID a owl:DatatypeProperty ;
+    rdfs:label "ruleID" ;
+    rdfs:domain sfmeth:InferenceRule ;
+    rdfs:range xsd:string .
+
+sfmeth:ruleName a owl:DatatypeProperty ;
+    rdfs:label "ruleName" ;
+    rdfs:domain sfmeth:InferenceRule ;
+    rdfs:range xsd:string .
+
+sfmeth:smID a owl:DatatypeProperty ;
+    rdfs:label "smID" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfmeth:smName a owl:DatatypeProperty ;
+    rdfs:label "smName" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfmeth:toState a owl:DatatypeProperty ;
+    rdfs:label "toState" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfmeth:transitionAction a owl:DatatypeProperty ;
+    rdfs:label "transitionAction" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfmeth:triggerEvent a owl:DatatypeProperty ;
+    rdfs:label "triggerEvent" ;
+    rdfs:domain sfmeth:StateMachineTransition ;
+    rdfs:range xsd:string .
+
+sfproc:InspectionProcess a owl:Class ;
+    rdfs:label "InspectionProcess" ;
+    rdfs:comment "Actual execution of the Inspection operation." ;
+    rdfs:subClassOf sfproc:ProductionProcess .
+
+sfproc:hasParticipant a owl:ObjectProperty ;
+    rdfs:label "hasParticipant" ;
+    rdfs:domain sfproc:Process ;
+    rdfs:range obo:BFO_0000002 .
+
+sfproc:performedAt a owl:ObjectProperty ;
+    rdfs:label "performedAt" ;
+    rdfs:domain sfproc:ProductionProcess ;
+    rdfs:range sfmach:Workstation .
+
+sfproc:processEndTime a owl:DatatypeProperty ;
+    rdfs:label "processEndTime" ;
+    rdfs:domain sfproc:Process ;
+    rdfs:range xsd:dateTime .
+
+sfproc:processStartTime a owl:DatatypeProperty ;
+    rdfs:label "processStartTime" ;
+    rdfs:domain sfproc:Process ;
+    rdfs:range xsd:dateTime .
+
+sfproc:realizesOperation a owl:ObjectProperty ;
+    rdfs:label "realizesOperation" ;
+    rdfs:domain sfproc:ProductionProcess ;
+    rdfs:range sfmeth:Operation .
+
+sfproc:usesMachine a owl:ObjectProperty ;
+    rdfs:label "usesMachine" ;
+    rdfs:domain sfproc:ProductionProcess ;
+    rdfs:range sfmach:Machine .
+
+obo:BFO_0000015 a owl:Class ;
+    rdfs:label "process" ;
+    rdfs:subClassOf obo:BFO_0000003 .
+
+obo:BFO_0000020 a owl:Class ;
+    rdfs:label "specifically dependent continuant" ;
+    rdfs:subClassOf obo:BFO_0000002 .
+
+obo:BFO_0000029 a owl:Class ;
+    rdfs:label "site" ;
+    rdfs:subClassOf obo:BFO_0000141 .
+
+obo:BFO_0000035 a owl:Class ;
+    rdfs:label "process boundary" ;
+    rdfs:subClassOf obo:BFO_0000003 .
+
+obo:BFO_0000040 a owl:Class ;
+    rdfs:label "material entity" ;
+    rdfs:subClassOf obo:BFO_0000004 .
+
+sfmachi:RDR-96F92407 a sfmach:MobileRFIDReader,
+        owl:NamedIndividual ;
+    rdfs:label "RDR-96F92407" ;
+    sfmach:hasHardwareUID "96F92407"^^xsd:string ;
+    sfmach:publishesTo sfmachi:MQTT_LabRFID .
+
+sfmachi:RFIDService a sfmach:RFIDService,
+        owl:NamedIndividual ;
+    rdfs:label "RFIDService" ;
+    sfmach:hasFilename "rfid_service.py"^^xsd:string ;
+    sfmach:hasPort 8003 ;
+    sfmach:hasResponsibility "MQTT subscriber on lab/rfid/+"^^xsd:string ;
+    sfmach:subscribesTo sfmachi:MQTT_LabRFID ;
+    sfmach:writes sfmachi:read_event .
+
+sfmachi:SMCCompletionRule_ConveyorEdge a sfmach:SMCCompletionRule,
+        owl:NamedIndividual ;
+    rdfs:label "SMCCompletionRule_ConveyorEdge" ;
+    sfmach:appliesTo sfmachi:MC10 .
+
+sfmachi:Stream_MC1 a sfmach:TelemetryStream,
+        owl:NamedIndividual ;
+    rdfs:label "Stream_MC1" ;
+    sfmach:hasSampleRateSeconds 2.0 ;
+    sfmach:hasSignalList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string .
+
+sfmachi:Stream_MC10 a sfmach:TelemetryStream,
+        owl:NamedIndividual ;
+    rdfs:label "Stream_MC10" ;
+    sfmach:hasSignalList "Conveyor1_ON,Conveyor1_Alarm"^^xsd:string .
+
+sfmachi:Stream_MC2 a sfmach:TelemetryStream,
+        owl:NamedIndividual ;
+    rdfs:label "Stream_MC2" ;
+    sfmach:hasSampleRateSeconds 2.0 ;
+    sfmach:hasSignalList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string .
+
+sfmachi:Stream_MC3 a sfmach:TelemetryStream,
+        owl:NamedIndividual ;
+    rdfs:label "Stream_MC3" ;
+    sfmach:hasSampleRateSeconds 2.0 ;
+    sfmach:hasSignalList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string .
+
+sfmachi:Stream_MC4 a sfmach:TelemetryStream,
+        owl:NamedIndividual ;
+    rdfs:label "Stream_MC4" ;
+    sfmach:hasSampleRateSeconds 2.0 ;
+    sfmach:hasSignalList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string .
+
+sfmachi:WS8 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS8" ;
+    sfmach:hasOperationID "OP8"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "FMS — quality check"^^xsd:string ;
+    sfmach:hasWorkstationID "WS8"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP8 ;
+    sfmach:humanLabel "FMS — quality check"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmeth:isOperational false .
+
+sfmachi:WS_LiveFeed a sfmach:WebSocketChannel,
+        owl:NamedIndividual ;
+    rdfs:label "WS_LiveFeed" ;
+    sfmach:hasWebSocketURL "ws://localhost:8000/ws/live"^^xsd:string .
+
+sfmachi:product a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "product" ;
+    sfmach:hasColumnList "product_id,display_name,colour"^^xsd:string ;
+    sfmach:hasPrimaryKey "product_id"^^xsd:string ;
+    sfmach:hasTableName "product"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:program_seq a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "program_seq" ;
+    sfmach:hasColumnList "machine_id,subcode_id,description"^^xsd:string ;
+    sfmach:hasPrimaryKey "(machine_id,subcode_id)"^^xsd:string ;
+    sfmach:hasTableName "program_seq"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:rfid_tag a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "rfid_tag" ;
+    sfmach:hasColumnList "hardware_uid,machine_id,workstation_id,role,block_id"^^xsd:string ;
+    sfmach:hasPrimaryKey "hardware_uid"^^xsd:string ;
+    sfmach:hasTableName "rfid_tag"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmatli:BLK-1 a sfmatl:Block,
+        owl:NamedIndividual ;
+    rdfs:label "BLK-1" ;
+    sfmatl:attachedAt sfmachi:WS5 ;
+    sfmatl:detachedAt sfmachi:MC10 ;
+    sfmatl:hasBlockID 1 ;
+    sfmatl:hasTagDescription "Block chip for PR1 routed via MC6,MC8"^^xsd:string ;
+    sfmatl:mapsToProduct sfmatli:PR1 ;
+    sfmatl:readByReader sfmachi:RDR-SMC1,
+        sfmachi:RDR-SMC3 ;
+    sfmatl:servesAtMachine sfmachi:MC6,
+        sfmachi:MC8 .
+
+sfmatli:BLK-2 a sfmatl:Block,
+        owl:NamedIndividual ;
+    rdfs:label "BLK-2" ;
+    sfmatl:attachedAt sfmachi:WS5 ;
+    sfmatl:detachedAt sfmachi:MC10 ;
+    sfmatl:hasBlockID 2 ;
+    sfmatl:hasTagDescription "Block chip for PR2 routed via MC6,MC9"^^xsd:string ;
+    sfmatl:mapsToProduct sfmatli:PR2 ;
+    sfmatl:readByReader sfmachi:RDR-SMC1,
+        sfmachi:RDR-SMC4 ;
+    sfmatl:servesAtMachine sfmachi:MC6,
+        sfmachi:MC9 .
+
+sfmatli:BLK-3 a sfmatl:Block,
+        owl:NamedIndividual ;
+    rdfs:label "BLK-3" ;
+    sfmatl:attachedAt sfmachi:WS5 ;
+    sfmatl:detachedAt sfmachi:MC10 ;
+    sfmatl:hasBlockID 3 ;
+    sfmatl:hasTagDescription "Block chip for PR3 routed via MC7,MC8"^^xsd:string ;
+    sfmatl:mapsToProduct sfmatli:PR3 ;
+    sfmatl:readByReader sfmachi:RDR-SMC2,
+        sfmachi:RDR-SMC3 ;
+    sfmatl:servesAtMachine sfmachi:MC7,
+        sfmachi:MC8 .
+
+sfmatli:BLK-4 a sfmatl:Block,
+        owl:NamedIndividual ;
+    rdfs:label "BLK-4" ;
+    sfmatl:attachedAt sfmachi:WS5 ;
+    sfmatl:detachedAt sfmachi:MC10 ;
+    sfmatl:hasBlockID 4 ;
+    sfmatl:hasTagDescription "Block chip for PR4 routed via MC7,MC9"^^xsd:string ;
+    sfmatl:mapsToProduct sfmatli:PR4 ;
+    sfmatl:readByReader sfmachi:RDR-SMC2,
+        sfmachi:RDR-SMC4 ;
+    sfmatl:servesAtMachine sfmachi:MC7,
+        sfmachi:MC9 .
+
+sfmethi:OP1 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP1" ;
+    sfmeth:hasOperationType sfmethi:OpType_Kitting .
+
+sfmethi:OP2 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP2" ;
+    sfmeth:hasOperationType sfmethi:OpType_Machining .
+
+sfmethi:OP3 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP3" ;
+    sfmeth:hasOperationType sfmethi:OpType_Machining .
+
+sfmethi:OP4 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP4" ;
+    sfmeth:hasOperationType sfmethi:OpType_ManualAssembly .
+
+sfmethi:OP5 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP5" ;
+    sfmeth:hasOperationType sfmethi:OpType_Pressing .
+
+sfmethi:OP6 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP6" ;
+    sfmeth:hasOperationType sfmethi:OpType_Pressing .
+
+sfmethi:OP7 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP7" ;
+    sfmeth:hasOperationType sfmethi:OpType_Pressing .
+
+sfmethi:OP8 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP8" ;
+    sfmeth:hasOperationType sfmethi:OpType_Inspection .
+
+sfmethi:OP9 a sfmeth:Operation,
+        owl:NamedIndividual ;
+    rdfs:label "OP9" ;
+    sfmeth:hasOperationType sfmethi:OpType_FinalAssembly .
+
+sfmethi:OpType_FinalAssembly a sfmeth:FinalAssembly,
+        owl:NamedIndividual ;
+    rdfs:label "final_assembly" .
+
+sfmethi:OpType_Inspection a sfmeth:Inspection,
+        owl:NamedIndividual ;
+    rdfs:label "inspection" .
+
+sfmethi:OpType_Kitting a sfmeth:Kitting,
+        owl:NamedIndividual ;
+    rdfs:label "kitting" .
+
+sfmethi:OpType_ManualAssembly a sfmeth:ManualAssembly,
+        owl:NamedIndividual ;
+    rdfs:label "manual_assembly" .
+
+sfe:CompletionDetectionNode a owl:Class ;
+    rdfs:label "CompletionDetectionNode" ;
+    rdfs:comment "Thread node for a CompletionRule firing." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:CycleTime a owl:Class ;
+    rdfs:label "CycleTime" ;
+    rdfs:comment "Total active processing time across an order's production phases, excluding transit/queue gaps." ;
+    rdfs:subClassOf sfe:Duration .
+
+sfe:Observation a owl:Class ;
+    rdfs:label "Observation" ;
+    rdfs:comment "Normalized observation/evidence record from sensors, PLCs, RFID, computer vision, telemetry, or application data." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfe:OrderCompleted a owl:Class ;
+    rdfs:label "OrderCompleted" ;
+    rdfs:comment "Order reached its final route step." ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:OrderCreated a owl:Class ;
+    rdfs:label "OrderCreated" ;
+    rdfs:comment "Order was placed." ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:OrderDuration a owl:Class ;
+    rdfs:label "OrderDuration" ;
+    rdfs:comment "Total order lead time." ;
+    rdfs:subClassOf sfe:Duration .
+
+sfe:ProcessingTimeNode a owl:Class ;
+    rdfs:label "ProcessingTimeNode" ;
+    rdfs:comment "Thread node recording the realized StepDuration for a route step." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:StepAdvanced a owl:Class ;
+    rdfs:label "StepAdvanced" ;
+    rdfs:comment "Order moved to next route step." ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:TagScanned a owl:Class ;
+    rdfs:label "TagScanned" ;
+    rdfs:comment "RFID tag scanned and resolved." ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:TelemetrySnapshotNode a owl:Class ;
+    rdfs:label "TelemetrySnapshotNode" ;
+    rdfs:comment "Thread node for a CNC telemetry sample." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:TransitDuration a owl:Class ;
+    rdfs:label "TransitDuration" ;
+    rdfs:comment "Time between steps." ;
+    rdfs:subClassOf sfe:Duration .
+
+sfe:UnknownTag a owl:Class ;
+    rdfs:label "UnknownTag" ;
+    rdfs:comment "RFID scan for tag not in rfid_tag table." ;
+    rdfs:subClassOf sfe:MaterialEvent .
+
+sfe:belongsToThread a owl:ObjectProperty ;
+    rdfs:label "belongsToThread" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range sfe:DigitalThread ;
+    owl:inverseOf sfe:hasNode .
+
+sfe:contains a owl:ObjectProperty ;
+    rdfs:label "contains" ;
+    rdfs:domain sfe:Factory ;
+    rdfs:range sfmach:Equipment ;
+    owl:inverseOf sfmach:partOf .
+
+sfe:durationOf a owl:ObjectProperty ;
+    rdfs:label "durationOf" ;
+    rdfs:domain sfe:StepDuration ;
+    rdfs:range sfmeth:Operation ;
+    owl:inverseOf sfmeth:hasDuration .
+
+sfe:forOrder a owl:ObjectProperty ;
+    rdfs:label "forOrder" ;
+    rdfs:domain sfe:DigitalThread ;
+    rdfs:range sfe:Order ;
+    owl:inverseOf sfe:hasThread .
+
+sfe:forProduct a owl:ObjectProperty ;
+    rdfs:label "forProduct" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range sfmatl:Product ;
+    owl:inverseOf sfmatl:orderedAs .
+
+sfe:hasNode a owl:ObjectProperty ;
+    rdfs:label "hasNode" ;
+    rdfs:domain sfe:DigitalThread ;
+    rdfs:range sfe:DigitalThreadNode ;
+    owl:inverseOf sfe:belongsToThread .
+
+sfe:hasState a owl:ObjectProperty ;
+    rdfs:label "hasState" ;
+    rdfs:domain obo:BFO_0000002 ;
+    rdfs:range sfe:StateFact ;
+    owl:inverseOf sfe:isStateOf .
+
+sfe:hasThread a owl:ObjectProperty ;
+    rdfs:label "hasThread" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range sfe:DigitalThread ;
+    owl:inverseOf sfe:forOrder .
+
+sfe:isStateOf a owl:ObjectProperty ;
+    rdfs:label "isStateOf" ;
+    rdfs:domain sfe:StateFact ;
+    rdfs:range obo:BFO_0000002 ;
+    owl:inverseOf sfe:hasState .
+
+sfe:performsOperation a owl:ObjectProperty ;
+    rdfs:label "performsOperation" ;
+    rdfs:domain sfe:Order ;
+    rdfs:range sfmeth:Operation ;
+    owl:inverseOf sfmeth:operationFor .
+
+sfe:precededBy a owl:ObjectProperty ;
+    rdfs:label "precededBy" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range sfe:DigitalThreadNode ;
+    owl:inverseOf sfe:precedes .
+
+sfe:precedes a owl:ObjectProperty ;
+    rdfs:label "precedes" ;
+    rdfs:domain sfe:DigitalThreadNode ;
+    rdfs:range sfe:DigitalThreadNode ;
+    owl:inverseOf sfe:precededBy .
+
+sfe:triggeredBy a owl:ObjectProperty ;
+    rdfs:label "triggeredBy" ;
+    rdfs:domain sfe:StateTransitionNode ;
+    owl:inverseOf sfe:triggers .
+
+sfe:triggers a owl:ObjectProperty ;
+    rdfs:label "triggers" ;
+    rdfs:range sfe:StateTransitionNode ;
+    owl:inverseOf sfe:triggeredBy .
+
+sfmach:FeederStation a owl:Class ;
+    rdfs:label "FeederStation" ;
+    rdfs:comment "FMS entry station (MC5); FMS pressing setup." ;
+    rdfs:subClassOf sfmach:SMCStation .
+
+sfmach:InspectionStation a owl:Class ;
+    rdfs:label "InspectionStation" ;
+    rdfs:comment "SMC quality inspection station (MC10)." ;
+    rdfs:subClassOf sfmach:SMCStation .
+
+sfmach:Orchestrator a owl:Class ;
+    rdfs:label "Orchestrator" ;
+    rdfs:comment "Rule-based RFID supervisor (reads.py)." ;
+    rdfs:subClassOf sfmach:Microservice .
+
+sfmach:OrderService a owl:Class ;
+    rdfs:label "OrderService" ;
+    rdfs:comment "Order creation, route lookup." ;
+    rdfs:subClassOf sfmach:Microservice .
+
+sfmach:RFIDService a owl:Class ;
+    rdfs:label "RFIDService" ;
+    rdfs:comment "MQTT subscriber on lab/rfid/+." ;
+    rdfs:subClassOf sfmach:Microservice .
+
+sfmach:appliesTo a owl:ObjectProperty ;
+    rdfs:label "appliesTo" ;
+    rdfs:domain sfmach:CompletionRule ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:hasCompletionRule .
+
+sfmach:backedBy a owl:ObjectProperty ;
+    rdfs:label "backedBy" ;
+    rdfs:domain sfmach:TelemetryStream ;
+    rdfs:range sfmach:Hypertable ;
+    owl:inverseOf sfmach:feedsStream .
+
+sfmach:columnOf a owl:ObjectProperty ;
+    rdfs:label "columnOf" ;
+    rdfs:domain sfmach:Column ;
+    rdfs:range sfmach:DatabaseTable ;
+    owl:inverseOf sfmach:hasColumn .
+
+sfmach:exposedBy a owl:ObjectProperty ;
+    rdfs:label "exposedBy" ;
+    rdfs:domain sfmach:APIEndpoint ;
+    rdfs:range sfmach:Microservice ;
+    owl:inverseOf sfmach:exposesEndpoint .
+
+sfmach:exposesEndpoint a owl:ObjectProperty ;
+    rdfs:label "exposesEndpoint" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range sfmach:APIEndpoint ;
+    owl:inverseOf sfmach:exposedBy .
+
+sfmach:feedsStream a owl:ObjectProperty ;
+    rdfs:label "feedsStream" ;
+    rdfs:domain sfmach:Hypertable ;
+    rdfs:range sfmach:TelemetryStream ;
+    owl:inverseOf sfmach:backedBy .
+
+sfmach:hasColumn a owl:ObjectProperty ;
+    rdfs:label "hasColumn" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range sfmach:Column ;
+    owl:inverseOf sfmach:columnOf .
+
+sfmach:hasCompletionRule a owl:ObjectProperty ;
+    rdfs:label "hasCompletionRule" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmach:CompletionRule ;
+    owl:inverseOf sfmach:appliesTo .
+
+sfmach:hasMountedTag a owl:ObjectProperty ;
+    rdfs:label "hasMountedTag" ;
+    rdfs:domain sfmach:Equipment ;
+    rdfs:range sfmatl:StationaryTag ;
+    owl:inverseOf sfmatl:mountedOn .
+
+sfmach:hasTelemetryTable a owl:ObjectProperty ;
+    rdfs:label "hasTelemetryTable" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmach:Hypertable ;
+    owl:inverseOf sfmach:telemetryFor .
+
+sfmach:hostsReader a owl:ObjectProperty ;
+    rdfs:label "hostsReader" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmach:StationaryRFIDReader ;
+    owl:inverseOf sfmach:installedOn .
+
+sfmach:installedOn a owl:ObjectProperty ;
+    rdfs:label "installedOn" ;
+    rdfs:domain sfmach:StationaryRFIDReader ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:hostsReader .
+
+sfmach:monitoredBy a owl:ObjectProperty ;
+    rdfs:label "monitoredBy" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmach:TelemetryService ;
+    owl:inverseOf sfmach:monitors .
+
+sfmach:monitors a owl:ObjectProperty ;
+    rdfs:label "monitors" ;
+    rdfs:domain sfmach:TelemetryService ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:monitoredBy .
+
+sfmach:mountedOnTray a owl:ObjectProperty ;
+    rdfs:label "mountedOnTray" ;
+    rdfs:domain sfmach:MobileRFIDReader ;
+    rdfs:range sfmatl:Tray ;
+    owl:inverseOf sfmatl:hasMobileReader .
+
+sfmach:partOf a owl:ObjectProperty ;
+    rdfs:label "partOf" ;
+    rdfs:domain sfmach:Equipment ;
+    rdfs:range sfe:Factory ;
+    owl:inverseOf sfe:contains .
+
+sfmach:performsStep a owl:ObjectProperty ;
+    rdfs:label "performsStep" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmeth:RouteStep ;
+    owl:inverseOf sfmeth:assignedToMachine .
+
+sfmach:processesProduct a owl:ObjectProperty ;
+    rdfs:label "processesProduct" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmatl:Product ;
+    owl:inverseOf sfmatl:processedByMachine .
+
+sfmach:publishedBy a owl:ObjectProperty ;
+    rdfs:label "publishedBy" ;
+    rdfs:domain sfmach:MQTTTopic ;
+    rdfs:range sfmach:RFIDReader ;
+    owl:inverseOf sfmach:publishesTo .
+
+sfmach:publishesTo a owl:ObjectProperty ;
+    rdfs:label "publishesTo" ;
+    rdfs:domain sfmach:RFIDReader ;
+    rdfs:range sfmach:MQTTTopic ;
+    owl:inverseOf sfmach:publishedBy .
+
+sfmach:readBy a owl:ObjectProperty ;
+    rdfs:label "readBy" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range sfmach:Microservice ;
+    owl:inverseOf sfmach:reads .
+
+sfmach:reads a owl:ObjectProperty ;
+    rdfs:label "reads" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range sfmach:DatabaseTable ;
+    owl:inverseOf sfmach:readBy .
+
+sfmach:requiredAtStep a owl:ObjectProperty ;
+    rdfs:label "requiredAtStep" ;
+    rdfs:domain sfmach:ProgramSequence ;
+    rdfs:range sfmeth:RouteStep ;
+    owl:inverseOf sfmeth:hasProgramSequence .
+
+sfmach:servedByWorkstation a owl:ObjectProperty ;
+    rdfs:label "servedByWorkstation" ;
+    rdfs:domain sfmach:Machine ;
+    rdfs:range sfmach:Workstation ;
+    owl:inverseOf sfmach:servesMachine .
+
+sfmach:servesMachine a owl:ObjectProperty ;
+    rdfs:label "servesMachine" ;
+    rdfs:domain sfmach:Workstation ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:servedByWorkstation .
+
+sfmach:subscribedBy a owl:ObjectProperty ;
+    rdfs:label "subscribedBy" ;
+    rdfs:domain sfmach:MQTTTopic ;
+    rdfs:range sfmach:Microservice ;
+    owl:inverseOf sfmach:subscribesTo .
+
+sfmach:subscribesTo a owl:ObjectProperty ;
+    rdfs:label "subscribesTo" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range sfmach:MQTTTopic ;
+    owl:inverseOf sfmach:subscribedBy .
+
+sfmach:telemetryFor a owl:ObjectProperty ;
+    rdfs:label "telemetryFor" ;
+    rdfs:domain sfmach:Hypertable ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:hasTelemetryTable .
+
+sfmach:writes a owl:ObjectProperty ;
+    rdfs:label "writes" ;
+    rdfs:domain sfmach:Microservice ;
+    rdfs:range sfmach:DatabaseTable ;
+    owl:inverseOf sfmach:writtenBy .
+
+sfmach:writtenBy a owl:ObjectProperty ;
+    rdfs:label "writtenBy" ;
+    rdfs:domain sfmach:DatabaseTable ;
+    rdfs:range sfmach:Microservice ;
+    owl:inverseOf sfmach:writes .
+
+sfmatl:Identifier a owl:Class ;
+    rdfs:label "Identifier" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: tracking/identifier mechanisms (RFID tags, block chips)." ;
+    rdfs:subClassOf obo:BFO_0000030 .
+
+sfmatl:bomFor a owl:ObjectProperty ;
+    rdfs:label "bomFor" ;
+    rdfs:domain sfmatl:BOM ;
+    rdfs:range sfmatl:Product ;
+    owl:inverseOf sfmatl:hasBOM .
+
+sfmatl:carriedBy a owl:ObjectProperty ;
+    rdfs:label "carriedBy" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range sfmatl:Tray ;
+    owl:inverseOf sfmatl:carries .
+
+sfmatl:carries a owl:ObjectProperty ;
+    rdfs:label "carries" ;
+    rdfs:domain sfmatl:Tray ;
+    rdfs:range sfmatl:Product ;
+    owl:inverseOf sfmatl:carriedBy .
+
+sfmatl:hasBOM a owl:ObjectProperty ;
+    rdfs:label "hasBOM" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range sfmatl:BOM ;
+    owl:inverseOf sfmatl:bomFor .
+
+sfmatl:hasMobileReader a owl:ObjectProperty ;
+    rdfs:label "hasMobileReader" ;
+    rdfs:domain sfmatl:Tray ;
+    rdfs:range sfmach:MobileRFIDReader ;
+    owl:inverseOf sfmach:mountedOnTray .
+
+sfmatl:hasRouteStep a owl:ObjectProperty ;
+    rdfs:label "hasRouteStep" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range sfmeth:RouteStep ;
+    owl:inverseOf sfmeth:routeStepFor .
+
+sfmatl:identifiedByBlock a owl:ObjectProperty ;
+    rdfs:label "identifiedByBlock" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range sfmatl:Block ;
+    owl:inverseOf sfmatl:mapsToProduct .
+
+sfmatl:mapsToProduct a owl:ObjectProperty ;
+    rdfs:label "mapsToProduct" ;
+    rdfs:domain sfmatl:Block ;
+    rdfs:range sfmatl:Product ;
+    owl:inverseOf sfmatl:identifiedByBlock .
+
+sfmatl:mountedOn a owl:ObjectProperty ;
+    rdfs:label "mountedOn" ;
+    rdfs:domain sfmatl:StationaryTag ;
+    rdfs:range sfmach:Equipment ;
+    owl:inverseOf sfmach:hasMountedTag .
+
+sfmatl:orderedAs a owl:ObjectProperty ;
+    rdfs:label "orderedAs" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range sfe:Order ;
+    owl:inverseOf sfe:forProduct .
+
+sfmatl:processedByMachine a owl:ObjectProperty ;
+    rdfs:label "processedByMachine" ;
+    rdfs:domain sfmatl:Product ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:processesProduct .
+
+sfmeth:FinalAssembly a owl:Class ;
+    rdfs:label "FinalAssembly" ;
+    rdfs:comment "Final assembly at WS9." ;
+    rdfs:subClassOf sfmeth:OperationType .
+
+sfmeth:Inspection a owl:Class ;
+    rdfs:label "Inspection" ;
+    rdfs:comment "Quality inspection at WS8." ;
+    rdfs:subClassOf sfmeth:OperationType .
+
+sfmeth:Kitting a owl:Class ;
+    rdfs:label "Kitting" ;
+    rdfs:comment "Raw material gathering at WS1." ;
+    rdfs:subClassOf sfmeth:OperationType .
+
+sfmeth:Machining a owl:Class ;
+    rdfs:label "Machining" ;
+    rdfs:comment "CNC machining at WS2/WS3." ;
+    rdfs:subClassOf sfmeth:OperationType .
+
+sfmeth:ManualAssembly a owl:Class ;
+    rdfs:label "ManualAssembly" ;
+    rdfs:comment "Manual assembly at WS4." ;
+    rdfs:subClassOf sfmeth:OperationType .
+
+sfmeth:Pressing a owl:Class ;
+    rdfs:label "Pressing" ;
+    rdfs:comment "FMS pressing operations at WS5/WS6/WS7." ;
+    rdfs:subClassOf sfmeth:OperationType .
+
+sfmeth:assignedToMachine a owl:ObjectProperty ;
+    rdfs:label "assignedToMachine" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmach:Machine ;
+    owl:inverseOf sfmach:performsStep .
+
+sfmeth:hasDuration a owl:ObjectProperty ;
+    rdfs:label "hasDuration" ;
+    rdfs:domain sfmeth:Operation ;
+    rdfs:range sfe:StepDuration ;
+    owl:inverseOf sfe:durationOf .
+
+sfmeth:hasProgramSequence a owl:ObjectProperty ;
+    rdfs:label "hasProgramSequence" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmach:ProgramSequence ;
+    owl:inverseOf sfmach:requiredAtStep .
+
+sfmeth:nextStep a owl:ObjectProperty ;
+    rdfs:label "nextStep" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmeth:RouteStep ;
+    owl:inverseOf sfmeth:previousStep .
+
+sfmeth:operationFor a owl:ObjectProperty ;
+    rdfs:label "operationFor" ;
+    rdfs:domain sfmeth:Operation ;
+    rdfs:range sfe:Order ;
+    owl:inverseOf sfe:performsOperation .
+
+sfmeth:previousStep a owl:ObjectProperty ;
+    rdfs:label "previousStep" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmeth:RouteStep ;
+    owl:inverseOf sfmeth:nextStep .
+
+sfmeth:routeStepFor a owl:ObjectProperty ;
+    rdfs:label "routeStepFor" ;
+    rdfs:domain sfmeth:RouteStep ;
+    rdfs:range sfmatl:Product ;
+    owl:inverseOf sfmatl:hasRouteStep .
+
+obo:BFO_0000001 a owl:Class ;
+    rdfs:label "entity" .
+
+obo:BFO_0000003 a owl:Class ;
+    rdfs:label "occurrent" ;
+    rdfs:subClassOf obo:BFO_0000001 .
+
+obo:BFO_0000004 a owl:Class ;
+    rdfs:label "independent continuant" ;
+    rdfs:subClassOf obo:BFO_0000002 .
+
+obo:BFO_0000141 a owl:Class ;
+    rdfs:label "immaterial entity" ;
+    rdfs:subClassOf obo:BFO_0000004 .
+
+sfmachi:CNCCompletionRule_Fanuc a sfmach:CNCCompletionRule,
+        owl:NamedIndividual ;
+    rdfs:label "CNCCompletionRule_Fanuc" ;
+    sfmach:appliesTo sfmachi:MC3,
+        sfmachi:MC4 .
+
+sfmachi:CNCCompletionRule_Siemens a sfmach:CNCCompletionRule,
+        owl:NamedIndividual ;
+    rdfs:label "CNCCompletionRule_Siemens" ;
+    sfmach:appliesTo sfmachi:MC1,
+        sfmachi:MC2 .
+
+sfmachi:Gateway a sfmach:Gateway,
+        owl:NamedIndividual ;
+    rdfs:label "Gateway" ;
+    sfmach:exposesWebSocket sfmachi:WS_LiveFeed ;
+    sfmach:hasFilename "main.py"^^xsd:string ;
+    sfmach:hasPort 8000 ;
+    sfmach:hasResponsibility "API gateway + WebSocket hub"^^xsd:string ;
+    sfmach:proxiesTo sfmachi:OrderService,
+        sfmachi:RFIDService,
+        sfmachi:TelemetryService .
+
+sfmachi:RDR-SMC1 a sfmach:StationaryRFIDReader,
+        owl:NamedIndividual ;
+    rdfs:label "RDR-SMC1" ;
+    sfmach:hasHardwareUID "ProductID_2"^^xsd:string ;
+    sfmach:installedOn sfmachi:MC6 ;
+    sfmach:publishesTo sfmachi:MQTT_LabRFID .
+
+sfmachi:RDR-SMC2 a sfmach:StationaryRFIDReader,
+        owl:NamedIndividual ;
+    rdfs:label "RDR-SMC2" ;
+    sfmach:hasHardwareUID "ProductID_3"^^xsd:string ;
+    sfmach:installedOn sfmachi:MC7 ;
+    sfmach:publishesTo sfmachi:MQTT_LabRFID .
+
+sfmachi:RDR-SMC3 a sfmach:StationaryRFIDReader,
+        owl:NamedIndividual ;
+    rdfs:label "RDR-SMC3" ;
+    sfmach:hasHardwareUID "ProductID_4"^^xsd:string ;
+    sfmach:installedOn sfmachi:MC8 ;
+    sfmach:publishesTo sfmachi:MQTT_LabRFID .
+
+sfmachi:RDR-SMC4 a sfmach:StationaryRFIDReader,
+        owl:NamedIndividual ;
+    rdfs:label "RDR-SMC4" ;
+    sfmach:hasHardwareUID "ProductID_5"^^xsd:string ;
+    sfmach:installedOn sfmachi:MC9 ;
+    sfmach:publishesTo sfmachi:MQTT_LabRFID .
+
+sfmachi:block a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "block" ;
+    sfmach:hasColumnList "block_id,product_id,description"^^xsd:string ;
+    sfmach:hasPrimaryKey "block_id"^^xsd:string ;
+    sfmach:hasTableName "block"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmachi:telemetry_MC1 a sfmach:Hypertable,
+        owl:NamedIndividual ;
+    rdfs:label "telemetry_MC1" ;
+    sfmach:feedsStream sfmachi:Stream_MC1 ;
+    sfmach:hasColumnList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string ;
+    sfmach:hasPrimaryKey "(ts)"^^xsd:string ;
+    sfmach:hasTableName "telemetry_MC1"^^xsd:string ;
+    sfmach:isHypertable true ;
+    sfmach:telemetryFor sfmachi:MC1 .
+
+sfmachi:telemetry_MC10 a sfmach:Hypertable,
+        owl:NamedIndividual ;
+    rdfs:label "telemetry_MC10" ;
+    sfmach:feedsStream sfmachi:Stream_MC10 ;
+    sfmach:hasColumnList "Timestamp,Conveyor1_ON,Conveyor1_Alarm,sensors,actuators"^^xsd:string ;
+    sfmach:hasPrimaryKey "(Timestamp)"^^xsd:string ;
+    sfmach:hasTableName "telemetry_MC10"^^xsd:string ;
+    sfmach:isHypertable true ;
+    sfmach:telemetryFor sfmachi:MC10 .
+
+sfmachi:telemetry_MC2 a sfmach:Hypertable,
+        owl:NamedIndividual ;
+    rdfs:label "telemetry_MC2" ;
+    sfmach:feedsStream sfmachi:Stream_MC2 ;
+    sfmach:hasColumnList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string ;
+    sfmach:hasPrimaryKey "(ts)"^^xsd:string ;
+    sfmach:hasTableName "telemetry_MC2"^^xsd:string ;
+    sfmach:isHypertable true ;
+    sfmach:telemetryFor sfmachi:MC2 .
+
+sfmachi:telemetry_MC3 a sfmach:Hypertable,
+        owl:NamedIndividual ;
+    rdfs:label "telemetry_MC3" ;
+    sfmach:feedsStream sfmachi:Stream_MC3 ;
+    sfmach:hasColumnList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string ;
+    sfmach:hasPrimaryKey "(ts)"^^xsd:string ;
+    sfmach:hasTableName "telemetry_MC3"^^xsd:string ;
+    sfmach:isHypertable true ;
+    sfmach:telemetryFor sfmachi:MC3 .
+
+sfmachi:telemetry_MC4 a sfmach:Hypertable,
+        owl:NamedIndividual ;
+    rdfs:label "telemetry_MC4" ;
+    sfmach:feedsStream sfmachi:Stream_MC4 ;
+    sfmach:hasColumnList "id,ts,machine_id,status,x_pos,y_pos,z_pos,feed,speed,prog,mode,alarm"^^xsd:string ;
+    sfmach:hasPrimaryKey "(ts)"^^xsd:string ;
+    sfmach:hasTableName "telemetry_MC4"^^xsd:string ;
+    sfmach:isHypertable true ;
+    sfmach:telemetryFor sfmachi:MC4 .
+
+sfmethi:OpType_Machining a sfmeth:Machining,
+        owl:NamedIndividual ;
+    rdfs:label "machining" .
+
+sfmethi:RS-PR1-1 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-1" ;
+    sfmeth:assignedToWorkstation sfmachi:WS1 ;
+    sfmeth:hasOpSeq 1 ;
+    sfmeth:nextStep sfmethi:RS-PR1-2 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR1-8 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-8" ;
+    sfmeth:assignedToWorkstation sfmachi:WS9 ;
+    sfmeth:hasOpSeq 8 ;
+    sfmeth:previousStep sfmethi:RS-PR1-7 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR2-1 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-1" ;
+    sfmeth:assignedToWorkstation sfmachi:WS1 ;
+    sfmeth:hasOpSeq 1 ;
+    sfmeth:nextStep sfmethi:RS-PR2-2 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR2-8 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-8" ;
+    sfmeth:assignedToWorkstation sfmachi:WS9 ;
+    sfmeth:hasOpSeq 8 ;
+    sfmeth:previousStep sfmethi:RS-PR2-7 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR3-1 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-1" ;
+    sfmeth:assignedToWorkstation sfmachi:WS1 ;
+    sfmeth:hasOpSeq 1 ;
+    sfmeth:nextStep sfmethi:RS-PR3-2 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR3-8 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-8" ;
+    sfmeth:assignedToWorkstation sfmachi:WS9 ;
+    sfmeth:hasOpSeq 8 ;
+    sfmeth:previousStep sfmethi:RS-PR3-7 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR4-1 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-1" ;
+    sfmeth:assignedToWorkstation sfmachi:WS1 ;
+    sfmeth:hasOpSeq 1 ;
+    sfmeth:nextStep sfmethi:RS-PR4-2 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfmethi:RS-PR4-8 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-8" ;
+    sfmeth:assignedToWorkstation sfmachi:WS9 ;
+    sfmeth:hasOpSeq 8 ;
+    sfmeth:previousStep sfmethi:RS-PR4-7 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfe:FailureNode a owl:Class ;
+    rdfs:label "FailureNode" ;
+    rdfs:comment "Thread node for a machine or product failure (alarm or reject). Schema only — no instances until real failure data exists." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:InspectionEvent a owl:Class ;
+    rdfs:subClassOf sfe:Event .
+
+sfe:InventoryNode a owl:Class ;
+    rdfs:label "InventoryNode" ;
+    rdfs:comment "Thread node logging descriptive component consumption at a station (currently WS1/Kitting)." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:MachineState a owl:Class ;
+    rdfs:label "MachineState" ;
+    rdfs:subClassOf sfe:State .
+
+sfe:MethodState a owl:Class ;
+    rdfs:label "MethodState" ;
+    rdfs:subClassOf sfe:State .
+
+sfe:QualityNode a owl:Class ;
+    rdfs:label "QualityNode" ;
+    rdfs:comment "Thread node for a quality inspection result. Single class factory-wide; atRouteStep identifies the originating station. WS8/Inspection has real data; other stations are schema-only until instrumented." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:RFIDEventNode a owl:Class ;
+    rdfs:label "RFIDEventNode" ;
+    rdfs:comment "Thread node for an RFID scan event." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:SiteContext a owl:Class ;
+    rdfs:label "SiteContext" ;
+    rdfs:comment "Identifies which physical factory site a fact or instance originates from." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfe:StateTransitionNode a owl:Class ;
+    rdfs:label "StateTransitionNode" ;
+    rdfs:comment "Thread node for an order status change." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfmach:CNCCompletionRule a owl:Class ;
+    rdfs:label "CNCCompletionRule" ;
+    rdfs:comment "Telemetry-based completion for CNC machines." ;
+    rdfs:subClassOf sfmach:CompletionRule .
+
+sfmach:Column a owl:Class ;
+    rdfs:label "Column" ;
+    rdfs:comment "A column in a database table." ;
+    rdfs:subClassOf sfmach:DataStore .
+
+sfmach:DataStore a owl:Class ;
+    rdfs:label "DataStore" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any persistent data storage." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmach:FanucCNC a owl:Class ;
+    rdfs:label "FanucCNC" ;
+    rdfs:comment "Fanuc-controlled CNC. Main program: 05000." ;
+    rdfs:subClassOf sfmach:CNCMachine .
+
+sfmach:Gateway a owl:Class ;
+    rdfs:label "Gateway" ;
+    rdfs:comment "API gateway + WebSocket hub." ;
+    rdfs:subClassOf sfmach:Microservice .
+
+sfmach:SMCCompletionRule a owl:Class ;
+    rdfs:label "SMCCompletionRule" ;
+    rdfs:comment "Block-tag or conveyor-edge completion for SMC stations." ;
+    rdfs:subClassOf sfmach:CompletionRule .
+
+sfmach:SiemensCNC a owl:Class ;
+    rdfs:label "SiemensCNC" ;
+    rdfs:comment "Siemens-controlled CNC. Main program: MILLMAIN." ;
+    rdfs:subClassOf sfmach:CNCMachine .
+
+sfmatl:PhysicalAsset a owl:Class ;
+    rdfs:label "PhysicalAsset" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: mobile/transient physical items in the factory." ;
+    rdfs:subClassOf obo:BFO_0000030 .
+
+sfmachi:route_step a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "route_step" ;
+    sfmach:hasColumnList "product_id,op_seq,workstation_id,machine_id"^^xsd:string ;
+    sfmach:hasPrimaryKey "(product_id,op_seq)"^^xsd:string ;
+    sfmach:hasTableName "route_step"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfmatli:BlB a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Blade" ;
+    sfmatl:hasComponentColour "blue"^^xsd:string .
+
+sfmatli:BlG a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Blade" ;
+    sfmatl:hasComponentColour "green"^^xsd:string .
+
+sfmatli:BlR a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Blade" ;
+    sfmatl:hasComponentColour "red"^^xsd:string .
+
+sfmatli:BlW a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Blade" ;
+    sfmatl:hasComponentColour "white"^^xsd:string .
+
+sfmatli:ClB a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Base" ;
+    sfmatl:hasComponentColour "blue"^^xsd:string .
+
+sfmatli:ClG a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Base" ;
+    sfmatl:hasComponentColour "green"^^xsd:string .
+
+sfmatli:ClR a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Base" ;
+    sfmatl:hasComponentColour "red"^^xsd:string .
+
+sfmatli:ClW a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Base" ;
+    sfmatl:hasComponentColour "white"^^xsd:string .
+
+sfmatli:CuB a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Upper" ;
+    sfmatl:hasComponentColour "blue"^^xsd:string .
+
+sfmatli:CuG a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Upper" ;
+    sfmatl:hasComponentColour "green"^^xsd:string .
+
+sfmatli:CuR a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Upper" ;
+    sfmatl:hasComponentColour "red"^^xsd:string .
+
+sfmatli:CuW a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Upper" ;
+    sfmatl:hasComponentColour "white"^^xsd:string .
+
+sfmatli:HB a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Handle" ;
+    sfmatl:hasComponentColour "blue"^^xsd:string .
+
+sfmatli:HG a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Handle" ;
+    sfmatl:hasComponentColour "green"^^xsd:string .
+
+sfmatli:HR a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Handle" ;
+    sfmatl:hasComponentColour "red"^^xsd:string .
+
+sfmatli:HW a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Handle" ;
+    sfmatl:hasComponentColour "white"^^xsd:string .
+
+sfmatli:P1B a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin1 (small)" ;
+    sfmatl:hasComponentColour "blue"^^xsd:string .
+
+sfmatli:P1G a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin1 (small)" ;
+    sfmatl:hasComponentColour "green"^^xsd:string .
+
+sfmatli:P1R a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin1 (small)" ;
+    sfmatl:hasComponentColour "red"^^xsd:string .
+
+sfmatli:P1W a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin1 (small)" ;
+    sfmatl:hasComponentColour "white"^^xsd:string .
+
+sfmatli:P2B a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin2 (big)" ;
+    sfmatl:hasComponentColour "blue"^^xsd:string .
+
+sfmatli:P2G a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin2 (big)" ;
+    sfmatl:hasComponentColour "green"^^xsd:string .
+
+sfmatli:P2R a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin2 (big)" ;
+    sfmatl:hasComponentColour "red"^^xsd:string .
+
+sfmatli:P2W a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Pin2 (big)" ;
+    sfmatl:hasComponentColour "white"^^xsd:string .
+
+sfmethi:OpType_Pressing a sfmeth:Pressing,
+        owl:NamedIndividual ;
+    rdfs:label "pressing" .
+
+sfmethi:RS-PR1-4 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-4" ;
+    sfmeth:assignedToWorkstation sfmachi:WS4 ;
+    sfmeth:detectedByTag sfmatli:Tag_AssemblyStage1IN,
+        sfmatli:Tag_AssemblyStage1OUT ;
+    sfmeth:hasOpSeq 4 ;
+    sfmeth:hasProcessingTimeSeconds 12.0 ;
+    sfmeth:nextStep sfmethi:RS-PR1-5 ;
+    sfmeth:previousStep sfmethi:RS-PR1-3 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR1-5 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-5" ;
+    sfmeth:assignedToMachine sfmachi:MC5 ;
+    sfmeth:assignedToWorkstation sfmachi:WS5 ;
+    sfmeth:hasOpSeq 5 ;
+    sfmeth:hasProcessingTimeSeconds 122.0 ;
+    sfmeth:nextStep sfmethi:RS-PR1-6 ;
+    sfmeth:previousStep sfmethi:RS-PR1-4 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR1-6 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-6" ;
+    sfmeth:assignedToMachine sfmachi:MC6 ;
+    sfmeth:assignedToWorkstation sfmachi:WS6 ;
+    sfmeth:hasOpSeq 6 ;
+    sfmeth:hasProcessingTimeSeconds 25.0 ;
+    sfmeth:nextStep sfmethi:RS-PR1-7 ;
+    sfmeth:previousStep sfmethi:RS-PR1-5 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR1-7 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-7" ;
+    sfmeth:assignedToMachine sfmachi:MC8 ;
+    sfmeth:assignedToWorkstation sfmachi:WS7 ;
+    sfmeth:detectedByTag sfmatli:Tag_MC9OUT ;
+    sfmeth:hasOpSeq 7 ;
+    sfmeth:hasProcessingTimeSeconds 11.0 ;
+    sfmeth:nextStep sfmethi:RS-PR1-8 ;
+    sfmeth:previousStep sfmethi:RS-PR1-6 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR2-4 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-4" ;
+    sfmeth:assignedToWorkstation sfmachi:WS4 ;
+    sfmeth:detectedByTag sfmatli:Tag_AssemblyStage1IN,
+        sfmatli:Tag_AssemblyStage1OUT ;
+    sfmeth:hasOpSeq 4 ;
+    sfmeth:hasProcessingTimeSeconds 11.0 ;
+    sfmeth:nextStep sfmethi:RS-PR2-5 ;
+    sfmeth:previousStep sfmethi:RS-PR2-3 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR2-5 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-5" ;
+    sfmeth:assignedToMachine sfmachi:MC5 ;
+    sfmeth:assignedToWorkstation sfmachi:WS5 ;
+    sfmeth:hasOpSeq 5 ;
+    sfmeth:hasProcessingTimeSeconds 101.0 ;
+    sfmeth:nextStep sfmethi:RS-PR2-6 ;
+    sfmeth:previousStep sfmethi:RS-PR2-4 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR2-6 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-6" ;
+    sfmeth:assignedToMachine sfmachi:MC6 ;
+    sfmeth:assignedToWorkstation sfmachi:WS6 ;
+    sfmeth:hasOpSeq 6 ;
+    sfmeth:hasProcessingTimeSeconds 25.0 ;
+    sfmeth:nextStep sfmethi:RS-PR2-7 ;
+    sfmeth:previousStep sfmethi:RS-PR2-5 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR2-7 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-7" ;
+    sfmeth:assignedToMachine sfmachi:MC9 ;
+    sfmeth:assignedToWorkstation sfmachi:WS7 ;
+    sfmeth:detectedByTag sfmatli:Tag_MC9OUT ;
+    sfmeth:hasOpSeq 7 ;
+    sfmeth:hasProcessingTimeSeconds 11.0 ;
+    sfmeth:nextStep sfmethi:RS-PR2-8 ;
+    sfmeth:previousStep sfmethi:RS-PR2-6 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR3-4 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-4" ;
+    sfmeth:assignedToWorkstation sfmachi:WS4 ;
+    sfmeth:detectedByTag sfmatli:Tag_AssemblyStage1IN,
+        sfmatli:Tag_AssemblyStage1OUT ;
+    sfmeth:hasOpSeq 4 ;
+    sfmeth:hasProcessingTimeSeconds 10.0 ;
+    sfmeth:nextStep sfmethi:RS-PR3-5 ;
+    sfmeth:previousStep sfmethi:RS-PR3-3 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR3-5 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-5" ;
+    sfmeth:assignedToMachine sfmachi:MC5 ;
+    sfmeth:assignedToWorkstation sfmachi:WS5 ;
+    sfmeth:hasOpSeq 5 ;
+    sfmeth:hasProcessingTimeSeconds 100.0 ;
+    sfmeth:nextStep sfmethi:RS-PR3-6 ;
+    sfmeth:previousStep sfmethi:RS-PR3-4 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR3-6 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-6" ;
+    sfmeth:assignedToMachine sfmachi:MC7 ;
+    sfmeth:assignedToWorkstation sfmachi:WS6 ;
+    sfmeth:hasOpSeq 6 ;
+    sfmeth:hasProcessingTimeSeconds 25.0 ;
+    sfmeth:nextStep sfmethi:RS-PR3-7 ;
+    sfmeth:previousStep sfmethi:RS-PR3-5 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR3-7 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-7" ;
+    sfmeth:assignedToMachine sfmachi:MC8 ;
+    sfmeth:assignedToWorkstation sfmachi:WS7 ;
+    sfmeth:detectedByTag sfmatli:Tag_MC9OUT ;
+    sfmeth:hasOpSeq 7 ;
+    sfmeth:hasProcessingTimeSeconds 10.0 ;
+    sfmeth:nextStep sfmethi:RS-PR3-8 ;
+    sfmeth:previousStep sfmethi:RS-PR3-6 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR4-4 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-4" ;
+    sfmeth:assignedToWorkstation sfmachi:WS4 ;
+    sfmeth:detectedByTag sfmatli:Tag_AssemblyStage1IN,
+        sfmatli:Tag_AssemblyStage1OUT ;
+    sfmeth:hasOpSeq 4 ;
+    sfmeth:hasProcessingTimeSeconds 11.0 ;
+    sfmeth:nextStep sfmethi:RS-PR4-5 ;
+    sfmeth:previousStep sfmethi:RS-PR4-3 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfmethi:RS-PR4-5 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-5" ;
+    sfmeth:assignedToMachine sfmachi:MC5 ;
+    sfmeth:assignedToWorkstation sfmachi:WS5 ;
+    sfmeth:hasOpSeq 5 ;
+    sfmeth:hasProcessingTimeSeconds 100.0 ;
+    sfmeth:nextStep sfmethi:RS-PR4-6 ;
+    sfmeth:previousStep sfmethi:RS-PR4-4 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfmethi:RS-PR4-6 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-6" ;
+    sfmeth:assignedToMachine sfmachi:MC7 ;
+    sfmeth:assignedToWorkstation sfmachi:WS6 ;
+    sfmeth:hasOpSeq 6 ;
+    sfmeth:hasProcessingTimeSeconds 25.0 ;
+    sfmeth:nextStep sfmethi:RS-PR4-7 ;
+    sfmeth:previousStep sfmethi:RS-PR4-5 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfmethi:RS-PR4-7 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-7" ;
+    sfmeth:assignedToMachine sfmachi:MC9 ;
+    sfmeth:assignedToWorkstation sfmachi:WS7 ;
+    sfmeth:detectedByTag sfmatli:Tag_MC9OUT ;
+    sfmeth:hasOpSeq 7 ;
+    sfmeth:hasProcessingTimeSeconds 10.0 ;
+    sfmeth:nextStep sfmethi:RS-PR4-8 ;
+    sfmeth:previousStep sfmethi:RS-PR4-6 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfe:ActivityState a owl:Class ;
+    rdfs:label "ActivityState" ;
+    rdfs:subClassOf sfe:MachineState .
+
+sfe:Factory a owl:Class ;
+    rdfs:label "Factory" ;
+    rdfs:comment "Top-level container for the smart factory testbed." ;
+    rdfs:subClassOf obo:BFO_0000029 .
+
+sfe:ProductInfoNode a owl:Class ;
+    rdfs:label "ProductInfoNode" ;
+    rdfs:comment "Denormalized per-order product/BOM snapshot node. One per order, created at thread creation — unlike the other four subtypes, not per station-visit." ;
+    rdfs:subClassOf sfe:DigitalThreadNode .
+
+sfe:StepDuration a owl:Class ;
+    rdfs:label "StepDuration" ;
+    rdfs:comment "Time at a single route step." ;
+    rdfs:subClassOf sfe:Duration .
+
+sfmach:CommunicationChannel a owl:Class ;
+    rdfs:label "CommunicationChannel" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: inter-service or service-client channel." ;
+    rdfs:subClassOf obo:BFO_0000141 .
+
+sfmach:MobileRFIDReader a owl:Class ;
+    rdfs:label "MobileRFIDReader" ;
+    rdfs:comment "Reader mounted on the tray; scans stationary tags during CNC + manual phases." ;
+    rdfs:subClassOf sfmach:RFIDReader .
+
+sfmach:SMCStation a owl:Class ;
+    rdfs:label "SMCStation" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: SMC FMS-200 stations (MC5–MC10)." ;
+    rdfs:subClassOf sfmach:Machine .
+
+sfmach:TelemetryService a owl:Class ;
+    rdfs:label "TelemetryService" ;
+    rdfs:comment "CNC polling + SMC completion + auto-advance." ;
+    rdfs:subClassOf sfmach:Microservice .
+
+sfmach:WebSocketChannel a owl:Class ;
+    rdfs:label "WebSocketChannel" ;
+    rdfs:comment "WebSocket endpoint for real-time push." ;
+    rdfs:subClassOf sfmach:CommunicationChannel .
+
+sfmachi:OrderService a sfmach:OrderService,
+        owl:NamedIndividual ;
+    rdfs:label "OrderService" ;
+    sfmach:hasFilename "order_service.py"^^xsd:string ;
+    sfmach:hasPort 8001 ;
+    sfmach:hasResponsibility "Order creation, route lookup, summary"^^xsd:string ;
+    sfmach:reads sfmachi:block,
+        sfmachi:orders,
+        sfmachi:product,
+        sfmachi:route_step ;
+    sfmach:writes sfmachi:orders,
+        sfmachi:read_event .
+
+sfmachi:read_event a sfmach:Hypertable,
+        owl:NamedIndividual ;
+    rdfs:label "read_event" ;
+    sfmach:hasColumnList "event_id,ts,event_type,metadata"^^xsd:string ;
+    sfmach:hasPrimaryKey "(event_id,ts)"^^xsd:string ;
+    sfmach:hasTableName "read_event"^^xsd:string ;
+    sfmach:isHypertable true .
+
+sfmatli:Tag_AssemblyStage1IN a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_AssemblyStage1IN" ;
+    sfmatl:hasTagDescription "ENTERED INTO ASSEMBLY STAGE 1"^^xsd:string ;
+    sfmatl:hasTagID "04D81A14C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "in"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS4 .
+
+sfmatli:Tag_AssemblyStage1OUT a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_AssemblyStage1OUT" ;
+    sfmatl:hasTagDescription "COMPLETED ASSEMBLY STAGE 1"^^xsd:string ;
+    sfmatl:hasTagID "04262214C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "out"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS4 .
+
+sfmatli:Tag_MC9OUT a sfmatl:StationaryTag,
+        owl:NamedIndividual ;
+    rdfs:label "Tag_MC9OUT" ;
+    sfmatl:hasTagDescription "SMC STATIONS PROCESS COMPLETED (FMS exit)"^^xsd:string ;
+    sfmatl:hasTagID "04DE3E14C82A81"^^xsd:string ;
+    sfmatl:hasTagRole "out"^^xsd:string ;
+    sfmatl:mountedOn sfmachi:WS7 .
+
+sfe:DigitalThread a owl:Class ;
+    rdfs:label "DigitalThread" ;
+    rdfs:comment "Complete ordered sequence of all events for one order." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfe:OperationalState a owl:Class ;
+    rdfs:label "OperationalState" ;
+    rdfs:subClassOf sfe:MachineState .
+
+sfe:ProcessEvent a owl:Class ;
+    rdfs:subClassOf sfe:Event .
+
+sfe:ProductLocation a owl:Class ;
+    rdfs:label "ProductLocation" ;
+    rdfs:comment "Derived entity: location of a product at a given timestamp." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfe:TemporalAssertion a owl:Class ;
+    rdfs:label "Temporal Assertion" ;
+    rdfs:comment "A domain-level assertion that holds over a temporal interval, represented by validFrom and optionally validUntil." .
+
+sfmach:MainProgram a owl:Class ;
+    rdfs:label "MainProgram" ;
+    rdfs:comment "CNC main program; appears after sub-codes." ;
+    rdfs:subClassOf sfmach:ProgramSequence .
+
+sfmach:PressingStation a owl:Class ;
+    rdfs:label "PressingStation" ;
+    rdfs:comment "SMC pressing station (MC6–MC9): small/big pin press." ;
+    rdfs:subClassOf sfmach:SMCStation .
+
+sfmatl:TrackingTag a owl:Class ;
+    rdfs:label "TrackingTag" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any RFID-readable tag used for tracking." ;
+    rdfs:subClassOf sfmatl:Identifier .
+
+sfproc:ProductionProcess a owl:Class ;
+    rdfs:label "ProductionProcess" ;
+    rdfs:comment "Actual execution of a defined Operation in the manufacturing workflow." ;
+    rdfs:subClassOf sfproc:Process .
+
+obo:BFO_0000030 a owl:Class ;
+    rdfs:label "object" ;
+    rdfs:subClassOf obo:BFO_0000040 .
+
+sfmachi:SMCCompletionRule_StationLevel a sfmach:SMCCompletionRule,
+        owl:NamedIndividual ;
+    rdfs:label "SMCCompletionRule_StationLevel" ;
+    sfmach:appliesTo sfmachi:MC5,
+        sfmachi:MC6,
+        sfmachi:MC7,
+        sfmachi:MC8,
+        sfmachi:MC9 .
+
+sfmachi:WS1 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS1" ;
+    sfmach:hasConsumableComponent sfmatli:BlB,
+        sfmatli:BlG,
+        sfmatli:BlR,
+        sfmatli:BlW,
+        sfmatli:ClB,
+        sfmatli:ClG,
+        sfmatli:ClR,
+        sfmatli:ClW,
+        sfmatli:CuB,
+        sfmatli:CuG,
+        sfmatli:CuR,
+        sfmatli:CuW,
+        sfmatli:G1,
+        sfmatli:G2,
+        sfmatli:G3,
+        sfmatli:G4,
+        sfmatli:G5,
+        sfmatli:HB,
+        sfmatli:HG,
+        sfmatli:HR,
+        sfmatli:HW,
+        sfmatli:P1B,
+        sfmatli:P1G,
+        sfmatli:P1R,
+        sfmatli:P1W,
+        sfmatli:P2B,
+        sfmatli:P2G,
+        sfmatli:P2R,
+        sfmatli:P2W ;
+    sfmach:hasOperationID "OP1"^^xsd:string ;
+    sfmach:hasStationType "manual"^^xsd:string ;
+    sfmach:hasWorkstationDescription "Tagging + kitting"^^xsd:string ;
+    sfmach:hasWorkstationID "WS1"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP1 ;
+    sfmach:humanLabel "Tagging + kitting"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfe:ManState a owl:Class ;
+    rdfs:label "ManState" ;
+    rdfs:subClassOf sfe:State .
+
+sfe:StateFact a owl:Class ;
+    rdfs:label "StateFact" ;
+    rdfs:comment "A temporal assertion that a specific continuant bears a specified State during [validFrom, validUntil). Canonical state assertion model." ;
+    rdfs:subClassOf obo:BFO_0000020,
+        sfe:TemporalAssertion .
+
+sfmach:CNCMachine a owl:Class ;
+    rdfs:label "CNCMachine" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: CNC machines producing telemetry every 2s." ;
+    rdfs:subClassOf sfmach:Machine .
+
+sfmach:CompletionRule a owl:Class ;
+    rdfs:label "CompletionRule" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: completion-detection logic." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmachi:MQTT_LabRFID a sfmach:MQTTTopic,
+        owl:NamedIndividual ;
+    rdfs:label "MQTT_LabRFID" ;
+    sfmach:hasPayloadSchemaJSON "{\"ts\": \"ISO-8601\", \"rfid_uid\": \"string\"}"^^xsd:string ;
+    sfmach:hasTopicPattern "lab/rfid/{reader_id}"^^xsd:string .
+
+sfmachi:WS4 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS4" ;
+    sfmach:hasOperationID "OP4"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "Manual assembly"^^xsd:string ;
+    sfmach:hasWorkstationID "WS4"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP4 ;
+    sfmach:humanLabel "Manual assembly"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfmachi:WS6 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS6" ;
+    sfmach:hasOperationID "OP6"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "FMS — small pin press"^^xsd:string ;
+    sfmach:hasWorkstationID "WS6"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP6 ;
+    sfmach:humanLabel "FMS — small pin press"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfmachi:WS9 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS9" ;
+    sfmach:hasOperationID "OP9"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "Final assembly"^^xsd:string ;
+    sfmach:hasWorkstationID "WS9"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP9 ;
+    sfmach:humanLabel "Final assembly"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfmachi:orders a sfmach:DatabaseTable,
+        owl:NamedIndividual ;
+    rdfs:label "orders" ;
+    sfmach:hasColumnList "order_id,product_id,status,expected_next_machine_id,expected_next_op_seq,created_at,completed_at"^^xsd:string ;
+    sfmach:hasPrimaryKey "order_id"^^xsd:string ;
+    sfmach:hasTableName "orders"^^xsd:string ;
+    sfmach:isHypertable false .
+
+sfe:MeasurementState a owl:Class ;
+    rdfs:label "MeasurementState" ;
+    rdfs:comment "Reserved state branch; detailed inspection/measurement semantics remain intentionally open." ;
+    rdfs:subClassOf sfe:State .
+
+sfe:State a owl:Class ;
+    rdfs:label "State" ;
+    rdfs:comment "Domain-level state vocabulary for conditions borne by continuant entities." ;
+    rdfs:subClassOf obo:BFO_0000002 .
+
+sfmach:ProgramSequence a owl:Class ;
+    rdfs:label "ProgramSequence" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: CNC programs in the program_seq catalog." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmach:RFIDReader a owl:Class ;
+    rdfs:label "RFIDReader" ;
+    rdfs:comment "RFID reader hardware. Either mobile (on tray) or stationary (at SMC stations)." ;
+    rdfs:subClassOf sfmach:Equipment .
+
+sfmatl:Tray a owl:Class ;
+    rdfs:label "Tray" ;
+    rdfs:comment "FMS carrier holding workpieces during CNC + manual phases; has mounted reader." ;
+    rdfs:subClassOf sfmatl:PhysicalAsset .
+
+sfproc:Process a owl:Class ;
+    rdfs:label "Process" ;
+    rdfs:comment "An occurrent that unfolds through time; domain-level process class aligned to BFO Process." ;
+    rdfs:subClassOf obo:BFO_0000015 .
+
+obo:BFO_0000002 a owl:Class ;
+    rdfs:label "continuant" ;
+    rdfs:subClassOf obo:BFO_0000001 .
+
+sfmachi:MC1 a sfmach:SiemensCNC,
+        owl:NamedIndividual ;
+    rdfs:label "MC1" ;
+    sfmach:hasAxisCount 3 ;
+    sfmach:hasCompletionRule sfmachi:CNCCompletionRule_Siemens ;
+    sfmach:hasMachineID "MC1"^^xsd:string ;
+    sfmach:hasMachineType "cnc"^^xsd:string ;
+    sfmach:hasTelemetryTable sfmachi:telemetry_MC1 ;
+    sfmach:mainProgramPattern "MILLMAIN"^^xsd:string ;
+    sfmach:monitoredBy sfmachi:TelemetryService ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS2 .
+
+sfmachi:MC10 a sfmach:InspectionStation,
+        owl:NamedIndividual ;
+    rdfs:label "MC10" ;
+    sfmach:hasCompletionRule sfmachi:SMCCompletionRule_ConveyorEdge ;
+    sfmach:hasMachineID "MC10"^^xsd:string ;
+    sfmach:hasMachineType "smc_station"^^xsd:string ;
+    sfmach:hasTelemetryTable sfmachi:telemetry_MC10 ;
+    sfmach:monitoredBy sfmachi:TelemetryService ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS8 ;
+    sfmeth:isOperational false .
+
+sfmachi:MC2 a sfmach:SiemensCNC,
+        owl:NamedIndividual ;
+    rdfs:label "MC2" ;
+    sfmach:hasAxisCount 2 ;
+    sfmach:hasCompletionRule sfmachi:CNCCompletionRule_Siemens ;
+    sfmach:hasMachineID "MC2"^^xsd:string ;
+    sfmach:hasMachineType "cnc"^^xsd:string ;
+    sfmach:hasTelemetryTable sfmachi:telemetry_MC2 ;
+    sfmach:mainProgramPattern "MILLMAIN"^^xsd:string ;
+    sfmach:monitoredBy sfmachi:TelemetryService ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS3 .
+
+sfmachi:MC3 a sfmach:FanucCNC,
+        owl:NamedIndividual ;
+    rdfs:label "MC3" ;
+    sfmach:hasAxisCount 3 ;
+    sfmach:hasCompletionRule sfmachi:CNCCompletionRule_Fanuc ;
+    sfmach:hasMachineID "MC3"^^xsd:string ;
+    sfmach:hasMachineType "cnc"^^xsd:string ;
+    sfmach:hasTelemetryTable sfmachi:telemetry_MC3 ;
+    sfmach:mainProgramPattern "02001"^^xsd:string ;
+    sfmach:monitoredBy sfmachi:TelemetryService ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS2 .
+
+sfmachi:MC4 a sfmach:FanucCNC,
+        owl:NamedIndividual ;
+    rdfs:label "MC4" ;
+    sfmach:hasAxisCount 2 ;
+    sfmach:hasCompletionRule sfmachi:CNCCompletionRule_Fanuc ;
+    sfmach:hasMachineID "MC4"^^xsd:string ;
+    sfmach:hasMachineType "cnc"^^xsd:string ;
+    sfmach:hasTelemetryTable sfmachi:telemetry_MC4 ;
+    sfmach:mainProgramPattern "05001"^^xsd:string ;
+    sfmach:monitoredBy sfmachi:TelemetryService ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS3 .
+
+sfmachi:TelemetryService a sfmach:TelemetryService,
+        owl:NamedIndividual ;
+    rdfs:label "TelemetryService" ;
+    sfmach:hasFilename "telemetry_service.py"^^xsd:string ;
+    sfmach:hasPort 8002 ;
+    sfmach:hasResponsibility "CNC polling, SMC completion, auto-advance"^^xsd:string ;
+    sfmach:monitors sfmachi:MC1,
+        sfmachi:MC10,
+        sfmachi:MC2,
+        sfmachi:MC3,
+        sfmachi:MC4 ;
+    sfmach:reads sfmachi:orders,
+        sfmachi:program_seq,
+        sfmachi:route_step,
+        sfmachi:telemetry_MC1,
+        sfmachi:telemetry_MC10,
+        sfmachi:telemetry_MC2,
+        sfmachi:telemetry_MC3,
+        sfmachi:telemetry_MC4 ;
+    sfmach:writes sfmachi:orders,
+        sfmachi:read_event .
+
+sfmachi:WS7 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS7" ;
+    sfmach:hasOperationID "OP7"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "FMS — big pin press"^^xsd:string ;
+    sfmach:hasWorkstationID "WS7"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP7 ;
+    sfmach:humanLabel "FMS — big pin press"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfe:Duration a owl:Class ;
+    rdfs:label "Duration" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any time-interval measurement." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmach:MQTTTopic a owl:Class ;
+    rdfs:label "MQTTTopic" ;
+    rdfs:comment "An MQTT topic." ;
+    rdfs:subClassOf sfmach:CommunicationChannel .
+
+sfmach:StationaryRFIDReader a owl:Class ;
+    rdfs:label "StationaryRFIDReader" ;
+    rdfs:comment "Reader mounted at an SMC station; scans the block on products passing through." ;
+    rdfs:subClassOf sfmach:RFIDReader .
+
+sfmachi:MC6 a sfmach:PressingStation,
+        owl:NamedIndividual ;
+    rdfs:label "MC6" ;
+    sfmach:hasCompletionRule sfmachi:SMCCompletionRule_StationLevel ;
+    sfmach:hasMachineID "MC6"^^xsd:string ;
+    sfmach:hasMachineType "smc_station"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS6 .
+
+sfmachi:MC7 a sfmach:PressingStation,
+        owl:NamedIndividual ;
+    rdfs:label "MC7" ;
+    sfmach:hasCompletionRule sfmachi:SMCCompletionRule_StationLevel ;
+    sfmach:hasMachineID "MC7"^^xsd:string ;
+    sfmach:hasMachineType "smc_station"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS6 .
+
+sfmachi:MC8 a sfmach:PressingStation,
+        owl:NamedIndividual ;
+    rdfs:label "MC8" ;
+    sfmach:hasCompletionRule sfmachi:SMCCompletionRule_StationLevel ;
+    sfmach:hasMachineID "MC8"^^xsd:string ;
+    sfmach:hasMachineType "smc_station"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS7 .
+
+sfmachi:MC9 a sfmach:PressingStation,
+        owl:NamedIndividual ;
+    rdfs:label "MC9" ;
+    sfmach:hasCompletionRule sfmachi:SMCCompletionRule_StationLevel ;
+    sfmach:hasMachineID "MC9"^^xsd:string ;
+    sfmach:hasMachineType "smc_station"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS7 .
+
+sfmachi:WS2 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS2" ;
+    sfmach:hasOperationID "OP2"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "3-axis CNC operator"^^xsd:string ;
+    sfmach:hasWorkstationID "WS2"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP2 ;
+    sfmach:humanLabel "3-axis CNC operator"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfmachi:WS3 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS3" ;
+    sfmach:hasOperationID "OP3"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "2-axis CNC operator"^^xsd:string ;
+    sfmach:hasWorkstationID "WS3"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP3 ;
+    sfmach:humanLabel "2-axis CNC operator"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfe:Event a owl:Class ;
+    rdfs:label "Event" ;
+    rdfs:comment "A point-like occurrence represented as a BFO Process Boundary." ;
+    rdfs:subClassOf obo:BFO_0000035 .
+
+sfmach:Equipment a owl:Class ;
+    rdfs:label "Equipment" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any piece of physical equipment." ;
+    rdfs:subClassOf obo:BFO_0000030 .
+
+sfmatl:BOM a owl:Class ;
+    rdfs:label "BOM" ;
+    rdfs:comment "Bill of Materials for a product." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmachi:MC5 a sfmach:FeederStation,
+        owl:NamedIndividual ;
+    rdfs:label "MC5" ;
+    sfmach:hasCompletionRule sfmachi:SMCCompletionRule_StationLevel ;
+    sfmach:hasMachineID "MC5"^^xsd:string ;
+    sfmach:hasMachineType "smc_station"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab ;
+    sfmach:servedByWorkstation sfmachi:WS5 .
+
+sfmatli:G1 a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Gear 1" .
+
+sfmatli:G2 a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Gear 2" .
+
+sfmatli:G3 a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Gear 3" .
+
+sfmatli:G4 a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Gear 4" .
+
+sfmatli:G5 a sfmatl:Component,
+        owl:NamedIndividual ;
+    rdfs:label "Gear 5" .
+
+sfmethi:RS-PR1-2 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-2" ;
+    sfmeth:assignedToMachine sfmachi:MC1 ;
+    sfmeth:assignedToWorkstation sfmachi:WS2 ;
+    sfmeth:hasOpSeq 2 ;
+    sfmeth:hasProcessingTimeSeconds 122.0 ;
+    sfmeth:nextStep sfmethi:RS-PR1-3 ;
+    sfmeth:previousStep sfmethi:RS-PR1-1 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR1-3 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR1-3" ;
+    sfmeth:assignedToMachine sfmachi:MC2 ;
+    sfmeth:assignedToWorkstation sfmachi:WS3 ;
+    sfmeth:hasOpSeq 3 ;
+    sfmeth:hasProcessingTimeSeconds 102.0 ;
+    sfmeth:nextStep sfmethi:RS-PR1-4 ;
+    sfmeth:previousStep sfmethi:RS-PR1-2 ;
+    sfmeth:routeStepFor sfmatli:PR1 .
+
+sfmethi:RS-PR2-2 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-2" ;
+    sfmeth:assignedToMachine sfmachi:MC3 ;
+    sfmeth:assignedToWorkstation sfmachi:WS2 ;
+    sfmeth:hasOpSeq 2 ;
+    sfmeth:hasProcessingTimeSeconds 101.0 ;
+    sfmeth:nextStep sfmethi:RS-PR2-3 ;
+    sfmeth:previousStep sfmethi:RS-PR2-1 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR2-3 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR2-3" ;
+    sfmeth:assignedToMachine sfmachi:MC4 ;
+    sfmeth:assignedToWorkstation sfmachi:WS3 ;
+    sfmeth:hasOpSeq 3 ;
+    sfmeth:hasProcessingTimeSeconds 101.0 ;
+    sfmeth:nextStep sfmethi:RS-PR2-4 ;
+    sfmeth:previousStep sfmethi:RS-PR2-2 ;
+    sfmeth:routeStepFor sfmatli:PR2 .
+
+sfmethi:RS-PR3-2 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-2" ;
+    sfmeth:assignedToMachine sfmachi:MC1 ;
+    sfmeth:assignedToWorkstation sfmachi:WS2 ;
+    sfmeth:hasOpSeq 2 ;
+    sfmeth:hasProcessingTimeSeconds 100.0 ;
+    sfmeth:nextStep sfmethi:RS-PR3-3 ;
+    sfmeth:previousStep sfmethi:RS-PR3-1 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR3-3 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR3-3" ;
+    sfmeth:assignedToMachine sfmachi:MC2 ;
+    sfmeth:assignedToWorkstation sfmachi:WS3 ;
+    sfmeth:hasOpSeq 3 ;
+    sfmeth:hasProcessingTimeSeconds 100.0 ;
+    sfmeth:nextStep sfmethi:RS-PR3-4 ;
+    sfmeth:previousStep sfmethi:RS-PR3-2 ;
+    sfmeth:routeStepFor sfmatli:PR3 .
+
+sfmethi:RS-PR4-2 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-2" ;
+    sfmeth:assignedToMachine sfmachi:MC3 ;
+    sfmeth:assignedToWorkstation sfmachi:WS2 ;
+    sfmeth:hasOpSeq 2 ;
+    sfmeth:hasProcessingTimeSeconds 100.0 ;
+    sfmeth:nextStep sfmethi:RS-PR4-3 ;
+    sfmeth:previousStep sfmethi:RS-PR4-1 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfmethi:RS-PR4-3 a sfmeth:RouteStep,
+        owl:NamedIndividual ;
+    rdfs:label "RS-PR4-3" ;
+    sfmeth:assignedToMachine sfmachi:MC4 ;
+    sfmeth:assignedToWorkstation sfmachi:WS3 ;
+    sfmeth:hasOpSeq 3 ;
+    sfmeth:hasProcessingTimeSeconds 101.0 ;
+    sfmeth:nextStep sfmethi:RS-PR4-4 ;
+    sfmeth:previousStep sfmethi:RS-PR4-2 ;
+    sfmeth:routeStepFor sfmatli:PR4 .
+
+sfmach:TelemetryStream a owl:Class ;
+    rdfs:label "TelemetryStream" ;
+    rdfs:comment "Logical telemetry signal stream backed by a Hypertable." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmeth:OperationType a owl:Class ;
+    rdfs:label "OperationType" ;
+    sf:isAbstract true ;
+    rdfs:comment "Legacy/controlled vocabulary specialization for reusable operation definitions." ;
+    rdfs:subClassOf sfmeth:Operation .
+
+sfmachi:WS5 a sfmach:Workstation,
+        owl:NamedIndividual ;
+    rdfs:label "WS5" ;
+    sfmach:hasOperationID "OP5"^^xsd:string ;
+    sfmach:hasStationType "rfid"^^xsd:string ;
+    sfmach:hasWorkstationDescription "FMS — pressing setup"^^xsd:string ;
+    sfmach:hasWorkstationID "WS5"^^xsd:string ;
+    sfmach:hostsOperation sfmethi:OP5 ;
+    sfmach:humanLabel "FMS — pressing setup"^^xsd:string ;
+    sfmach:partOf sfei:SmartFactoryLab .
+
+sfmatli:PR1 a sfmatl:Product,
+        owl:NamedIndividual ;
+    rdfs:label "PR1" ;
+    sfmatl:hasBOM sfmatli:BOM-PR1 ;
+    sfmatl:hasProductColour "red"^^xsd:string ;
+    sfmatl:hasProductID "PR1"^^xsd:string ;
+    sfmatl:hasProductName "Red product"^^xsd:string ;
+    sfmatl:hasRouteStep sfmethi:RS-PR1-1,
+        sfmethi:RS-PR1-2,
+        sfmethi:RS-PR1-3,
+        sfmethi:RS-PR1-4,
+        sfmethi:RS-PR1-5,
+        sfmethi:RS-PR1-6,
+        sfmethi:RS-PR1-7,
+        sfmethi:RS-PR1-8 ;
+    sfmatl:identifiedByBlock sfmatli:BLK-1 ;
+    sfmatl:processedByMachine sfmachi:MC1,
+        sfmachi:MC2,
+        sfmachi:MC5,
+        sfmachi:MC6,
+        sfmachi:MC8 .
+
+sfmatli:PR2 a sfmatl:Product,
+        owl:NamedIndividual ;
+    rdfs:label "PR2" ;
+    sfmatl:hasBOM sfmatli:BOM-PR2 ;
+    sfmatl:hasProductColour "blue"^^xsd:string ;
+    sfmatl:hasProductID "PR2"^^xsd:string ;
+    sfmatl:hasProductName "Blue product"^^xsd:string ;
+    sfmatl:hasRouteStep sfmethi:RS-PR2-1,
+        sfmethi:RS-PR2-2,
+        sfmethi:RS-PR2-3,
+        sfmethi:RS-PR2-4,
+        sfmethi:RS-PR2-5,
+        sfmethi:RS-PR2-6,
+        sfmethi:RS-PR2-7,
+        sfmethi:RS-PR2-8 ;
+    sfmatl:identifiedByBlock sfmatli:BLK-2 ;
+    sfmatl:processedByMachine sfmachi:MC3,
+        sfmachi:MC4,
+        sfmachi:MC5,
+        sfmachi:MC6,
+        sfmachi:MC9 .
+
+sfmatli:PR3 a sfmatl:Product,
+        owl:NamedIndividual ;
+    rdfs:label "PR3" ;
+    sfmatl:hasBOM sfmatli:BOM-PR3 ;
+    sfmatl:hasProductColour "green"^^xsd:string ;
+    sfmatl:hasProductID "PR3"^^xsd:string ;
+    sfmatl:hasProductName "Green product"^^xsd:string ;
+    sfmatl:hasRouteStep sfmethi:RS-PR3-1,
+        sfmethi:RS-PR3-2,
+        sfmethi:RS-PR3-3,
+        sfmethi:RS-PR3-4,
+        sfmethi:RS-PR3-5,
+        sfmethi:RS-PR3-6,
+        sfmethi:RS-PR3-7,
+        sfmethi:RS-PR3-8 ;
+    sfmatl:identifiedByBlock sfmatli:BLK-3 ;
+    sfmatl:processedByMachine sfmachi:MC1,
+        sfmachi:MC2,
+        sfmachi:MC5,
+        sfmachi:MC7,
+        sfmachi:MC8 .
+
+sfmatli:PR4 a sfmatl:Product,
+        owl:NamedIndividual ;
+    rdfs:label "PR4" ;
+    sfmatl:hasBOM sfmatli:BOM-PR4 ;
+    sfmatl:hasProductColour "white"^^xsd:string ;
+    sfmatl:hasProductID "PR4"^^xsd:string ;
+    sfmatl:hasProductName "White product"^^xsd:string ;
+    sfmatl:hasRouteStep sfmethi:RS-PR4-1,
+        sfmethi:RS-PR4-2,
+        sfmethi:RS-PR4-3,
+        sfmethi:RS-PR4-4,
+        sfmethi:RS-PR4-5,
+        sfmethi:RS-PR4-6,
+        sfmethi:RS-PR4-7,
+        sfmethi:RS-PR4-8 ;
+    sfmatl:identifiedByBlock sfmatli:BLK-4 ;
+    sfmatl:processedByMachine sfmachi:MC3,
+        sfmachi:MC4,
+        sfmachi:MC5,
+        sfmachi:MC7,
+        sfmachi:MC9 .
+
+sfe:MachineEvent a owl:Class ;
+    rdfs:subClassOf sfe:Event .
+
+sfe:MaterialState a owl:Class ;
+    rdfs:label "MaterialState" ;
+    rdfs:subClassOf sfe:State .
+
+sfmach:APIEndpoint a owl:Class ;
+    rdfs:label "APIEndpoint" ;
+    rdfs:comment "HTTP endpoint exposed by a service." ;
+    rdfs:subClassOf sfmach:CommunicationChannel .
+
+sfmach:Hypertable a owl:Class ;
+    rdfs:label "Hypertable" ;
+    rdfs:comment "TimescaleDB hypertable for time-series." ;
+    rdfs:subClassOf sfmach:DatabaseTable .
+
+sfmatl:Block a owl:Class ;
+    rdfs:label "Block" ;
+    rdfs:comment "Mobile RFID chip attached to products at WS5; scanned by stationary SMC readers; detached at MC10." ;
+    rdfs:subClassOf sfmatl:TrackingTag .
+
+sfmatli:BOM-PR1 a sfmatl:BOM,
+        owl:NamedIndividual ;
+    rdfs:label "BOM-PR1" ;
+    sfmatl:bomFor sfmatli:PR1 ;
+    sfmatl:requiresComponent sfmatli:BlR,
+        sfmatli:ClR,
+        sfmatli:CuR,
+        sfmatli:G1,
+        sfmatli:G2,
+        sfmatli:G3,
+        sfmatli:G4,
+        sfmatli:G5,
+        sfmatli:HR,
+        sfmatli:P1R,
+        sfmatli:P2R .
+
+sfmatli:BOM-PR2 a sfmatl:BOM,
+        owl:NamedIndividual ;
+    rdfs:label "BOM-PR2" ;
+    sfmatl:bomFor sfmatli:PR2 ;
+    sfmatl:requiresComponent sfmatli:BlB,
+        sfmatli:ClB,
+        sfmatli:CuB,
+        sfmatli:G1,
+        sfmatli:G2,
+        sfmatli:G3,
+        sfmatli:G4,
+        sfmatli:G5,
+        sfmatli:HB,
+        sfmatli:P1B,
+        sfmatli:P2B .
+
+sfmatli:BOM-PR3 a sfmatl:BOM,
+        owl:NamedIndividual ;
+    rdfs:label "BOM-PR3" ;
+    sfmatl:bomFor sfmatli:PR3 ;
+    sfmatl:requiresComponent sfmatli:BlG,
+        sfmatli:ClG,
+        sfmatli:CuG,
+        sfmatli:G1,
+        sfmatli:G2,
+        sfmatli:G3,
+        sfmatli:G4,
+        sfmatli:G5,
+        sfmatli:HG,
+        sfmatli:P1G,
+        sfmatli:P2G .
+
+sfmatli:BOM-PR4 a sfmatl:BOM,
+        owl:NamedIndividual ;
+    rdfs:label "BOM-PR4" ;
+    sfmatl:bomFor sfmatli:PR4 ;
+    sfmatl:requiresComponent sfmatli:BlW,
+        sfmatli:ClW,
+        sfmatli:CuW,
+        sfmatli:G1,
+        sfmatli:G2,
+        sfmatli:G3,
+        sfmatli:G4,
+        sfmatli:G5,
+        sfmatli:HW,
+        sfmatli:P1W,
+        sfmatli:P2W .
+
+sfe:MaterialEvent a owl:Class ;
+    rdfs:subClassOf sfe:Event .
+
+sfe:Order a owl:Class ;
+    rdfs:label "Order" ;
+    rdfs:comment "A production order; live state in orders table." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmeth:StateMachineTransition a owl:Class ;
+    rdfs:label "StateMachineTransition" ;
+    rdfs:comment "A legal state transition with trigger, guard, action." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+obo:BFO_0000031 a owl:Class ;
+    rdfs:label "generically dependent continuant" ;
+    rdfs:subClassOf obo:BFO_0000002 .
+
+sfmatl:StationaryTag a owl:Class ;
+    rdfs:label "StationaryTag" ;
+    rdfs:comment "RFID tag mounted at a workstation or machine; scanned by the mobile tray reader. Carries IN/OUT role semantics." ;
+    rdfs:subClassOf sfmatl:TrackingTag .
+
+sfmeth:Operation a owl:Class ;
+    rdfs:label "Operation" ;
+    rdfs:comment "A defined type/specification of work to be performed; an execution of an Operation is represented by a ProductionProcess." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmach:Microservice a owl:Class ;
+    rdfs:label "Microservice" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any service in the architecture." ;
+    rdfs:subClassOf obo:BFO_0000030 .
+
+sfmatl:Product a owl:Class ;
+    rdfs:label "Product" ;
+    rdfs:comment "The physical workpiece being manufactured. Has a BOM and a route." ;
+    rdfs:subClassOf sfmatl:PhysicalAsset .
+
+sfei:SmartFactoryLab a sfe:Factory,
+        owl:NamedIndividual ;
+    rdfs:label "Smart Factory Testbed Lab" .
+
+sfe:DigitalThreadNode a owl:Class ;
+    rdfs:label "DigitalThreadNode" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any node in a digital thread." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmach:SubCode a owl:Class ;
+    rdfs:label "SubCode" ;
+    rdfs:comment "CNC sub-program executed before main program." ;
+    rdfs:subClassOf sfmach:ProgramSequence .
+
+sfmach:DatabaseTable a owl:Class ;
+    rdfs:label "DatabaseTable" ;
+    rdfs:comment "A relational table in PostgreSQL." ;
+    rdfs:subClassOf sfmach:DataStore .
+
+sfmach:Workstation a owl:Class ;
+    rdfs:label "Workstation" ;
+    rdfs:comment "Workstation where work happens on the product (kitting, machining, assembly, etc.)." ;
+    rdfs:subClassOf sfmach:Equipment .
+
+sfmach:Machine a owl:Class ;
+    rdfs:label "Machine" ;
+    sf:isAbstract true ;
+    rdfs:comment "Abstract: any machine that processes a product." ;
+    rdfs:subClassOf sfmach:Equipment .
+
+sfmeth:InferenceRule a owl:Class ;
+    rdfs:label "InferenceRule" ;
+    rdfs:comment "A declarative IF-THEN rule the agent applies." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmatl:Component a owl:Class ;
+    rdfs:label "Component" ;
+    rdfs:comment "A component in a BOM (gear, blade, base, pin, handle, etc.)." ;
+    rdfs:subClassOf obo:BFO_0000030 .
+
+sfmatl:BOMLine a owl:Class ;
+    rdfs:label "BOMLine" ;
+    rdfs:comment "Reified BOM entry: one (BOM, Component, quantity) row. Replaces hasQuantity being asserted directly on Component, which was ambiguous for components shared across multiple BOMs (e.g. gears G1-G5)." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+
+sfmeth:RouteStep a owl:Class ;
+    rdfs:label "RouteStep" ;
+    rdfs:comment "One operation in a product manufacturing route, keyed by (product_id, op_seq)." ;
+    rdfs:subClassOf obo:BFO_0000031 .
+

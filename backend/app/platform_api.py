@@ -16,7 +16,7 @@ from .config import get_settings
 from .db import get_db
 from .platform_auth import COOKIE, check_login_rate, create_session, current_user, hash_password, public_user, record_login, require_admin, require_operator, session_for, verify_password
 from .platform_configuration import STATE_LOCK, acquire_state_lock, apply_configuration, get_configuration, validate_specification
-from .platform_models import Evidence, LoginSession, MachineEvent, MachineState, Order, Review, Task, User, uid
+from .platform_models import Evidence, LoginSession, MachineEvent, MachineState, Order, Review, Task, User, UserQualification, now, uid
 from . import platform_service as service
 from .platform_providers import machine_gateway
 
@@ -49,6 +49,7 @@ class Setup(Credentials):
 class NewUser(Setup):
     role: Literal["admin", "operator"] = "operator"
     skills: list[str] = Field(default_factory=list, max_length=100)
+    qualifications: list[str] = Field(default_factory=list, max_length=100)
     available: bool = True
     active: bool = True
 
@@ -58,6 +59,7 @@ class UserPatch(Input):
     password: Password | None = Field(default=None, min_length=10, max_length=256)
     role: Literal["admin", "operator"] | None = None
     skills: list[str] | None = None
+    qualifications: list[str] | None = Field(default=None, max_length=100)
     available: bool | None = None
     active: bool | None = None
     email: str | None = Field(default=None, min_length=3, max_length=254)
@@ -74,6 +76,18 @@ class Availability(Input):
 
 class SpecInput(Input):
     specification: dict
+
+
+class TurtleInput(Input):
+    turtle: str = Field(min_length=1, max_length=2_000_000)
+
+
+class StopConfirmation(Input):
+    physical_stop_confirmed: Literal[True]
+
+
+class CancellationInput(Input):
+    reason: str = Field(min_length=1, max_length=2000)
 
 
 class ApplySpec(SpecInput):
@@ -174,20 +188,28 @@ def users(_: User = Depends(require_admin), db: Session = Depends(get_db)):
     return [public_user(user) for user in db.query(User).order_by(User.name).all()]
 
 
+@router.get("/skills")
+def skill_options(_: User = Depends(require_admin), db: Session = Depends(get_db)):
+    from .platform_graphs import skills
+    return skills(db)
+
+
 @router.post("/users")
-def add_user(body: NewUser, _: User = Depends(require_admin), db: Session = Depends(get_db)):
+def add_user(body: NewUser, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     with transaction(db):
+        validate_user_skills(db, body.skills)
         if db.query(User).filter(User.email == body.email).first():
             raise HTTPException(409, "An account with this email already exists")
-        user = User(**body.model_dump(exclude={"password"}), password_hash=hash_password(body.password))
+        user = User(**body.model_dump(exclude={"password", "qualifications"}), password_hash=hash_password(body.password))
         db.add(user)
         db.flush()
+        issue_qualifications(db, user, body.qualifications, admin)
         service.schedule(db)
         return public_user(user)
 
 
 @router.patch("/users/{user_id}")
-def edit_user(user_id: str, body: UserPatch, _: User = Depends(require_admin), db: Session = Depends(get_db)):
+def edit_user(user_id: str, body: UserPatch, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     with transaction(db):
         user = db.get(User, user_id)
         if not user:
@@ -195,6 +217,8 @@ def edit_user(user_id: str, body: UserPatch, _: User = Depends(require_admin), d
         updates = body.model_dump(exclude_unset=True)
         if any(value is None for value in updates.values()):
             raise HTTPException(400, "Account fields cannot be null")
+        if "skills" in updates:
+            validate_user_skills(db, updates["skills"], user.skills)
         if "email" in updates and db.query(User).filter(User.email == updates["email"], User.id != user.id).first():
             raise HTTPException(409, "An account with this email already exists")
         if user.role == "admin" and (updates.get("role", user.role) != "admin" or updates.get("active", True) is False):
@@ -204,11 +228,57 @@ def edit_user(user_id: str, body: UserPatch, _: User = Depends(require_admin), d
             user.password_hash = hash_password(updates.pop("password"))
             for session in db.query(LoginSession).filter(LoginSession.user_id == user.id).all():
                 db.delete(session)
+        selected = updates.pop("qualifications", None)
         for key, value in updates.items():
             setattr(user, key, value)
+        if selected is not None:
+            issue_qualifications(db, user, selected, admin)
         db.flush()
         service.schedule(db)
         return public_user(user)
+
+
+@router.get("/qualifications")
+def qualification_options(_: User = Depends(require_admin), db: Session = Depends(get_db)):
+    from .platform_personnel import qualifications
+    if get_configuration(db)["specification"] is None:
+        return []
+    graph = service.active_graph(db)
+    return [{**item, "skills": [{"id": identifier, "name": graph.entity(identifier)["name"]} for identifier in item["skills"]]} for item in qualifications(graph)]
+
+
+def issue_qualifications(db: Session, user: User, selected: list[str], admin: User) -> None:
+    from .platform_personnel import role_allows
+    existing = {row.qualification_id: row for row in db.query(UserQualification).filter_by(user_id=user.id).all()}
+    graph = service.active_graph(db) if get_configuration(db)["specification"] else None
+    for identifier in selected:
+        definition = graph.entities.get(identifier) if graph else None
+        if not definition or definition["type"] != "qualification":
+            if identifier in existing and existing[identifier].active:
+                continue  # Preserve an obsolete award until an admin explicitly removes it.
+            raise HTTPException(400, "Choose a qualification from the configured ontology")
+        if not role_allows(graph, user.role, identifier):
+            raise HTTPException(400, "This qualification is not compatible with the account role")
+    for identifier in set(existing) | set(selected):
+        row = existing.get(identifier)
+        if row is None:
+            row = UserQualification(user_id=user.id, qualification_id=identifier)
+            db.add(row)
+        enabled = identifier in selected
+        if row.active != enabled or row.assigned_by is None:
+            row.assigned_by = admin.id
+            row.assigned_at = now()
+        row.active = enabled
+    db.flush()
+
+
+def validate_user_skills(db: Session, selected: list[str], retained: list[str] | None = None) -> None:
+    from .platform_graphs import skills
+    if get_configuration(db)["specification"] is None:
+        return  # Existing installations can provision accounts before importing.
+    allowed = {option["id"] for option in skills(db)} | set(retained or [])
+    if any(skill not in allowed for skill in selected):
+        raise HTTPException(400, "Select qualifications required by configured processes")
 
 
 @router.patch("/operator/availability")
@@ -256,6 +326,17 @@ def schema(_: User = Depends(require_admin)):
 @router.get("/shop/catalog")
 def shop_catalog(db: Session = Depends(get_db)):
     return service.catalog(db)
+
+
+@router.post("/configuration/import-turtle")
+def import_turtle(body: TurtleInput, _: User = Depends(require_admin)):
+    from .platform_rdf import convert_turtle
+    try:
+        specification = convert_turtle(body.turtle)
+        errors = validate_specification(specification)
+        return {"specification": specification, "valid": not errors, "errors": errors}
+    except ValueError as error:
+        return {"specification": None, "valid": False, "errors": [str(error)]}
 
 
 @router.post("/shop/validate")
@@ -319,11 +400,34 @@ def order_detail(order_id: str, _: User = Depends(require_admin), db: Session = 
         return service.order_view(db, order)
 
 
+@router.get("/orders/{order_id}/graph")
+def order_knowledge_graph(order_id: str, _: User = Depends(require_admin), db: Session = Depends(get_db)):
+    from .platform_graphs import order_graph
+    with transaction(db):
+        service.schedule(db)
+        order = db.get(Order, order_id)
+        if not order:
+            raise HTTPException(404, "Order not found")
+        return order_graph(db, order)
+
+
+@router.post("/orders/{order_id}/cancel")
+def cancel_order(order_id: str, body: CancellationInput, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    from .platform_cancellation import request
+    with transaction(db):
+        order = db.get(Order, order_id)
+        if not order:
+            raise HTTPException(404, "Order not found")
+        request(db, order, admin, body.reason)
+        service.schedule(db)
+        return service.order_view(db, order)
+
+
 @router.get("/operator/tasks")
 def operator_tasks(user: User = Depends(require_operator), db: Session = Depends(get_db)):
     with transaction(db):
         service.schedule(db)
-        return [service.task_view(db, task) for task in db.query(Task).filter(Task.assigned_operator_id == user.id, Task.status != "completed").order_by(Task.position).all()]
+        return [service.task_view(db, task) for task in db.query(Task).filter(Task.assigned_operator_id == user.id, Task.status.notin_(["completed", "cancelled"])).order_by(Task.position).all()]
 
 
 @router.post("/tasks/{task_id}/evidence")
@@ -433,6 +537,8 @@ def decide_review(review_id: str, body: Decision, _: User = Depends(require_admi
         task.verification_outcome = review.status
         task.verification_reason = body.reason or f"Specialist {review.status} this submission."
         task.status = "completed" if body.decision == "approve" else "rejected"
+        if body.decision == "approve" and task.kind == "machine":
+            task.machine_completed = True
         db.flush()
         service.schedule(db)
         return service.task_view(db, task)
@@ -471,6 +577,35 @@ def gateway_test(_: User = Depends(require_admin), db: Session = Depends(get_db)
         return {"connected": False, "detail": "The configured machine gateway could not be reached"}
 
 
+@router.get("/telemetry/status")
+def telemetry_status(_: User = Depends(require_admin)):
+    from .platform_telemetry import status
+    return status()
+
+
+@router.post("/telemetry/sync")
+def telemetry_sync(_: User = Depends(require_admin)):
+    from .platform_telemetry import status, sync_once
+    sync_once()
+    return status()
+
+
+@router.post("/tasks/{task_id}/confirm-stopped")
+def confirm_stopped(task_id: str, body: StopConfirmation, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    from .platform_telemetry import observed
+    with transaction(db):
+        task = db.get(Task, task_id)
+        if not task or task.kind != "machine" or task.status != "paused" or not observed(db, task):
+            raise HTTPException(409, "Only a paused monitored operation can be released after a confirmed physical stop")
+        if db.get(Order, task.order_id).status == "cancelling":
+            from .platform_cancellation import confirm
+            confirm(db, task, admin)
+        else:
+            service.release(task)
+        service.schedule(db)
+        return service.task_view(db, task)
+
+
 @router.post("/machine/events")
 def machine_event(body: EventInput, request: Request, db: Session = Depends(get_db)):
     expected = get_settings().machine_event_token
@@ -489,6 +624,13 @@ def machine_event(body: EventInput, request: Request, db: Session = Depends(get_
         if task.machine_id != body.machine_id or task.command_id != body.dispatch_id or task.status not in {"in_progress", "awaiting_review", "rejected", "paused"}:
             raise HTTPException(409, "Event does not match the current machine assignment")
         db.add(MachineEvent(**body.model_dump()))
+        if db.get(Order, task.order_id).status in {"cancelling", "cancelled"}:
+            # Late callbacks cannot complete or restart cancelled workflow work.
+            if body.event == "completed":
+                task.machine_completed = True
+            db.flush()
+            service.schedule(db)
+            return {"accepted": True, "duplicate": False, "cancellation_pending": True}
         if task.machine_completed and body.event != "completed":
             return {"accepted": True, "duplicate": False, "ignored": True}
         if body.event == "failed":

@@ -7,11 +7,11 @@ from threading import Lock
 from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends, HTTPException, Request, Response
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, object_session
 
 from .config import get_settings
 from .db import get_db
-from .platform_models import LoginSession, User
+from .platform_models import LoginSession, User, UserQualification
 
 COOKIE = "manufacturing_session"
 LOGIN_FAILURES: dict[tuple[str, str], list[float]] = {}
@@ -60,7 +60,10 @@ def verify_password(password: str, stored: str) -> bool:
 
 
 def public_user(user: User) -> dict:
-    return {key: getattr(user, key) for key in ("id", "name", "email", "role", "skills", "available", "active")}
+    result = {key: getattr(user, key) for key in ("id", "name", "email", "role", "skills", "available", "active")}
+    db = object_session(user)
+    result["qualifications"] = sorted(row.qualification_id for row in db.query(UserQualification).filter_by(user_id=user.id, active=True).all()) if db else []
+    return result
 
 
 def create_session(db: Session, user: User, response: Response) -> dict:

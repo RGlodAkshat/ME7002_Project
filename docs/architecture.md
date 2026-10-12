@@ -4,7 +4,21 @@ ForgeGuide is a modular monolith with one transactional authority for configurat
 
 ## Configuration graph
 
-The server stores a portable JSON specification: ontology declarations, typed entities, typed relationships, product compatibility constraints and a gateway endpoint. These are the actual configuration model, not a separate illustration. Catalog generation traverses product slots and variant relationships. Routing traverses eligible paths, stage dependencies and required capabilities. Guidance renders configured templates against the selected parts and assigned equipment. Verification and scrap records determine stage gates. See [specification](configuration.md).
+The server stores a portable JSON specification: ontology declarations, typed entities, typed relationships, product compatibility constraints and optional integration metadata. These are the actual configuration model, not a separate illustration. Catalog generation traverses product slots and variant relationships. Routing traverses eligible paths, stage dependencies and required capabilities. Guidance renders configured templates against the selected parts and assigned equipment. Verification and scrap records determine stage gates. See [specification](configuration.md).
+
+The admin Ontology view is the reusable manufacturing model (type schema plus configured equipment, products, all supported variants, compatibility rules and feasible paths). An order instantiates a selected knowledge graph: its configuration snapshot, actual operation dependencies, current resource assignments and evidence. `/orders/{id}/graph` derives these facts from persisted workflow state, so reassignment changes the order graph rather than a disconnected diagram. Configuration revisions do not silently rewrite active or historical orders.
+
+Turtle imports preserve all source RDF triples and namespace declarations as provenance. The supported lab projection creates executable product/BOM/route/resource definitions. Administrators edit that executable model through the same revisioned service as JSON imports and MCP; exported source provenance is intentionally not presented as a regenerated OWL serialization of later edits. This is not an unrestricted OWL reasoner.
+
+Personnel definitions belong to this reusable ontology: `role`, `qualification` and `skill` entities plus `requires_skill`, `requires_qualification`, `qualification_grants_skill` and `role_allows_qualification` relationships. A qualification grants configured skills; a process can require both those skills and an issued qualification. Actual people, passwords and administrator-issued `platform_user_qualifications` facts remain operational data, separate from portable definitions. Qualification awards record active status, issuer and assignment time. Scheduling requires an active available operator with all required skills and role-compatible active awards; legacy skill strings alone cannot satisfy an explicit qualification requirement. Older configurations without personnel relationships retain their skill-list contract. Personnel role definitions do not widen backend HTTP authorization.
+
+Each order exposes its complete selected-product `bom`, representing the kit once. Stage `parts` lists are consumption/guidance views of that same kit, not separate inventory deductions or quantities to total together. Source-defined route snapshots, runtime assignments and verification facts form the order-specific graph. This does not introduce physical unit/RFID inventory tracking or a stock ledger.
+
+## Central database integration
+
+The lab configuration uses a read-only PostgreSQL bridge through `TELEMETRY_DATABASE_URL`, separate from the platform's operational database. Existing publishers write compatible `smart_database` telemetry tables. The platform never accesses CNC, PLC, OPC UA, FOCAS, MQTT or machine WebSocket endpoints in this integration. The optional command gateway is a distinct adapter for other configurations.
+
+Observed machine work opens its collection window before a physical cycle. Persisted observation cursors and strict configured signal reducers prevent duplicate rows or prior batches from being treated as current completion. A monotonic `platform_ingest_id` is preferred; existing tables fall back to timestamp watermarks with documented limitations. Source and backend clocks must agree for batch-window correlation. The publisher's `Online` status is never sufficient completion evidence. Missing subprogram/running signals require the configured trained-specialist review, not a fabricated event. See [lab guide](lab-demo.md).
 
 Administrative controls, import/export and MCP all use the same configuration service. Applying a specification validates graph references, allowed endpoint types, acyclic stage dependencies, variant membership, constraints and template placeholders before committing an expected revision. Configuration is distinct from runtime orders, account credentials, machine availability, evidence and review decisions.
 
@@ -12,14 +26,15 @@ An order snapshots the active specification and its selected variants. Its route
 
 ## Execution invariants
 
-- Only dependency-ready tasks can run; operators are assigned from available accounts with all required skills.
+- Only dependency-ready tasks can run; operators are assigned from active available accounts with all required skills and explicitly required qualifications.
 - Resource reservation and assignment are engine responsibilities. Operators cannot select another identity, route, machine or destination operator.
-- Completing a machine-preparation screen explicitly starts the reserved equipment; assignment alone never issues a physical start command.
-- Machine completion requires a matching authenticated callback for the current task, machine and dispatch attempt. Stale callbacks from a previous resource are ignored, and stable event IDs prevent repeat transitions.
+- Completing machine preparation opens a current observation window for `observed` stages, or explicitly commands the reserved equipment for gateway stages. Assignment alone never issues a physical start command; observed lab stages never send one.
+- Gateway machine completion requires a matching authenticated callback for the current task, machine and dispatch attempt. Stale callbacks from a previous resource are ignored, and stable event IDs prevent repeat transitions. Observed stages use only strict configured central-database rules or trained-specialist review; raw availability alone never proves completion.
 - Manual stages complete only after applicable verification and scrap gates. Evidence alone does not prove approval.
 - Human or unavailable/uncertain AI verification requires administrative review; rejected work supports corrected evidence.
 - Unavailability releases compatible unfinished work for reassignment and preserves completed tasks and evidence. If no resource is eligible, work remains queued/paused rather than silently completing.
 - A running physical cycle must acknowledge stop before its reservation can be released. If stopping equipment fails, the platform retains the paused task and machine reservation for reconciliation rather than starting another machine simultaneously.
+- Cancellation preserves completed work and evidence. Untouched future operations are cancelled, but unresolved observed cycles remain paused and reserved until an administrator confirms a real physical stop. Cancellation blocks additional work and records requester/reason and stop confirmations; it never claims to remotely stop an observed lab machine.
 
 ## Boundaries
 
@@ -89,5 +104,7 @@ Events are `started`, `completed` or `failed`. Retries use the same event ID. Th
 | PostgreSQL (Compose) | 5432, bound to localhost | postgres:5432 |
 
 Local development uses a new SQLite database. Compose uses new platform PostgreSQL and evidence volumes. Previous SQLite and Docker volume state is retained rather than destructively migrated. Initial startup has no accounts or manufactured products; first-admin setup and ordinary configuration import establish them.
+
+The explicitly requested `start-demo.sh` workflow creates a separate persistent `.run/demo` environment, provisions individual qualified accounts, imports through the ordinary API and starts independent raw-data publishers against real local PostgreSQL. Native PostgreSQL binaries may be installed into that ignored directory without Docker. Application startup itself remains unseeded; there is no simulator switch in core execution. Demo credentials are private files, PostgreSQL is loopback-only, and the website/API bind on the LAN. Demo publishers cannot approve work or bypass process gates. See [demo instructions](lab-demo.md).
 
 Deployment tokens are generated once into ignored environment files. Operator/admin sessions are separate from equipment callback and MCP credentials. Gateway traffic and its callback require bidirectional reachability; Wi-Fi client isolation, firewalls and HTTP/TLS termination must be considered when connecting the lab PC. Production operation requires observed equipment protocol tests, backups and durable physical-command recovery beyond the simulator's in-memory command history.

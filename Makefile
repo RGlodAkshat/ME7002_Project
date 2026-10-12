@@ -17,7 +17,7 @@ ps:
 	docker compose ps
 
 test: setup
-	docker compose run --rm -v ./backend/tests:/app/tests:ro -v ./configs:/configs:ro backend pytest
+	docker compose run --rm -v ./backend/tests:/app/tests:ro -v ./configs:/configs:ro -v ./smart_factory_v2_modular_3_final_updated.ttl:/smart_factory_v2_modular_3_final_updated.ttl:ro backend pytest
 
 build:
 	docker compose build

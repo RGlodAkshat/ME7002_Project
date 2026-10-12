@@ -1,4 +1,6 @@
 from contextlib import asynccontextmanager
+import asyncio
+from contextlib import suppress
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +28,14 @@ async def lifespan(_: FastAPI):
     settings.evidence_dir.mkdir(parents=True, exist_ok=True)
     settings.reference_image_dir.mkdir(parents=True, exist_ok=True)
     initialize_configuration()
-    yield
+    from .platform_telemetry import monitor
+    task = asyncio.create_task(monitor())
+    try:
+        yield
+    finally:
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
 
 
 settings = get_settings()

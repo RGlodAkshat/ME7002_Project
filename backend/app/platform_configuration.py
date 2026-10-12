@@ -21,6 +21,12 @@ SEMANTICS = {
     "uses_verification": ({"stage"}, {"verification"}), "uses_scrap": ({"stage"}, {"scrap"}),
     "consumes": ({"stage"}, {"part"}),
 }
+PERSONNEL_SEMANTICS = {
+    "requires_skill": ({"stage"}, {"skill"}),
+    "requires_qualification": ({"stage"}, {"qualification"}),
+    "qualification_grants_skill": ({"qualification"}, {"skill"}),
+    "role_allows_qualification": ({"personnel_role"}, {"qualification"}),
+}
 
 
 class Graph:
@@ -143,7 +149,7 @@ def _validate_specification(spec: dict) -> list[str]:
             continue
         if source.get("type") not in relation.get("from_types", []) or target.get("type") not in relation.get("to_types", []):
             errors.append(f"{identifier}: endpoint types violate the ontology")
-        semantics = SEMANTICS.get(link["type"])
+        semantics = SEMANTICS.get(link["type"]) or PERSONNEL_SEMANTICS.get(link["type"])
         if semantics and (source.get("type") not in semantics[0] or target.get("type") not in semantics[1]):
             errors.append(f"{identifier}: invalid platform relationship endpoints")
         if not isinstance(link.get("properties", {}), dict):
@@ -166,6 +172,29 @@ def _validate_specification(spec: dict) -> list[str]:
         if kind == "stage":
             if props.get("kind") not in {"manual", "machine"}:
                 errors.append(f"{identifier}: stage kind must be manual or machine")
+            if props.get("execution_mode", "commanded") not in {"commanded", "observed"}:
+                errors.append(f"{identifier}: execution_mode must be commanded or observed")
+        if kind == "machine" and "telemetry" in props:
+            telemetry = props["telemetry"]
+            if not isinstance(telemetry, dict):
+                errors.append(f"{identifier}: telemetry must be an object")
+            else:
+                import re
+                for key in ("table", "timestamp_column"):
+                    if not isinstance(telemetry.get(key), str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", telemetry[key]):
+                        errors.append(f"{identifier}: telemetry {key} must be a safe SQL identifier")
+                if telemetry.get("identity_column") and (not isinstance(telemetry["identity_column"], str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", telemetry["identity_column"])):
+                    errors.append(f"{identifier}: telemetry identity_column must be a safe SQL identifier")
+                if telemetry.get("identity_column") and not isinstance(telemetry.get("identity"), str):
+                    errors.append(f"{identifier}: telemetry identity_column requires a machine identity")
+                rule = telemetry.get("completion", {})
+                if not isinstance(rule, dict) or rule.get("kind") not in {"program_sequence", "falling_edge", "manual_review"}:
+                    errors.append(f"{identifier}: telemetry requires a supported completion rule")
+                elif rule["kind"] == "program_sequence" and (not isinstance(rule.get("subprograms"), list) or not rule["subprograms"] or any(not isinstance(code, str) or not code for code in rule["subprograms"]) or not isinstance(rule.get("main_program"), str) or not rule["main_program"]):
+                    errors.append(f"{identifier}: program sequence needs subprograms and a main_program")
+                elif rule["kind"] == "falling_edge" and (not isinstance(rule.get("column"), str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", rule["column"])):
+                    errors.append(f"{identifier}: falling edge needs a signal column")
+        if kind == "stage":
             skills = props.get("required_skills", [])
             if not isinstance(skills, list) or any(not isinstance(skill, str) or not skill for skill in skills):
                 errors.append(f"{identifier}: required_skills must be strings")
@@ -184,6 +213,9 @@ def _validate_specification(spec: dict) -> list[str]:
             if not isinstance(instructions, list) or any(not isinstance(line, str) for line in instructions):
                 errors.append(f"{identifier}: instructions must be strings")
             if kind == "guidance":
+                preparation = props.get("preparation_instructions", [])
+                if not isinstance(preparation, list) or any(not isinstance(line, str) for line in preparation):
+                    errors.append(f"{identifier}: preparation_instructions must be strings")
                 completion_instructions = props.get("completion_instructions", [])
                 if not isinstance(completion_instructions, list) or any(not isinstance(line, str) for line in completion_instructions):
                     errors.append(f"{identifier}: completion_instructions must be strings")
@@ -275,12 +307,12 @@ def _validate_specification(spec: dict) -> list[str]:
                                 errors.append(f"{stage['id']}: consumed part/slot is not in product {identifier}")
                         for guidance in graph.related(stage["id"], "uses_guidance"):
                             properties = guidance.get("properties", {})
-                            for instruction in [*properties.get("instructions", []), *properties.get("completion_instructions", [])]:
+                            for instruction in [*properties.get("instructions", []), *properties.get("completion_instructions", []), *properties.get("preparation_instructions", [])]:
                                 try:
                                     for _, field, format_spec, conversion in Formatter().parse(instruction):
                                         if field is None:
                                             continue
-                                        allowed = {"product.name", "parts", "machine.name"} | {f"parts.{slot}.{key}" for slot in slot_ids for key in ("name", "bin", "quantity", "color")}
+                                        allowed = {"product.name", "parts", "machine.name", "workstation.name", "next.stage.name", "next.machine.name"} | {f"parts.{slot}.{key}" for slot in slot_ids for key in ("name", "bin", "quantity", "color")}
                                         if field not in allowed or format_spec or conversion:
                                             errors.append(f"{guidance['id']}: unsupported template placeholder {{{field}}}")
                                 except ValueError:

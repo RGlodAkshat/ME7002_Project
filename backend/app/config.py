@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     admin_integration_token: str | None = None
     gateway_timeout: float = 3.0
     machine_callback_url: str = "http://127.0.0.1:8083/api/machine/events"
+    telemetry_database_url: str | None = None
+    telemetry_poll_seconds: float = 2.0
+    telemetry_timezone: str = "Asia/Kolkata"
 
 
 @lru_cache

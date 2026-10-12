@@ -10,6 +10,8 @@ node_modules/
 dist/
 coverage/
 .run/
+test_smart_operator.db
+test_smart_operator.db-*
 *.log
 smart_operator.db
 manufacturing_platform.db

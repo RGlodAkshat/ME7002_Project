@@ -4,6 +4,7 @@ from pathlib import Path
 os.environ["DATABASE_URL"] = "sqlite:///./test_smart_operator.db"
 os.environ["MACHINE_EVENT_TOKEN"] = "test-machine-integration-token"
 os.environ["EVIDENCE_DIR"] = "./test_evidence"
+os.environ["TELEMETRY_DATABASE_URL"] = ""
 
 import pytest
 from fastapi.testclient import TestClient

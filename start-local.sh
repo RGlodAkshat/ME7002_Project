@@ -6,9 +6,9 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKEND_DIR="$PROJECT_DIR/backend"
 FRONTEND_DIR="$PROJECT_DIR/frontend"
 RUN_DIR="$PROJECT_DIR/.run"
-FRONTEND_PORT=8082
-API_PORT=8083
-GATEWAY_PORT=9002
+FRONTEND_PORT="${FRONTEND_PORT:-8082}"
+API_PORT="${API_PORT:-8083}"
+GATEWAY_PORT="${GATEWAY_PORT:-9002}"
 PIDS=()
 
 require_command() {
@@ -121,7 +121,7 @@ PIDS+=("$!")
 echo "Starting website on port $FRONTEND_PORT..."
 (
   cd "$FRONTEND_DIR"
-  npm run dev -- --host 0.0.0.0 --port "$FRONTEND_PORT" --strictPort
+  API_PROXY_TARGET="http://127.0.0.1:$API_PORT" npm run dev -- --host 0.0.0.0 --port "$FRONTEND_PORT" --strictPort
 ) >"$RUN_DIR/frontend.log" 2>&1 &
 PIDS+=("$!")
 

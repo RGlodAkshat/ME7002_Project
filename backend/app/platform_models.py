@@ -119,3 +119,33 @@ class ConfigurationChange(Base):
     revision: Mapped[int] = mapped_column(Integer, unique=True)
     actor: Mapped[str | None] = mapped_column(String(120), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class Observation(Base):
+    """Cursor and observed signal history scoped to one machine assignment."""
+    __tablename__ = "platform_observations"
+    task_id: Mapped[str] = mapped_column(ForeignKey("platform_tasks.id"), primary_key=True)
+    dispatch_id: Mapped[str] = mapped_column(String(36))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    cursor: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    state: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class UserQualification(Base):
+    """Administrator-issued qualification facts, never portable login records."""
+    __tablename__ = "platform_user_qualifications"
+    user_id: Mapped[str] = mapped_column(ForeignKey("platform_users.id"), primary_key=True)
+    qualification_id: Mapped[str] = mapped_column(String(120), primary_key=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    assigned_by: Mapped[str | None] = mapped_column(ForeignKey("platform_users.id"), nullable=True)
+    assigned_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class OrderCancellation(Base):
+    __tablename__ = "platform_order_cancellations"
+    order_id: Mapped[str] = mapped_column(ForeignKey("platform_orders.id"), primary_key=True)
+    requested_by: Mapped[str] = mapped_column(ForeignKey("platform_users.id"))
+    reason: Mapped[str] = mapped_column(Text)
+    requested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    physical_stops: Mapped[dict] = mapped_column(JSON, default=dict)
