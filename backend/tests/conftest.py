@@ -2,14 +2,14 @@ import os
 from pathlib import Path
 
 os.environ["DATABASE_URL"] = "sqlite:///./test_smart_operator.db"
-os.environ["VERIFICATION_PROVIDER"] = "mock"
+os.environ["MACHINE_EVENT_TOKEN"] = "test-machine-integration-token"
 os.environ["EVIDENCE_DIR"] = "./test_evidence"
 
 import pytest
 from fastapi.testclient import TestClient
 
 from app.db import Base, engine
-from app.main import app, seed
+from app.main import app, initialize_configuration
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def client():
     with TestClient(app) as test_client:
         Base.metadata.drop_all(engine)
         Base.metadata.create_all(engine)
-        seed()
+        initialize_configuration()
         yield test_client
 
 

@@ -1,0 +1,759 @@
+{
+  "schema_version": "1.0",
+  "environment": {
+    "id": "workshop-storage",
+    "name": "Workshop Storage Manufacturing"
+  },
+  "ontology": {
+    "entity_types": [
+      "plant",
+      "machine",
+      "capability",
+      "part",
+      "variant",
+      "product",
+      "path",
+      "stage",
+      "guidance",
+      "verification",
+      "scrap"
+    ],
+    "relation_types": [
+      {
+        "id": "located_at",
+        "from_types": [
+          "machine",
+          "product"
+        ],
+        "to_types": [
+          "plant"
+        ]
+      },
+      {
+        "id": "has_capability",
+        "from_types": [
+          "machine"
+        ],
+        "to_types": [
+          "capability"
+        ]
+      },
+      {
+        "id": "variant_of",
+        "from_types": [
+          "variant"
+        ],
+        "to_types": [
+          "part"
+        ]
+      },
+      {
+        "id": "has_slot",
+        "from_types": [
+          "product"
+        ],
+        "to_types": [
+          "part"
+        ]
+      },
+      {
+        "id": "uses_path",
+        "from_types": [
+          "product"
+        ],
+        "to_types": [
+          "path"
+        ]
+      },
+      {
+        "id": "has_stage",
+        "from_types": [
+          "path"
+        ],
+        "to_types": [
+          "stage"
+        ]
+      },
+      {
+        "id": "precedes",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "stage"
+        ]
+      },
+      {
+        "id": "requires_capability",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "capability"
+        ]
+      },
+      {
+        "id": "uses_guidance",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "guidance"
+        ]
+      },
+      {
+        "id": "uses_verification",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "verification"
+        ]
+      },
+      {
+        "id": "uses_scrap",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "scrap"
+        ]
+      },
+      {
+        "id": "consumes",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "part"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "plant",
+      "type": "plant",
+      "name": "Storage Products Workshop",
+      "properties": {}
+    },
+    {
+      "id": "panel-cutting",
+      "type": "capability",
+      "name": "Panel cutting",
+      "properties": {}
+    },
+    {
+      "id": "drilling",
+      "type": "capability",
+      "name": "Hole drilling",
+      "properties": {}
+    },
+    {
+      "id": "panel-saw",
+      "type": "machine",
+      "name": "Panel Saw",
+      "properties": {}
+    },
+    {
+      "id": "drill-press",
+      "type": "machine",
+      "name": "Drill Press",
+      "properties": {}
+    },
+    {
+      "id": "product",
+      "type": "product",
+      "name": "Modular storage shelf",
+      "properties": {
+        "description": "Select matching-size panels and a finish. Screw packs are included.",
+        "visual": [
+          {
+            "slot_id": "sides",
+            "primitive": "box",
+            "position": [
+              -0.65,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              0.08,
+              1.4,
+              0.65
+            ]
+          },
+          {
+            "slot_id": "shelves",
+            "primitive": "box",
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1.3,
+              0.08,
+              0.65
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sides",
+      "type": "part",
+      "name": "Side panels",
+      "properties": {}
+    },
+    {
+      "id": "sides-compact",
+      "type": "variant",
+      "name": "Compact side panel",
+      "properties": {
+        "aliases": ["small side panels","short sides","compact sides"],
+        "size": "compact",
+        "finish": "natural",
+        "color": "#c7a475",
+        "bin": "P-C",
+        "length_mm": 700
+      }
+    },
+    {
+      "id": "sides-tall",
+      "type": "variant",
+      "name": "Tall side panel",
+      "properties": {
+        "aliases": ["tall sides","large side panels"],
+        "size": "tall",
+        "finish": "natural",
+        "color": "#c7a475",
+        "bin": "P-T",
+        "length_mm": 1400
+      }
+    },
+    {
+      "id": "shelves",
+      "type": "part",
+      "name": "Shelf panels",
+      "properties": {}
+    },
+    {
+      "id": "shelves-compact",
+      "type": "variant",
+      "name": "Compact shelf",
+      "properties": {
+        "aliases": ["small shelf","small shelves","compact shelves"],
+        "size": "compact",
+        "finish": "natural",
+        "color": "#c7a475",
+        "bin": "S-C",
+        "width_mm": 600
+      }
+    },
+    {
+      "id": "shelves-tall",
+      "type": "variant",
+      "name": "Tall shelf",
+      "properties": {
+        "aliases": ["large shelf","wide shelves","tall shelves"],
+        "size": "tall",
+        "finish": "natural",
+        "color": "#c7a475",
+        "bin": "S-T",
+        "width_mm": 900
+      }
+    },
+    {
+      "id": "screws",
+      "type": "part",
+      "name": "Assembly screws",
+      "properties": {}
+    },
+    {
+      "id": "screw-standard",
+      "type": "variant",
+      "name": "M6 screw",
+      "properties": {
+        "aliases": ["assembly screws","M6 screws"],
+        "bin": "F-06",
+        "thread": "M6"
+      }
+    },
+    {
+      "id": "finish",
+      "type": "part",
+      "name": "Finish kit",
+      "properties": {}
+    },
+    {
+      "id": "finish-clear",
+      "type": "variant",
+      "name": "Clear coating",
+      "properties": {
+        "aliases": ["clear finish","natural finish"],
+        "color": "#dcc4a1",
+        "bin": "C-01",
+        "finish": "clear"
+      }
+    },
+    {
+      "id": "finish-white",
+      "type": "variant",
+      "name": "White coating",
+      "properties": {
+        "aliases": ["white finish","white coating"],
+        "color": "#f5f5f1",
+        "bin": "C-02",
+        "finish": "white"
+      }
+    },
+    {
+      "id": "cut-guide",
+      "type": "guidance",
+      "name": "Cut panels",
+      "properties": {
+        "completion_instructions": [
+          "After the saw stops, remove the panels and check their dimensions.",
+          "Inspect the cut edges and record offcuts or damaged panels before continuing."
+        ],
+        "instructions": [
+          "Load the selected panels for {product.name} into {machine.name}.",
+          "Use the panel dimensions recorded for the selected variants and follow the station's guarded-cut procedure."
+        ]
+      }
+    },
+    {
+      "id": "drill-guide",
+      "type": "guidance",
+      "name": "Drill connection holes",
+      "properties": {
+        "completion_instructions": [
+          "After the drill stops, remove the panels and inspect the hole pattern and edges.",
+          "Record damaged panels before passing the components to assembly."
+        ],
+        "instructions": [
+          "Use {machine.name} with the fixture appropriate to the selected panels.",
+          "Drill the connection pattern and check the edges for splintering."
+        ]
+      }
+    },
+    {
+      "id": "build-guide",
+      "type": "guidance",
+      "name": "Build storage shelf",
+      "properties": {
+        "instructions": [
+          "Collect {parts}.",
+          "Join the two side panels to the three shelf panels with the 16 supplied screws.",
+          "Apply the selected finish kit. Check the unit sits level before inspection."
+        ]
+      }
+    },
+    {
+      "id": "shelf-inspection",
+      "type": "verification",
+      "name": "Shelf assembly review",
+      "properties": {
+        "provider": "human",
+        "instructions": ["Confirm matching panel dimensions, complete screw joints, level assembly, and selected finish."],
+        "reference_images": [],
+        "min_confidence": 90
+      }
+    },
+    {
+      "id": "panel-scrap",
+      "type": "scrap",
+      "name": "Panel offcuts and defects",
+      "properties": {
+        "required": true,
+        "max_quantity": 50,
+        "reasons": [
+          "Cutting offcut",
+          "Split panel",
+          "Drilling damage",
+          "Finish defect"
+        ]
+      }
+    },
+    {
+      "id": "shelf-route",
+      "type": "path",
+      "name": "Cut, drill and assemble",
+      "properties": {}
+    },
+    {
+      "id": "cut",
+      "type": "stage",
+      "name": "Cut panels",
+      "properties": {
+        "kind": "machine",
+        "required_skills": [
+          "woodworking"
+        ]
+      }
+    },
+    {
+      "id": "drill",
+      "type": "stage",
+      "name": "Drill panel joints",
+      "properties": {
+        "kind": "machine",
+        "required_skills": [
+          "woodworking"
+        ]
+      }
+    },
+    {
+      "id": "build",
+      "type": "stage",
+      "name": "Assemble and finish",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "assembly"
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "located_at:panel-saw:plant",
+      "type": "located_at",
+      "source": "panel-saw",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_capability:panel-saw:panel-cutting",
+      "type": "has_capability",
+      "source": "panel-saw",
+      "target": "panel-cutting",
+      "properties": {}
+    },
+    {
+      "id": "located_at:drill-press:plant",
+      "type": "located_at",
+      "source": "drill-press",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_capability:drill-press:drilling",
+      "type": "has_capability",
+      "source": "drill-press",
+      "target": "drilling",
+      "properties": {}
+    },
+    {
+      "id": "located_at:product:plant",
+      "type": "located_at",
+      "source": "product",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:sides:sides",
+      "type": "has_slot",
+      "source": "product",
+      "target": "sides",
+      "properties": {
+        "slot_id": "sides",
+        "label": "Side panels",
+        "quantity": 2,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:sides-compact:sides",
+      "type": "variant_of",
+      "source": "sides-compact",
+      "target": "sides",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:sides-tall:sides",
+      "type": "variant_of",
+      "source": "sides-tall",
+      "target": "sides",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:shelves:shelves",
+      "type": "has_slot",
+      "source": "product",
+      "target": "shelves",
+      "properties": {
+        "slot_id": "shelves",
+        "label": "Shelf panels",
+        "quantity": 3,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:shelves-compact:shelves",
+      "type": "variant_of",
+      "source": "shelves-compact",
+      "target": "shelves",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:shelves-tall:shelves",
+      "type": "variant_of",
+      "source": "shelves-tall",
+      "target": "shelves",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:screws:screws",
+      "type": "has_slot",
+      "source": "product",
+      "target": "screws",
+      "properties": {
+        "slot_id": "screws",
+        "label": "Assembly screws",
+        "quantity": 16,
+        "configurable": false
+      }
+    },
+    {
+      "id": "variant_of:screw-standard:screws",
+      "type": "variant_of",
+      "source": "screw-standard",
+      "target": "screws",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:finish:finish",
+      "type": "has_slot",
+      "source": "product",
+      "target": "finish",
+      "properties": {
+        "slot_id": "finish",
+        "label": "Finish kit",
+        "quantity": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:finish-clear:finish",
+      "type": "variant_of",
+      "source": "finish-clear",
+      "target": "finish",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:finish-white:finish",
+      "type": "variant_of",
+      "source": "finish-white",
+      "target": "finish",
+      "properties": {}
+    },
+    {
+      "id": "uses_path:product:shelf-route",
+      "type": "uses_path",
+      "source": "product",
+      "target": "shelf-route",
+      "properties": {
+        "priority": 10
+      }
+    },
+    {
+      "id": "has_stage:shelf-route:cut",
+      "type": "has_stage",
+      "source": "shelf-route",
+      "target": "cut",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cut:cut-guide",
+      "type": "uses_guidance",
+      "source": "cut",
+      "target": "cut-guide",
+      "properties": {}
+    },
+    {
+      "id": "requires_capability:cut:panel-cutting",
+      "type": "requires_capability",
+      "source": "cut",
+      "target": "panel-cutting",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cut:panel-scrap",
+      "type": "uses_scrap",
+      "source": "cut",
+      "target": "panel-scrap",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cut:sides:sides",
+      "type": "consumes",
+      "source": "cut",
+      "target": "sides",
+      "properties": {
+        "slot_id": "sides"
+      }
+    },
+    {
+      "id": "consumes:cut:shelves:shelves",
+      "type": "consumes",
+      "source": "cut",
+      "target": "shelves",
+      "properties": {
+        "slot_id": "shelves"
+      }
+    },
+    {
+      "id": "has_stage:shelf-route:drill",
+      "type": "has_stage",
+      "source": "shelf-route",
+      "target": "drill",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:drill:drill-guide",
+      "type": "uses_guidance",
+      "source": "drill",
+      "target": "drill-guide",
+      "properties": {}
+    },
+    {
+      "id": "requires_capability:drill:drilling",
+      "type": "requires_capability",
+      "source": "drill",
+      "target": "drilling",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:drill:panel-scrap",
+      "type": "uses_scrap",
+      "source": "drill",
+      "target": "panel-scrap",
+      "properties": {}
+    },
+    {
+      "id": "consumes:drill:sides:sides",
+      "type": "consumes",
+      "source": "drill",
+      "target": "sides",
+      "properties": {
+        "slot_id": "sides"
+      }
+    },
+    {
+      "id": "consumes:drill:shelves:shelves",
+      "type": "consumes",
+      "source": "drill",
+      "target": "shelves",
+      "properties": {
+        "slot_id": "shelves"
+      }
+    },
+    {
+      "id": "has_stage:shelf-route:build",
+      "type": "has_stage",
+      "source": "shelf-route",
+      "target": "build",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:build:build-guide",
+      "type": "uses_guidance",
+      "source": "build",
+      "target": "build-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:build:shelf-inspection",
+      "type": "uses_verification",
+      "source": "build",
+      "target": "shelf-inspection",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:build:panel-scrap",
+      "type": "uses_scrap",
+      "source": "build",
+      "target": "panel-scrap",
+      "properties": {}
+    },
+    {
+      "id": "consumes:build:sides:sides",
+      "type": "consumes",
+      "source": "build",
+      "target": "sides",
+      "properties": {
+        "slot_id": "sides"
+      }
+    },
+    {
+      "id": "consumes:build:shelves:shelves",
+      "type": "consumes",
+      "source": "build",
+      "target": "shelves",
+      "properties": {
+        "slot_id": "shelves"
+      }
+    },
+    {
+      "id": "consumes:build:screws:screws",
+      "type": "consumes",
+      "source": "build",
+      "target": "screws",
+      "properties": {
+        "slot_id": "screws"
+      }
+    },
+    {
+      "id": "consumes:build:finish:finish",
+      "type": "consumes",
+      "source": "build",
+      "target": "finish",
+      "properties": {
+        "slot_id": "finish"
+      }
+    },
+    {
+      "id": "precedes:cut:drill",
+      "type": "precedes",
+      "source": "cut",
+      "target": "drill",
+      "properties": {}
+    },
+    {
+      "id": "precedes:drill:build",
+      "type": "precedes",
+      "source": "drill",
+      "target": "build",
+      "properties": {}
+    }
+  ],
+  "constraints": [
+    {
+      "id": "panel-size-match",
+      "name": "Side and shelf sizes match",
+      "product_id": "product",
+      "kind": "match_property",
+      "slots": [
+        "sides",
+        "shelves"
+      ],
+      "property": "size"
+    }
+  ],
+  "gateway": {
+    "host": "127.0.0.1",
+    "port": 9002,
+    "protocol": "http"
+  }
+}

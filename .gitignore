@@ -12,6 +12,9 @@ coverage/
 .run/
 *.log
 smart_operator.db
+manufacturing_platform.db
+manufacturing_platform.db-shm
+manufacturing_platform.db-wal
 /data/
 infra/mosquitto/data/*
 infra/mosquitto/log/*

@@ -25,6 +25,6 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def create_schema() -> None:
-    from . import models  # noqa: F401
+    from . import platform_models  # noqa: F401
 
     Base.metadata.create_all(engine)

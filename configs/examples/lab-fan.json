@@ -1,0 +1,2158 @@
+{
+  "schema_version": "1.0",
+  "environment": {
+    "id": "smart-manufacturing-lab",
+    "name": "Smart Manufacturing Lab"
+  },
+  "ontology": {
+    "entity_types": [
+      "plant",
+      "machine",
+      "capability",
+      "part",
+      "variant",
+      "product",
+      "path",
+      "stage",
+      "guidance",
+      "verification",
+      "scrap"
+    ],
+    "relation_types": [
+      {
+        "id": "located_at",
+        "from_types": [
+          "machine",
+          "product"
+        ],
+        "to_types": [
+          "plant"
+        ]
+      },
+      {
+        "id": "has_capability",
+        "from_types": [
+          "machine"
+        ],
+        "to_types": [
+          "capability"
+        ]
+      },
+      {
+        "id": "variant_of",
+        "from_types": [
+          "variant"
+        ],
+        "to_types": [
+          "part"
+        ]
+      },
+      {
+        "id": "has_slot",
+        "from_types": [
+          "product"
+        ],
+        "to_types": [
+          "part"
+        ]
+      },
+      {
+        "id": "uses_path",
+        "from_types": [
+          "product"
+        ],
+        "to_types": [
+          "path"
+        ]
+      },
+      {
+        "id": "has_stage",
+        "from_types": [
+          "path"
+        ],
+        "to_types": [
+          "stage"
+        ]
+      },
+      {
+        "id": "precedes",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "stage"
+        ]
+      },
+      {
+        "id": "requires_capability",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "capability"
+        ]
+      },
+      {
+        "id": "uses_guidance",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "guidance"
+        ]
+      },
+      {
+        "id": "uses_verification",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "verification"
+        ]
+      },
+      {
+        "id": "uses_scrap",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "scrap"
+        ]
+      },
+      {
+        "id": "consumes",
+        "from_types": [
+          "stage"
+        ],
+        "to_types": [
+          "part"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "plant",
+      "type": "plant",
+      "name": "Fan Assembly Laboratory",
+      "properties": {
+        "description": "One gateway PC fronts the connected manufacturing equipment."
+      }
+    },
+    {
+      "id": "cnc",
+      "type": "capability",
+      "name": "CNC gear preparation",
+      "properties": {}
+    },
+    {
+      "id": "automated",
+      "type": "capability",
+      "name": "Automated gear preparation",
+      "properties": {}
+    },
+    {
+      "id": "cnc-1",
+      "type": "machine",
+      "name": "CNC Mill 1",
+      "properties": {}
+    },
+    {
+      "id": "cnc-2",
+      "type": "machine",
+      "name": "CNC Mill 2",
+      "properties": {}
+    },
+    {
+      "id": "line-1",
+      "type": "machine",
+      "name": "Automated Cell 1",
+      "properties": {}
+    },
+    {
+      "id": "line-2",
+      "type": "machine",
+      "name": "Automated Cell 2",
+      "properties": {}
+    },
+    {
+      "id": "product",
+      "type": "product",
+      "name": "Hand-powered fan",
+      "properties": {
+        "description": "Configure compatible parts independently. Shared gear train and mounting family.",
+        "visual": [
+          {
+            "slot_id": "base",
+            "primitive": "box",
+            "position": [
+              0,
+              -0.6,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1.3,
+              0.2,
+              0.5
+            ]
+          },
+          {
+            "slot_id": "upper",
+            "primitive": "box",
+            "position": [
+              0,
+              0.15,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1.1,
+              0.12,
+              0.42
+            ]
+          },
+          {
+            "slot_id": "handle",
+            "primitive": "cylinder",
+            "position": [
+              -0.58,
+              -0.05,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              1.57
+            ],
+            "scale": [
+              0.08,
+              0.55,
+              0.08
+            ]
+          },
+          {
+            "slot_id": "propeller",
+            "primitive": "cylinder",
+            "position": [
+              0.5,
+              0.4,
+              0
+            ],
+            "rotation": [
+              1.57,
+              0,
+              0
+            ],
+            "scale": [
+              0.12,
+              0.15,
+              0.12
+            ]
+          },
+          {
+            "slot_id": "propeller",
+            "primitive": "box",
+            "position": [0.5, 0.4, 0.06],
+            "rotation": [0, 0, 0],
+            "scale": [0.75, 0.1, 0.04]
+          },
+          {
+            "slot_id": "propeller",
+            "primitive": "box",
+            "position": [0.5, 0.4, 0.06],
+            "rotation": [0, 0, 0.7854],
+            "scale": [0.75, 0.1, 0.04]
+          },
+          {
+            "slot_id": "propeller",
+            "primitive": "box",
+            "position": [0.5, 0.4, 0.06],
+            "rotation": [0, 0, 1.5708],
+            "scale": [0.75, 0.1, 0.04]
+          },
+          {
+            "slot_id": "propeller",
+            "primitive": "box",
+            "position": [0.5, 0.4, 0.06],
+            "rotation": [0, 0, 2.35619],
+            "scale": [0.75, 0.1, 0.04]
+          }
+        ]
+      }
+    },
+    {
+      "id": "base",
+      "type": "part",
+      "name": "Base casing",
+      "properties": {}
+    },
+    {
+      "id": "base-red",
+      "type": "variant",
+      "name": "Red base casing",
+      "properties": {
+        "aliases": ["red base","red bottom casing"],
+        "color": "#cd453d",
+        "color_name": "red",
+        "part_code": "CLR",
+        "bin": "B6a",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "base-green",
+      "type": "variant",
+      "name": "Green base casing",
+      "properties": {
+        "aliases": ["green base","green bottom casing"],
+        "color": "#329565",
+        "color_name": "green",
+        "part_code": "CLG",
+        "bin": "B11a",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "base-blue",
+      "type": "variant",
+      "name": "Blue base casing",
+      "properties": {
+        "aliases": ["blue base","blue bottom casing"],
+        "color": "#2855c5",
+        "color_name": "blue",
+        "part_code": "CLB",
+        "bin": "B16a",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "base-white",
+      "type": "variant",
+      "name": "White base casing",
+      "properties": {
+        "aliases": ["white base","white bottom casing"],
+        "color": "#e9e8df",
+        "color_name": "white",
+        "part_code": "CLW",
+        "bin": "B21a",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "upper",
+      "type": "part",
+      "name": "Upper casing",
+      "properties": {}
+    },
+    {
+      "id": "upper-red",
+      "type": "variant",
+      "name": "Red upper casing",
+      "properties": {
+        "aliases": ["red upper casing","red top casing"],
+        "color": "#cd453d",
+        "color_name": "red",
+        "part_code": "CUR",
+        "bin": "B6b",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "upper-green",
+      "type": "variant",
+      "name": "Green upper casing",
+      "properties": {
+        "aliases": ["green upper casing","green top casing"],
+        "color": "#329565",
+        "color_name": "green",
+        "part_code": "CUG",
+        "bin": "B11b",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "upper-blue",
+      "type": "variant",
+      "name": "Blue upper casing",
+      "properties": {
+        "aliases": ["blue upper casing","blue top casing"],
+        "color": "#2855c5",
+        "color_name": "blue",
+        "part_code": "CUB",
+        "bin": "B16b",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "upper-white",
+      "type": "variant",
+      "name": "White upper casing",
+      "properties": {
+        "aliases": ["white upper casing","white top casing"],
+        "color": "#e9e8df",
+        "color_name": "white",
+        "part_code": "CUW",
+        "bin": "B21b",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "handle",
+      "type": "part",
+      "name": "Handle",
+      "properties": {}
+    },
+    {
+      "id": "handle-red",
+      "type": "variant",
+      "name": "Red handle",
+      "properties": {
+        "aliases": ["red handle","red crank"],
+        "color": "#cd453d",
+        "color_name": "red",
+        "part_code": "HR",
+        "bin": "B7",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "handle-green",
+      "type": "variant",
+      "name": "Green handle",
+      "properties": {
+        "aliases": ["green handle","green crank"],
+        "color": "#329565",
+        "color_name": "green",
+        "part_code": "HG",
+        "bin": "B12",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "handle-blue",
+      "type": "variant",
+      "name": "Blue handle",
+      "properties": {
+        "aliases": ["blue handle","blue crank"],
+        "color": "#2855c5",
+        "color_name": "blue",
+        "part_code": "HB",
+        "bin": "B17",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "handle-white",
+      "type": "variant",
+      "name": "White handle",
+      "properties": {
+        "aliases": ["white handle","white crank"],
+        "color": "#e9e8df",
+        "color_name": "white",
+        "part_code": "HW",
+        "bin": "B22",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "propeller",
+      "type": "part",
+      "name": "Propeller",
+      "properties": {}
+    },
+    {
+      "id": "propeller-red",
+      "type": "variant",
+      "name": "Red propeller",
+      "properties": {
+        "aliases": ["red propeller","red blade","red blades"],
+        "color": "#cd453d",
+        "color_name": "red",
+        "part_code": "BLR",
+        "bin": "B8",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "propeller-green",
+      "type": "variant",
+      "name": "Green propeller",
+      "properties": {
+        "aliases": ["green propeller","green blade","green blades"],
+        "color": "#329565",
+        "color_name": "green",
+        "part_code": "BLG",
+        "bin": "B13",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "propeller-blue",
+      "type": "variant",
+      "name": "Blue propeller",
+      "properties": {
+        "aliases": ["blue propeller","blue blade","blue blades"],
+        "color": "#2855c5",
+        "color_name": "blue",
+        "part_code": "BLB",
+        "bin": "B18",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "propeller-white",
+      "type": "variant",
+      "name": "White propeller",
+      "properties": {
+        "aliases": ["white propeller","white blade","white blades"],
+        "color": "#e9e8df",
+        "color_name": "white",
+        "part_code": "BLW",
+        "bin": "B23",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "propeller-yellow",
+      "type": "variant",
+      "name": "Yellow propeller",
+      "properties": {
+        "aliases": ["yellow propeller","yellow blade","yellow blades"],
+        "color": "#efc23b",
+        "color_name": "yellow",
+        "part_code": "BLY",
+        "bin": "Y-PROP",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin2",
+      "type": "part",
+      "name": "Pin 2",
+      "properties": {}
+    },
+    {
+      "id": "pin2-red",
+      "type": "variant",
+      "name": "Red pin 2",
+      "properties": {
+        "aliases": ["red pin 2"],
+        "color": "#cd453d",
+        "color_name": "red",
+        "part_code": "P2R",
+        "bin": "B9",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin2-green",
+      "type": "variant",
+      "name": "Green pin 2",
+      "properties": {
+        "aliases": ["green pin 2"],
+        "color": "#329565",
+        "color_name": "green",
+        "part_code": "P2G",
+        "bin": "B14",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin2-blue",
+      "type": "variant",
+      "name": "Blue pin 2",
+      "properties": {
+        "aliases": ["blue pin 2"],
+        "color": "#2855c5",
+        "color_name": "blue",
+        "part_code": "P2B",
+        "bin": "B19",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin2-white",
+      "type": "variant",
+      "name": "White pin 2",
+      "properties": {
+        "aliases": ["white pin 2"],
+        "color": "#e9e8df",
+        "color_name": "white",
+        "part_code": "P2W",
+        "bin": "B24",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin1",
+      "type": "part",
+      "name": "Pin 1",
+      "properties": {}
+    },
+    {
+      "id": "pin1-red",
+      "type": "variant",
+      "name": "Red pin 1",
+      "properties": {
+        "aliases": ["red pin 1"],
+        "color": "#cd453d",
+        "color_name": "red",
+        "part_code": "P1R",
+        "bin": "B10",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin1-green",
+      "type": "variant",
+      "name": "Green pin 1",
+      "properties": {
+        "aliases": ["green pin 1"],
+        "color": "#329565",
+        "color_name": "green",
+        "part_code": "P1G",
+        "bin": "B15",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin1-blue",
+      "type": "variant",
+      "name": "Blue pin 1",
+      "properties": {
+        "aliases": ["blue pin 1"],
+        "color": "#2855c5",
+        "color_name": "blue",
+        "part_code": "P1B",
+        "bin": "B20",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "pin1-white",
+      "type": "variant",
+      "name": "White pin 1",
+      "properties": {
+        "aliases": ["white pin 1"],
+        "color": "#e9e8df",
+        "color_name": "white",
+        "part_code": "P1W",
+        "bin": "B25",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "gear1",
+      "type": "part",
+      "name": "Gear 1",
+      "properties": {}
+    },
+    {
+      "id": "gear1-standard",
+      "type": "variant",
+      "name": "Gear 1",
+      "properties": {
+        "aliases": ["gear 1"],
+        "part_code": "G1",
+        "bin": "B1",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "gear2",
+      "type": "part",
+      "name": "Gear 2",
+      "properties": {}
+    },
+    {
+      "id": "gear2-standard",
+      "type": "variant",
+      "name": "Gear 2",
+      "properties": {
+        "aliases": ["gear 2"],
+        "part_code": "G2",
+        "bin": "B2",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "gear3",
+      "type": "part",
+      "name": "Gear 3",
+      "properties": {}
+    },
+    {
+      "id": "gear3-standard",
+      "type": "variant",
+      "name": "Gear 3",
+      "properties": {
+        "aliases": ["gear 3"],
+        "part_code": "G3",
+        "bin": "B3",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "gear4",
+      "type": "part",
+      "name": "Gear 4",
+      "properties": {}
+    },
+    {
+      "id": "gear4-standard",
+      "type": "variant",
+      "name": "Gear 4",
+      "properties": {
+        "aliases": ["gear 4"],
+        "part_code": "G4",
+        "bin": "B4",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "gear5",
+      "type": "part",
+      "name": "Gear 5",
+      "properties": {}
+    },
+    {
+      "id": "gear5-standard",
+      "type": "variant",
+      "name": "Gear 5",
+      "properties": {
+        "aliases": ["gear 5"],
+        "part_code": "G5",
+        "bin": "B5",
+        "mounting_family": "fan-standard"
+      }
+    },
+    {
+      "id": "kit-guide",
+      "type": "guidance",
+      "name": "Kitting instructions",
+      "properties": {
+        "part_instructions": ["Collect {part.quantity} × {part.name} from bin {part.bin}."],
+        "instructions": [
+          "Check that each selected part is in its marked tray position.",
+          "Record damaged or missing parts before submitting the tray for inspection."
+        ]
+      }
+    },
+    {
+      "id": "prepare-guide",
+      "type": "guidance",
+      "name": "Machine preparation",
+      "properties": {
+        "completion_instructions": [
+          "Open the guard only after the equipment is stopped.",
+          "Unload the processed gears and pins. Check for damage before passing on the tray.",
+          "Record any material loss from the operation."
+        ],
+        "instructions": [
+          "Take the verified tray to {machine.name}.",
+          "Load the five gears, five Pin 1 pieces and one Pin 2 according to the station fixture.",
+          "Close the guard after loading. Start equipment only when the fixture is secure and the work area is clear."
+        ]
+      }
+    },
+    {
+      "id": "assembly-guide",
+      "type": "guidance",
+      "name": "Assembly instructions",
+      "properties": {
+        "instructions": [
+          "Fit {parts.base.name} from bin {parts.base.bin} into the assembly fixture.",
+          "Install the five gears and pins in the indicated mounting positions.",
+          "Attach {parts.handle.name}, fit {parts.upper.name}, and secure {parts.propeller.name}.",
+          "Turn the handle slowly. The propeller must rotate freely without rubbing."
+        ]
+      }
+    },
+    {
+      "id": "finish-guide",
+      "type": "guidance",
+      "name": "Final inspection",
+      "properties": {
+        "instructions": [
+          "Check that the assembled {product.name} contains the selected parts.",
+          "Turn the handle and inspect smooth gear movement, secure casing, and propeller clearance.",
+          "Photograph the finished assembly so the selected parts and connections are visible."
+        ]
+      }
+    },
+    {
+      "id": "kit-check",
+      "type": "verification",
+      "name": "Tray verification",
+      "properties": {
+        "provider": "human",
+        "instructions": ["Confirm that each selected part is present, correct, and undamaged. Check all five gears, five Pin 1 pieces, one Pin 2, casing halves, handle, and propeller."],
+        "reference_images": [
+          "blue.jpg",
+          "red.jpg",
+          "green.jpg",
+          "white.jpg"
+        ],
+        "min_confidence": 85
+      }
+    },
+    {
+      "id": "assembly-check",
+      "type": "verification",
+      "name": "Assembly verification",
+      "properties": {
+        "provider": "human",
+        "instructions": ["Confirm correct selected parts, secure pin and gear connections, and intact assembly. Reference photographs show the overall design; the order's independently selected part colours are authoritative."],
+        "reference_images": [
+          "blue.jpg"
+        ],
+        "min_confidence": 90
+      }
+    },
+    {
+      "id": "material-loss",
+      "type": "scrap",
+      "name": "Material loss declaration",
+      "properties": {
+        "required": true,
+        "max_quantity": 20,
+        "reasons": [
+          "Damaged part",
+          "Missing part",
+          "Incorrect component",
+          "Machining defect"
+        ]
+      }
+    },
+    {
+      "id": "cnc-route",
+      "type": "path",
+      "name": "CNC preparation and assembly",
+      "properties": {}
+    },
+    {
+      "id": "cnc-route-kit",
+      "type": "stage",
+      "name": "Prepare the parts tray",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "kitting"
+        ]
+      }
+    },
+    {
+      "id": "cnc-route-prepare",
+      "type": "stage",
+      "name": "Prepare the gear train",
+      "properties": {
+        "kind": "machine",
+        "required_skills": [
+          "machining"
+        ]
+      }
+    },
+    {
+      "id": "cnc-route-assemble",
+      "type": "stage",
+      "name": "Assemble the fan",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "assembly"
+        ]
+      }
+    },
+    {
+      "id": "cnc-route-inspect",
+      "type": "stage",
+      "name": "Inspect the finished product",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "quality"
+        ]
+      }
+    },
+    {
+      "id": "cell-route",
+      "type": "path",
+      "name": "Automated-cell preparation and assembly",
+      "properties": {}
+    },
+    {
+      "id": "cell-route-kit",
+      "type": "stage",
+      "name": "Prepare the parts tray",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "kitting"
+        ]
+      }
+    },
+    {
+      "id": "cell-route-prepare",
+      "type": "stage",
+      "name": "Prepare the gear train",
+      "properties": {
+        "kind": "machine",
+        "required_skills": [
+          "machining"
+        ]
+      }
+    },
+    {
+      "id": "cell-route-assemble",
+      "type": "stage",
+      "name": "Assemble the fan",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "assembly"
+        ]
+      }
+    },
+    {
+      "id": "cell-route-inspect",
+      "type": "stage",
+      "name": "Inspect the finished product",
+      "properties": {
+        "kind": "manual",
+        "required_skills": [
+          "quality"
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "located_at:cnc-1:plant",
+      "type": "located_at",
+      "source": "cnc-1",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_capability:cnc-1:cnc",
+      "type": "has_capability",
+      "source": "cnc-1",
+      "target": "cnc",
+      "properties": {}
+    },
+    {
+      "id": "located_at:cnc-2:plant",
+      "type": "located_at",
+      "source": "cnc-2",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_capability:cnc-2:cnc",
+      "type": "has_capability",
+      "source": "cnc-2",
+      "target": "cnc",
+      "properties": {}
+    },
+    {
+      "id": "located_at:line-1:plant",
+      "type": "located_at",
+      "source": "line-1",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_capability:line-1:automated",
+      "type": "has_capability",
+      "source": "line-1",
+      "target": "automated",
+      "properties": {}
+    },
+    {
+      "id": "located_at:line-2:plant",
+      "type": "located_at",
+      "source": "line-2",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_capability:line-2:automated",
+      "type": "has_capability",
+      "source": "line-2",
+      "target": "automated",
+      "properties": {}
+    },
+    {
+      "id": "located_at:product:plant",
+      "type": "located_at",
+      "source": "product",
+      "target": "plant",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:base:base",
+      "type": "has_slot",
+      "source": "product",
+      "target": "base",
+      "properties": {
+        "slot_id": "base",
+        "label": "Base casing",
+        "quantity": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:base-red:base",
+      "type": "variant_of",
+      "source": "base-red",
+      "target": "base",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:base-green:base",
+      "type": "variant_of",
+      "source": "base-green",
+      "target": "base",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:base-blue:base",
+      "type": "variant_of",
+      "source": "base-blue",
+      "target": "base",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:base-white:base",
+      "type": "variant_of",
+      "source": "base-white",
+      "target": "base",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:upper:upper",
+      "type": "has_slot",
+      "source": "product",
+      "target": "upper",
+      "properties": {
+        "slot_id": "upper",
+        "label": "Upper casing",
+        "quantity": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:upper-red:upper",
+      "type": "variant_of",
+      "source": "upper-red",
+      "target": "upper",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:upper-green:upper",
+      "type": "variant_of",
+      "source": "upper-green",
+      "target": "upper",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:upper-blue:upper",
+      "type": "variant_of",
+      "source": "upper-blue",
+      "target": "upper",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:upper-white:upper",
+      "type": "variant_of",
+      "source": "upper-white",
+      "target": "upper",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:handle:handle",
+      "type": "has_slot",
+      "source": "product",
+      "target": "handle",
+      "properties": {
+        "slot_id": "handle",
+        "label": "Handle",
+        "quantity": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:handle-red:handle",
+      "type": "variant_of",
+      "source": "handle-red",
+      "target": "handle",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:handle-green:handle",
+      "type": "variant_of",
+      "source": "handle-green",
+      "target": "handle",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:handle-blue:handle",
+      "type": "variant_of",
+      "source": "handle-blue",
+      "target": "handle",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:handle-white:handle",
+      "type": "variant_of",
+      "source": "handle-white",
+      "target": "handle",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:propeller:propeller",
+      "type": "has_slot",
+      "source": "product",
+      "target": "propeller",
+      "properties": {
+        "slot_id": "propeller",
+        "label": "Propeller",
+        "quantity": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:propeller-red:propeller",
+      "type": "variant_of",
+      "source": "propeller-red",
+      "target": "propeller",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:propeller-green:propeller",
+      "type": "variant_of",
+      "source": "propeller-green",
+      "target": "propeller",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:propeller-blue:propeller",
+      "type": "variant_of",
+      "source": "propeller-blue",
+      "target": "propeller",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:propeller-white:propeller",
+      "type": "variant_of",
+      "source": "propeller-white",
+      "target": "propeller",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:propeller-yellow:propeller",
+      "type": "variant_of",
+      "source": "propeller-yellow",
+      "target": "propeller",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:pin2:pin2",
+      "type": "has_slot",
+      "source": "product",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2",
+        "label": "Pin 2",
+        "quantity": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:pin2-red:pin2",
+      "type": "variant_of",
+      "source": "pin2-red",
+      "target": "pin2",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:pin2-green:pin2",
+      "type": "variant_of",
+      "source": "pin2-green",
+      "target": "pin2",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:pin2-blue:pin2",
+      "type": "variant_of",
+      "source": "pin2-blue",
+      "target": "pin2",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:pin2-white:pin2",
+      "type": "variant_of",
+      "source": "pin2-white",
+      "target": "pin2",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:pin1:pin1",
+      "type": "has_slot",
+      "source": "product",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1",
+        "label": "Pin 1",
+        "quantity": 5,
+        "configurable": true
+      }
+    },
+    {
+      "id": "variant_of:pin1-red:pin1",
+      "type": "variant_of",
+      "source": "pin1-red",
+      "target": "pin1",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:pin1-green:pin1",
+      "type": "variant_of",
+      "source": "pin1-green",
+      "target": "pin1",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:pin1-blue:pin1",
+      "type": "variant_of",
+      "source": "pin1-blue",
+      "target": "pin1",
+      "properties": {}
+    },
+    {
+      "id": "variant_of:pin1-white:pin1",
+      "type": "variant_of",
+      "source": "pin1-white",
+      "target": "pin1",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:gear1:gear1",
+      "type": "has_slot",
+      "source": "product",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1",
+        "label": "Gear 1",
+        "quantity": 1,
+        "configurable": false
+      }
+    },
+    {
+      "id": "variant_of:gear1-standard:gear1",
+      "type": "variant_of",
+      "source": "gear1-standard",
+      "target": "gear1",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:gear2:gear2",
+      "type": "has_slot",
+      "source": "product",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2",
+        "label": "Gear 2",
+        "quantity": 1,
+        "configurable": false
+      }
+    },
+    {
+      "id": "variant_of:gear2-standard:gear2",
+      "type": "variant_of",
+      "source": "gear2-standard",
+      "target": "gear2",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:gear3:gear3",
+      "type": "has_slot",
+      "source": "product",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3",
+        "label": "Gear 3",
+        "quantity": 1,
+        "configurable": false
+      }
+    },
+    {
+      "id": "variant_of:gear3-standard:gear3",
+      "type": "variant_of",
+      "source": "gear3-standard",
+      "target": "gear3",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:gear4:gear4",
+      "type": "has_slot",
+      "source": "product",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4",
+        "label": "Gear 4",
+        "quantity": 1,
+        "configurable": false
+      }
+    },
+    {
+      "id": "variant_of:gear4-standard:gear4",
+      "type": "variant_of",
+      "source": "gear4-standard",
+      "target": "gear4",
+      "properties": {}
+    },
+    {
+      "id": "has_slot:product:gear5:gear5",
+      "type": "has_slot",
+      "source": "product",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5",
+        "label": "Gear 5",
+        "quantity": 1,
+        "configurable": false
+      }
+    },
+    {
+      "id": "variant_of:gear5-standard:gear5",
+      "type": "variant_of",
+      "source": "gear5-standard",
+      "target": "gear5",
+      "properties": {}
+    },
+    {
+      "id": "uses_path:product:cnc-route",
+      "type": "uses_path",
+      "source": "product",
+      "target": "cnc-route",
+      "properties": {
+        "priority": 10
+      }
+    },
+    {
+      "id": "has_stage:cnc-route:cnc-route-kit",
+      "type": "has_stage",
+      "source": "cnc-route",
+      "target": "cnc-route-kit",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cnc-route-kit:kit-guide",
+      "type": "uses_guidance",
+      "source": "cnc-route-kit",
+      "target": "kit-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:cnc-route-kit:kit-check",
+      "type": "uses_verification",
+      "source": "cnc-route-kit",
+      "target": "kit-check",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cnc-route-kit:material-loss",
+      "type": "uses_scrap",
+      "source": "cnc-route-kit",
+      "target": "material-loss",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cnc-route-kit:base:base",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "base",
+      "properties": {
+        "slot_id": "base"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:upper:upper",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "upper",
+      "properties": {
+        "slot_id": "upper"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:handle:handle",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "handle",
+      "properties": {
+        "slot_id": "handle"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:propeller:propeller",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "propeller",
+      "properties": {
+        "slot_id": "propeller"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:pin2:pin2",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:pin1:pin1",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:gear1:gear1",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:gear2:gear2",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:gear3:gear3",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:gear4:gear4",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-kit:gear5:gear5",
+      "type": "consumes",
+      "source": "cnc-route-kit",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5"
+      }
+    },
+    {
+      "id": "has_stage:cnc-route:cnc-route-prepare",
+      "type": "has_stage",
+      "source": "cnc-route",
+      "target": "cnc-route-prepare",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cnc-route-prepare:prepare-guide",
+      "type": "uses_guidance",
+      "source": "cnc-route-prepare",
+      "target": "prepare-guide",
+      "properties": {}
+    },
+    {
+      "id": "requires_capability:cnc-route-prepare:cnc",
+      "type": "requires_capability",
+      "source": "cnc-route-prepare",
+      "target": "cnc",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cnc-route-prepare:material-loss",
+      "type": "uses_scrap",
+      "source": "cnc-route-prepare",
+      "target": "material-loss",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cnc-route-prepare:gear1:gear1",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-prepare:gear2:gear2",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-prepare:gear3:gear3",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-prepare:gear4:gear4",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-prepare:gear5:gear5",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-prepare:pin1:pin1",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-prepare:pin2:pin2",
+      "type": "consumes",
+      "source": "cnc-route-prepare",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2"
+      }
+    },
+    {
+      "id": "has_stage:cnc-route:cnc-route-assemble",
+      "type": "has_stage",
+      "source": "cnc-route",
+      "target": "cnc-route-assemble",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cnc-route-assemble:assembly-guide",
+      "type": "uses_guidance",
+      "source": "cnc-route-assemble",
+      "target": "assembly-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:cnc-route-assemble:assembly-check",
+      "type": "uses_verification",
+      "source": "cnc-route-assemble",
+      "target": "assembly-check",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cnc-route-assemble:material-loss",
+      "type": "uses_scrap",
+      "source": "cnc-route-assemble",
+      "target": "material-loss",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cnc-route-assemble:base:base",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "base",
+      "properties": {
+        "slot_id": "base"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:upper:upper",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "upper",
+      "properties": {
+        "slot_id": "upper"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:handle:handle",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "handle",
+      "properties": {
+        "slot_id": "handle"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:propeller:propeller",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "propeller",
+      "properties": {
+        "slot_id": "propeller"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:pin2:pin2",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:pin1:pin1",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:gear1:gear1",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:gear2:gear2",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:gear3:gear3",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:gear4:gear4",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4"
+      }
+    },
+    {
+      "id": "consumes:cnc-route-assemble:gear5:gear5",
+      "type": "consumes",
+      "source": "cnc-route-assemble",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5"
+      }
+    },
+    {
+      "id": "has_stage:cnc-route:cnc-route-inspect",
+      "type": "has_stage",
+      "source": "cnc-route",
+      "target": "cnc-route-inspect",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cnc-route-inspect:finish-guide",
+      "type": "uses_guidance",
+      "source": "cnc-route-inspect",
+      "target": "finish-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:cnc-route-inspect:assembly-check",
+      "type": "uses_verification",
+      "source": "cnc-route-inspect",
+      "target": "assembly-check",
+      "properties": {}
+    },
+    {
+      "id": "precedes:cnc-route-kit:cnc-route-prepare",
+      "type": "precedes",
+      "source": "cnc-route-kit",
+      "target": "cnc-route-prepare",
+      "properties": {}
+    },
+    {
+      "id": "precedes:cnc-route-prepare:cnc-route-assemble",
+      "type": "precedes",
+      "source": "cnc-route-prepare",
+      "target": "cnc-route-assemble",
+      "properties": {}
+    },
+    {
+      "id": "precedes:cnc-route-assemble:cnc-route-inspect",
+      "type": "precedes",
+      "source": "cnc-route-assemble",
+      "target": "cnc-route-inspect",
+      "properties": {}
+    },
+    {
+      "id": "uses_path:product:cell-route",
+      "type": "uses_path",
+      "source": "product",
+      "target": "cell-route",
+      "properties": {
+        "priority": 20
+      }
+    },
+    {
+      "id": "has_stage:cell-route:cell-route-kit",
+      "type": "has_stage",
+      "source": "cell-route",
+      "target": "cell-route-kit",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cell-route-kit:kit-guide",
+      "type": "uses_guidance",
+      "source": "cell-route-kit",
+      "target": "kit-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:cell-route-kit:kit-check",
+      "type": "uses_verification",
+      "source": "cell-route-kit",
+      "target": "kit-check",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cell-route-kit:material-loss",
+      "type": "uses_scrap",
+      "source": "cell-route-kit",
+      "target": "material-loss",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cell-route-kit:base:base",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "base",
+      "properties": {
+        "slot_id": "base"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:upper:upper",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "upper",
+      "properties": {
+        "slot_id": "upper"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:handle:handle",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "handle",
+      "properties": {
+        "slot_id": "handle"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:propeller:propeller",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "propeller",
+      "properties": {
+        "slot_id": "propeller"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:pin2:pin2",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:pin1:pin1",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:gear1:gear1",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:gear2:gear2",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:gear3:gear3",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:gear4:gear4",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4"
+      }
+    },
+    {
+      "id": "consumes:cell-route-kit:gear5:gear5",
+      "type": "consumes",
+      "source": "cell-route-kit",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5"
+      }
+    },
+    {
+      "id": "has_stage:cell-route:cell-route-prepare",
+      "type": "has_stage",
+      "source": "cell-route",
+      "target": "cell-route-prepare",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cell-route-prepare:prepare-guide",
+      "type": "uses_guidance",
+      "source": "cell-route-prepare",
+      "target": "prepare-guide",
+      "properties": {}
+    },
+    {
+      "id": "requires_capability:cell-route-prepare:automated",
+      "type": "requires_capability",
+      "source": "cell-route-prepare",
+      "target": "automated",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cell-route-prepare:material-loss",
+      "type": "uses_scrap",
+      "source": "cell-route-prepare",
+      "target": "material-loss",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cell-route-prepare:gear1:gear1",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1"
+      }
+    },
+    {
+      "id": "consumes:cell-route-prepare:gear2:gear2",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2"
+      }
+    },
+    {
+      "id": "consumes:cell-route-prepare:gear3:gear3",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3"
+      }
+    },
+    {
+      "id": "consumes:cell-route-prepare:gear4:gear4",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4"
+      }
+    },
+    {
+      "id": "consumes:cell-route-prepare:gear5:gear5",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5"
+      }
+    },
+    {
+      "id": "consumes:cell-route-prepare:pin1:pin1",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1"
+      }
+    },
+    {
+      "id": "consumes:cell-route-prepare:pin2:pin2",
+      "type": "consumes",
+      "source": "cell-route-prepare",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2"
+      }
+    },
+    {
+      "id": "has_stage:cell-route:cell-route-assemble",
+      "type": "has_stage",
+      "source": "cell-route",
+      "target": "cell-route-assemble",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cell-route-assemble:assembly-guide",
+      "type": "uses_guidance",
+      "source": "cell-route-assemble",
+      "target": "assembly-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:cell-route-assemble:assembly-check",
+      "type": "uses_verification",
+      "source": "cell-route-assemble",
+      "target": "assembly-check",
+      "properties": {}
+    },
+    {
+      "id": "uses_scrap:cell-route-assemble:material-loss",
+      "type": "uses_scrap",
+      "source": "cell-route-assemble",
+      "target": "material-loss",
+      "properties": {}
+    },
+    {
+      "id": "consumes:cell-route-assemble:base:base",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "base",
+      "properties": {
+        "slot_id": "base"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:upper:upper",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "upper",
+      "properties": {
+        "slot_id": "upper"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:handle:handle",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "handle",
+      "properties": {
+        "slot_id": "handle"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:propeller:propeller",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "propeller",
+      "properties": {
+        "slot_id": "propeller"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:pin2:pin2",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "pin2",
+      "properties": {
+        "slot_id": "pin2"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:pin1:pin1",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "pin1",
+      "properties": {
+        "slot_id": "pin1"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:gear1:gear1",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "gear1",
+      "properties": {
+        "slot_id": "gear1"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:gear2:gear2",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "gear2",
+      "properties": {
+        "slot_id": "gear2"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:gear3:gear3",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "gear3",
+      "properties": {
+        "slot_id": "gear3"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:gear4:gear4",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "gear4",
+      "properties": {
+        "slot_id": "gear4"
+      }
+    },
+    {
+      "id": "consumes:cell-route-assemble:gear5:gear5",
+      "type": "consumes",
+      "source": "cell-route-assemble",
+      "target": "gear5",
+      "properties": {
+        "slot_id": "gear5"
+      }
+    },
+    {
+      "id": "has_stage:cell-route:cell-route-inspect",
+      "type": "has_stage",
+      "source": "cell-route",
+      "target": "cell-route-inspect",
+      "properties": {}
+    },
+    {
+      "id": "uses_guidance:cell-route-inspect:finish-guide",
+      "type": "uses_guidance",
+      "source": "cell-route-inspect",
+      "target": "finish-guide",
+      "properties": {}
+    },
+    {
+      "id": "uses_verification:cell-route-inspect:assembly-check",
+      "type": "uses_verification",
+      "source": "cell-route-inspect",
+      "target": "assembly-check",
+      "properties": {}
+    },
+    {
+      "id": "precedes:cell-route-kit:cell-route-prepare",
+      "type": "precedes",
+      "source": "cell-route-kit",
+      "target": "cell-route-prepare",
+      "properties": {}
+    },
+    {
+      "id": "precedes:cell-route-prepare:cell-route-assemble",
+      "type": "precedes",
+      "source": "cell-route-prepare",
+      "target": "cell-route-assemble",
+      "properties": {}
+    },
+    {
+      "id": "precedes:cell-route-assemble:cell-route-inspect",
+      "type": "precedes",
+      "source": "cell-route-assemble",
+      "target": "cell-route-inspect",
+      "properties": {}
+    }
+  ],
+  "constraints": [
+    {
+      "id": "mounting-compatible",
+      "name": "Selected parts use a compatible mounting family",
+      "product_id": "product",
+      "kind": "match_property",
+      "slots": [
+        "base",
+        "upper",
+        "handle",
+        "propeller",
+        "pin1",
+        "pin2"
+      ],
+      "property": "mounting_family"
+    }
+  ],
+  "gateway": {
+    "host": "127.0.0.1",
+    "port": 9002,
+    "protocol": "http"
+  }
+}

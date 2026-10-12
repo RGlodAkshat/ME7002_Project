@@ -2,6 +2,7 @@
 
 setup:
 	@test -f .env || cp .env.example .env
+	@python3 infra/prepare-secrets.py .env --database
 
 up: setup
 	docker compose up --build -d
@@ -15,8 +16,8 @@ logs:
 ps:
 	docker compose ps
 
-test:
-	docker compose run --rm -v ./backend/tests:/app/tests:ro backend pytest
+test: setup
+	docker compose run --rm -v ./backend/tests:/app/tests:ro -v ./configs:/configs:ro backend pytest
 
 build:
 	docker compose build

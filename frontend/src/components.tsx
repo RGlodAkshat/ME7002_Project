@@ -22,7 +22,7 @@ export function Icon({ name, size = 20 }: { name: string; size?: number }) {
 }
 
 export function Button({ children, variant = 'primary', icon, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' | 'danger'; icon?: string }) {
-  return <button {...props} className={`button button--${variant} ${props.className ?? ''}`}>{icon && <Icon name={icon} size={18}/>}<span>{children}</span></button>;
+  return <button type="button" {...props} className={`button button--${variant} ${props.className ?? ''}`}>{icon && <Icon name={icon} size={18}/>}<span>{children}</span></button>;
 }
 
 export function Status({ value }: { value?: string | null }) {

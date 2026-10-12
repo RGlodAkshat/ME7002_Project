@@ -1,69 +1,49 @@
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from './api';
-import { Button, Card, Empty, Icon, Loading, PageHeader, Status } from './components';
-import type { Operator, Task } from './types';
+import { Button, Icon, Loading } from './components';
+import type { Notify, Part, Task, User } from './types';
 
-function instructions(value?: string[] | string): string[] {
-  if (Array.isArray(value)) return value;
-  return value ? value.split('\n').filter(Boolean) : ['Review the work order and required components.', 'Follow the posted station safety procedure.', 'Confirm the result before completing this task.'];
+export function OperatorPage({ user, logout, notify }: { user: User; logout: () => void; notify: Notify }) {
+  const [available, setAvailable] = useState(user.available);
+  const [tasks, setTasks] = useState<Task[]>([]); const [loaded, setLoaded] = useState(false); const [error, setError] = useState('');
+  const [step, setStep] = useState(0); const [verification, setVerification] = useState(false); const [busy, setBusy] = useState(false);
+  const [quantity, setQuantity] = useState('0'); const [reason, setReason] = useState(''); const [scrapSaved, setScrapSaved] = useState(false);
+  const load = useCallback(async () => { try { const [assigned, ownSession] = await Promise.all([api.tasks(), api.me()]); setTasks(assigned); setAvailable(ownSession.user.available); setError(''); setLoaded(true); } catch (err) { setError((err as Error).message); setLoaded(true); } }, []);
+  useEffect(() => { void load(); const timer = window.setInterval(load, 5000); return () => window.clearInterval(timer); }, [load]);
+  const task = tasks.find(item => item.status === 'in_progress' || item.status === 'rejected') || tasks[0];
+  useEffect(() => { setStep(0); setVerification(false); setQuantity('0'); setReason(''); setScrapSaved(false); }, [task?.id, task?.machine_completed]);
+  const action = async (run: () => Promise<unknown>) => { setBusy(true); try { await run(); await load(); } catch (err) { notify((err as Error).message, 'error'); } finally { setBusy(false); } };
+  const toggleAvailability = async () => { await action(async () => { const value = await api.availability(!available); setAvailable(value.available); }); };
+  const instructions = task?.instructions || [];
+  const focusedPart = task?.parts?.find(part => instructions[step]?.includes(part.name));
+  const waiting = task && ['awaiting_review', 'awaiting_verification', 'paused', 'queued'].includes(task.status);
+  const scrapRecorded = scrapSaved || !!task?.scrap_report;
+  const canComplete = !task?.scrap?.required || scrapRecorded;
+  const hasEvidence = !!task?.evidence?.length && (task.status !== 'rejected' || task.has_fresh_evidence === true);
+  const upload = (file?: File) => { if (!file || !task) return; void action(() => api.evidence(task.id, file)); };
+  const complete = () => { if (!task) return; void action(() => api.complete(task.id)); };
+  return <main className="operator-screen">
+    <header className="operator-header"><div><span className="operator-monogram">{user.name.slice(0, 1).toUpperCase()}</span><span><b>{user.name}</b><small>Work guidance</small></span></div><div className="operator-header__actions"><button className={`availability-button ${available ? 'is-available' : ''}`} disabled={busy} aria-pressed={available} onClick={toggleAvailability}><i/>{available ? 'Available' : 'Unavailable'}</button><button className="icon-button" aria-label="Sign out" onClick={logout}><Icon name="logout"/></button></div></header>
+    {!loaded ? <Loading/> : error ? <div className="error-panel" role="alert"><p>{error}</p><Button onClick={load}>Retry</Button></div> : !task ? <div className="operator-wait"><div className="guidance-orb"><Icon name={available ? 'check' : 'worker'} size={60}/></div><p className="eyebrow">{available ? 'Ready when you are' : 'Taking a pause'}</p><h1>{available ? 'You’re all caught up.' : 'You’re unavailable.'}</h1><p>{available ? 'Your next operation will appear here automatically.' : 'Switch to available when you’re ready for your next operation.'}</p></div> : waiting ? <div className="operator-wait"><div className="guidance-orb"><Icon name={task.status === 'paused' ? 'alert' : 'check'} size={60}/></div><p className="eyebrow">{task.product_name}</p><h1>{task.status === 'awaiting_review' ? 'Review in progress.' : task.status === 'awaiting_verification' ? 'Checking your work.' : task.status === 'paused' ? 'Operation paused.' : 'Preparing your next operation.'}</h1><p>{task.status === 'paused' ? 'Wait for the equipment to become available. Your progress is saved.' : 'We’ll show your next instruction as soon as it’s ready.'}</p><strong>{task.name}</strong></div> : <div className="guidance-work">
+      <div className="guidance-context"><p className="eyebrow">{task.product_name}</p><h2>{task.name}</h2>{task.machine_name && <span className="machine-location"><Icon name="machine"/>{task.machine_name}</span>}</div>
+      {task.kind === 'machine' && task.command_id && !task.machine_completed ? <section className="machine-running"><div className="guidance-orb"><Icon name="machine" size={50}/></div><h1>Equipment is running.</h1><p>Wait for this operation to finish. Your next instruction will appear automatically.</p></section> : !instructions.length ? <div className="error-panel"><h2>Work instructions unavailable.</h2><p>Contact your administrator before proceeding with this operation.</p></div> : !verification ? <>
+        <div className="step-position"><span>Instruction {step + 1} of {instructions.length}</span><div>{instructions.map((_, index) => <i className={index <= step ? 'active' : ''} key={index}/>)}</div></div>
+        <h1 className="current-instruction">{instructions[step]}</h1>
+        {focusedPart && <div className="focused-part operator-parts"><PartCard part={focusedPart}/></div>}
+        {!!task.parts?.length && <details className="parts-disclosure"><summary>All parts for this operation <span>{task.parts.length}</span></summary><div className="operator-parts">{task.parts.map((part, index) => <PartCard part={part} key={`${part.slot_id}-${index}`}/>)}</div></details>}
+        {task.status === 'rejected' && <div className="inline-error"><b>Please correct your work</b><p>{task.verification_reason || 'The previous submission was rejected. Follow the instruction and submit again.'}</p></div>}
+        {step === instructions.length - 1 && task.scrap && (task.kind !== 'machine' || task.machine_completed) && <details className="scrap-section" open={!!task.scrap.required && !scrapRecorded}><summary>Record material loss {task.scrap.required ? '(required)' : '(optional)'}</summary><div className="form-grid"><label>Quantity<input type="number" min="0" max={task.scrap.max_quantity} required value={quantity} onChange={e => setQuantity(e.target.value)}/></label><label>Reason{task.scrap.reasons?.length ? <select value={reason} onChange={e => setReason(e.target.value)}><option value="">Choose a reason</option>{task.scrap.reasons.map(item => <option key={item}>{item}</option>)}</select> : <input value={reason} onChange={e => setReason(e.target.value)}/>}</label></div><Button variant="secondary" disabled={busy || Number(quantity) < 0 || (Number(quantity) > 0 && !reason)} onClick={() => action(async () => { await api.scrap(task.id, Number(quantity), reason); setScrapSaved(true); })}>Save material loss</Button>{scrapRecorded && <p className="success-note">Recorded</p>}</details>}
+        <div className="guidance-actions">{step > 0 && <Button variant="ghost" onClick={() => setStep(step - 1)}>Back</Button>}{step < instructions.length - 1 ? <Button onClick={() => setStep(step + 1)} icon="arrow">Next instruction</Button> : task.kind === 'machine' && !task.machine_completed ? <Button disabled={busy} onClick={() => action(() => api.run(task.id))} icon="machine">{busy ? 'Starting…' : 'Start equipment'}</Button> : task.verification ? <Button disabled={!canComplete} onClick={() => setVerification(true)} icon="camera">Verify this operation</Button> : <Button disabled={busy || !canComplete} onClick={complete} icon="check">{busy ? 'Saving…' : 'Operation complete'}</Button>}</div>
+      </> : <section className="verification-focus">
+        <p className="eyebrow">Verification required</p><h1>Show your completed work.</h1>
+        {Array.isArray(task.verification?.instructions) ? <ul>{task.verification.instructions.map((instruction, index) => <li key={index}>{instruction}</li>)}</ul> : <p>{task.verification?.instructions || 'Take a clear photograph of the completed operation.'}</p>}
+        {task.status === 'rejected' && !task.has_fresh_evidence && <p className="inline-error">Take a new photograph after correcting your work.</p>}
+        <label className={`capture-button ${busy ? 'disabled' : ''}`}><Icon name="camera" size={32}/><b>{busy ? 'Saving photograph…' : task.evidence?.length ? 'Add another photograph' : 'Take a photograph'}</b><input aria-label="Take a photograph" type="file" accept="image/*" capture="environment" disabled={busy} onChange={e => { upload(e.target.files?.[0]); e.target.value = ''; }}/></label>
+        {!!task.evidence?.length && <div className="evidence-grid">{task.evidence.map(item => <a href={item.url} target="_blank" rel="noreferrer" key={item.id}><img src={item.url} alt={item.name}/></a>)}</div>}
+        <div className="guidance-actions"><Button variant="ghost" onClick={() => setVerification(false)}>Back</Button><Button disabled={busy || !hasEvidence || !canComplete} onClick={complete}>{busy ? 'Submitting…' : 'Submit for verification'}</Button></div>
+      </section>}
+    </div>}
+  </main>;
 }
 
-export function OperatorPage({ refreshKey, notify }: { refreshKey: number; notify: (message: string, kind?: 'success' | 'error') => void }) {
-  const [operators, setOperators] = useState<Operator[]>([]);
-  const [operatorId, setOperatorId] = useState('');
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [selectedId, setSelectedId] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
-  const [handoff, setHandoff] = useState('');
-
-  useEffect(() => { api.getOperators().then(items => { setOperators(items); setOperatorId(current => current || String(items[0]?.id ?? '')); }).catch(error => notify((error as Error).message, 'error')); }, []);
-  const load = async () => {
-    if (!operatorId) { setLoading(false); return; }
-    setLoading(true);
-    try { const items = await api.getTasks(operatorId); setTasks(items); setSelectedId(current => items.some(item => String(item.id) === String(current)) ? current : String(items[0]?.id ?? '')); }
-    catch (error) { notify((error as Error).message, 'error'); }
-    finally { setLoading(false); }
-  };
-  useEffect(() => { load(); }, [operatorId, refreshKey]);
-  const selected = useMemo(() => tasks.find(item => String(item.id) === String(selectedId)), [tasks, selectedId]);
-  const action = async (kind: 'accept' | 'start' | 'complete') => {
-    if (!selected) return; setBusy(true);
-    try { await api.taskAction(selected.id, kind); notify(`Task ${kind === 'complete' ? 'completed' : `${kind}ed`}.`, 'success'); await load(); }
-    catch (error) { notify((error as Error).message, 'error'); }
-    finally { setBusy(false); }
-  };
-  const upload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]; if (!file || !selected) return; setBusy(true);
-    try { await api.uploadEvidence(selected.id, file); notify('Evidence photo uploaded.', 'success'); await load(); }
-    catch (error) { notify((error as Error).message, 'error'); }
-    finally { event.target.value = ''; setBusy(false); }
-  };
-  const doHandoff = async () => {
-    if (!selected || !handoff) return; setBusy(true);
-    try { await api.handoffTask(selected.id, handoff); notify('Handoff request sent.', 'success'); setHandoff(''); await load(); }
-    catch (error) { notify((error as Error).message, 'error'); }
-    finally { setBusy(false); }
-  };
-  const verify = async () => {
-    if (!selected) return; setBusy(true);
-    try { await api.verifyTask(selected.id); notify('Verification started. The result will update automatically.', 'success'); await load(); }
-    catch (error) { notify((error as Error).message, 'error'); }
-    finally { setBusy(false); }
-  };
-  const availableActions = selected?.status.toLowerCase();
-
-  return <>
-    <PageHeader eyebrow="Operator station" title="Your work, clearly sequenced." description="Complete assigned tasks, capture evidence, and hand off without losing production context." action={<label className="operator-switch"><span>Working as</span><select value={operatorId} onChange={event => setOperatorId(event.target.value)}>{operators.map(operator => <option value={operator.id} key={operator.id}>{operator.name}</option>)}</select></label>}/>
-    <div className="operator-layout">
-      <Card className="task-rail"><div className="section-heading"><div><p className="eyebrow">Queue</p><h2>Assigned tasks</h2></div><span className="count">{tasks.length}</span></div>{loading ? <Loading/> : tasks.length ? <div className="task-list">{tasks.map((task, index) => <button key={task.id} className={`task-list__item ${String(task.id) === String(selectedId) ? 'active' : ''}`} onClick={() => setSelectedId(String(task.id))}><span className="task-list__number">{task.position ?? task.sequence ?? index + 1}</span><span><b>{task.name}</b><small>Order #{task.order_id}</small></span><Status value={task.status}/></button>)}</div> : <Empty title="Queue is clear" body="New work will appear here when dependencies are complete."/>}</Card>
-      <div className="task-workspace">{selected ? <>
-        <Card className="task-hero"><div className="task-hero__top"><div><div className="task-meta"><span>Order #{selected.order_id}</span>{(selected.machine_name || selected.machine?.name) && <span><Icon name="machine" size={15}/>{selected.machine_name || selected.machine?.name}</span>}</div><h2>{selected.name}</h2><p>{selected.description || 'Follow the instructions below and record completion.'}</p></div><Status value={selected.status}/></div><div className="task-actions">{['ready', 'assigned'].includes(availableActions || '') && selected.kind !== 'machine' && <Button onClick={() => action('accept')} disabled={busy} icon="check">Accept task</Button>}{['ready', 'assigned'].includes(availableActions || '') && selected.kind === 'machine' && <Button onClick={() => action('start')} disabled={busy} icon="arrow">Start machine task</Button>}{['accepted'].includes(availableActions || '') && selected.kind !== 'machine' && <Button onClick={() => action('start')} disabled={busy} icon="arrow">Start work</Button>}{['in_progress', 'started', 'rejected'].includes(availableActions || '') && selected.kind !== 'machine' && <Button onClick={() => action('complete')} disabled={busy} icon="check">{availableActions === 'rejected' ? 'Resubmit for verification' : 'Mark complete'}</Button>}{selected.kind === 'machine' && !['ready', 'assigned'].includes(availableActions || '') && <span className="machine-wait"><Icon name="machine" size={17}/> Completion is reported by the machine gateway</span>}<Button variant="ghost" onClick={load} icon="refresh">Refresh</Button></div></Card>
-        <div className="operator-detail-grid"><Card><div className="section-heading"><div><p className="eyebrow">Standard work</p><h2>Step instructions</h2></div></div><ol className="instructions">{instructions(selected.instructions).map((step, index) => <li key={index}><span>{index + 1}</span><p>{step}</p></li>)}</ol></Card><div className="side-stack">
-          <Card><p className="eyebrow">Verification</p><h3>{selected.requires_verification ? 'Photo evidence required' : 'Operator confirmation'}</h3><p className="muted">{selected.requires_verification ? 'Capture a clear image of the completed work. The workflow waits for approval.' : 'No image is required for this task.'}</p>{selected.requires_verification && ['assigned', 'in_progress', 'rejected'].includes(selected.status.toLowerCase()) && <label className={`upload ${busy ? 'disabled' : ''}`}><Icon name="camera" size={24}/><span><b>Capture or upload photo</b><small>JPG or PNG</small></span><input type="file" accept="image/*" capture="environment" onChange={upload} disabled={busy}/></label>}{selected.requires_verification && ['awaiting_verification', 'evidence_submitted'].includes(selected.status.toLowerCase()) && <Button variant="secondary" onClick={verify} disabled={busy} icon="check">Run verification</Button>}{selected.verification_status && <Status value={selected.verification_status}/>}</Card>
-          <Card><p className="eyebrow">Handoff</p><h3>Pass work safely</h3><p className="muted">The next qualified operator receives the task with its complete history.</p><div className="handoff"><select value={handoff} onChange={event => setHandoff(event.target.value)}><option value="">Select operator</option>{operators.filter(item => String(item.id) !== String(operatorId) && item.available !== false && (!selected.required_skill || item.skills?.includes(selected.required_skill))).map(item => <option value={item.id} key={item.id}>{item.name}</option>)}</select><Button variant="secondary" onClick={doHandoff} disabled={!handoff || busy} icon="arrow">Handoff</Button></div></Card>
-        </div></div>
-      </> : !loading && <Card><Empty icon="worker" title="Select an assigned task" body="Choose an item from your queue to see step guidance and controls."/></Card>}</div>
-    </div>
-  </>;
-}
+function PartCard({ part }: { part: Part }) { return <article><div className="part-visual">{part.image_url ? <img src={part.image_url} alt={part.name}/> : <span style={{ background: part.color || '#cad8cc' }}><Icon name="box" size={32}/></span>}</div><div><b>{part.name}</b><small>Quantity {part.quantity}</small></div>{part.bin && <strong className="bin-label"><small>BIN</small>{part.bin}</strong>}</article>; }

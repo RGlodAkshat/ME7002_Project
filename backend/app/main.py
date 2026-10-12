@@ -1,31 +1,21 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
-from .api import router
+from .platform_api import router
+from .platform_mcp import router as mcp_router
 from .config import get_settings
 from .db import SessionLocal, create_schema
-from .events import broadcaster
-from .models import Machine, Operator
+from .platform_models import Configuration
 
 
-def seed() -> None:
+def initialize_configuration() -> None:
     with SessionLocal() as db:
-        if not db.query(Operator).count():
-            db.add_all([
-                Operator(name="Asha", skills=["kitting", "assembly"]),
-                Operator(name="Ravi", skills=["machining", "automation"]),
-                Operator(name="Meera", skills=["assembly", "kitting"]),
-                Operator(name="Kabir", skills=["machining", "automation", "assembly"]),
-            ])
-        if not db.query(Machine).count():
-            db.add_all([
-                Machine(code="CNC-01", name="CNC Mill 1", capabilities=["cnc"]),
-                Machine(code="CNC-02", name="CNC Mill 2", capabilities=["cnc"]),
-                Machine(code="LINE-01", name="Automated Line 1", capabilities=["automated_line"]),
-                Machine(code="LINE-02", name="Automated Line 2", capabilities=["automated_line"]),
-            ])
+        if not db.get(Configuration, 1):
+            db.add(Configuration(id=1, revision=0, specification=None))
         db.commit()
 
 
@@ -35,29 +25,25 @@ async def lifespan(_: FastAPI):
     settings = get_settings()
     settings.evidence_dir.mkdir(parents=True, exist_ok=True)
     settings.reference_image_dir.mkdir(parents=True, exist_ok=True)
-    seed()
+    initialize_configuration()
     yield
 
 
 settings = get_settings()
-app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
-origins = ["*"] if settings.cors_origins == "*" else [item.strip() for item in settings.cors_origins.split(",")]
-app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=origins != ["*"],
+app = FastAPI(title=settings.app_name, version="1.0.0", lifespan=lifespan)
+origins = [item.strip() for item in settings.cors_origins.split(",") if item.strip() != "*"]
+app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
                    allow_methods=["*"], allow_headers=["*"])
 app.include_router(router)
+app.include_router(mcp_router)
+
+
+@app.exception_handler(RequestValidationError)
+async def invalid_request(_, error: RequestValidationError):
+    detail = "; ".join(f"{'.'.join(str(item) for item in failure['loc'][1:])}: {failure['msg']}" for failure in error.errors())
+    return JSONResponse(status_code=422, content={"detail": detail})
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
-
-
-@app.websocket("/ws")
-@app.websocket("/ws/events")
-async def event_socket(websocket: WebSocket):
-    await broadcaster.connect(websocket)
-    try:
-        while True:
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        await broadcaster.disconnect(websocket)

@@ -27,7 +27,7 @@ cleanup() {
   trap - EXIT INT TERM
   if ((${#PIDS[@]})); then
     echo
-    echo "Stopping Smart Operator services..."
+    echo "Stopping manufacturing platform services..."
     kill "${PIDS[@]}" 2>/dev/null || true
     wait "${PIDS[@]}" 2>/dev/null || true
   fi
@@ -76,6 +76,7 @@ fi
 if [[ ! -f "$BACKEND_DIR/.env" ]]; then
   cp "$BACKEND_DIR/.env.example" "$BACKEND_DIR/.env"
 fi
+python3 "$PROJECT_DIR/infra/prepare-secrets.py" "$BACKEND_DIR/.env"
 
 echo "Installing frontend dependencies..."
 (cd "$FRONTEND_DIR" && npm ci)
@@ -97,18 +98,22 @@ done
 : >"$RUN_DIR/backend.log"
 : >"$RUN_DIR/frontend.log"
 
-echo "Starting mock machine gateway on port $GATEWAY_PORT..."
+echo "Starting machine gateway simulator on port $GATEWAY_PORT..."
 (
   cd "$PROJECT_DIR"
-  PORT="$GATEWAY_PORT" python3 infra/mock-gateway/server.py
+  PORT="$GATEWAY_PORT" \
+  PLATFORM_ENV_FILE="$BACKEND_DIR/.env" \
+  PLATFORM_CALLBACK_URL="http://127.0.0.1:$API_PORT/api/machine/events" \
+  python3 infra/machine-simulator/server.py
 ) >"$RUN_DIR/gateway.log" 2>&1 &
 PIDS+=("$!")
 
 echo "Starting backend API on port $API_PORT..."
 (
   cd "$BACKEND_DIR"
-  DATABASE_URL="sqlite:///./smart_operator.db" \
+  DATABASE_URL="${DATABASE_URL:-sqlite:///./manufacturing_platform.db}" \
   CORS_ORIGINS="http://localhost:$FRONTEND_PORT,http://127.0.0.1:$FRONTEND_PORT" \
+  MACHINE_CALLBACK_URL="http://127.0.0.1:$API_PORT/api/machine/events" \
   "$BACKEND_DIR/.venv/bin/python" -m uvicorn app.main:app --host 0.0.0.0 --port "$API_PORT"
 ) >"$RUN_DIR/backend.log" 2>&1 &
 PIDS+=("$!")
@@ -120,16 +125,17 @@ echo "Starting website on port $FRONTEND_PORT..."
 ) >"$RUN_DIR/frontend.log" 2>&1 &
 PIDS+=("$!")
 
-wait_for_url "Mock gateway" "http://127.0.0.1:$GATEWAY_PORT/health"
+wait_for_url "Gateway" "http://127.0.0.1:$GATEWAY_PORT/health"
 wait_for_url "Backend" "http://127.0.0.1:$API_PORT/health"
 wait_for_url "Frontend" "http://127.0.0.1:$FRONTEND_PORT"
 
 echo
-echo "Smart Operator is running."
+echo "Manufacturing platform is running."
 echo "Website:     http://localhost:$FRONTEND_PORT"
 echo "API docs:    http://localhost:$API_PORT/docs"
-echo "Mock gateway: http://localhost:$GATEWAY_PORT/health"
+echo "Gateway:     http://localhost:$GATEWAY_PORT/health"
 echo "Logs:        $RUN_DIR"
+echo "Open the website to create the first administrator and import a manufacturing configuration."
 echo
 echo "Press Ctrl+C to stop all services."
 
